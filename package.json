@@ -1,0 +1,14 @@
+{
+  "name": "wheeloluck",
+  "version": "1.0.0",
+  "description": "Wheel of luck",
+  "main": "hello.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Verencia",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
