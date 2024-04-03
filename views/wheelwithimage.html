@@ -4,7 +4,6 @@
         <script src='../js/winwheel/Winwheel.js'></script>
         <script src="../js/winwheel/TweenMax.min.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="../css/style.css">
 
     </head>
     <body onload="load()">
@@ -12,10 +11,7 @@
         Canvas not supported, use another browser.
     </canvas>
     
-   <div id = "alert">
-      <!-- <button id="close" onclick="closeDialog()"> Close </button> -->
-   </div>
-   
+    
     <script>
         var titles = [];
         var weights = [];
@@ -29,7 +25,6 @@
         var oldCount = count;
         var Tweight = window.localStorage.getItem("Tweight");
         console.log("Tweight : " + Tweight);
-        var alertDiv = document.getElementById("alert");
 
         if (Tweight == null) {
             Tweight = 0;
@@ -38,7 +33,7 @@
         
         var theWheel = new Winwheel({
             'canvasId'    : 'myCanvas',
-            
+            'drawMode'       : 'segmentImage',
           'animation' :                   // Note animation properties passed in constructor parameters.
           {
               'type'     : 'spinToStop',  // Type of animation.
@@ -61,31 +56,12 @@
         {
             // Call getIndicatedSegment() function to return pointer to the segment pointed to on wheel.
             let winningSegment = theWheel.getIndicatedSegment();
-            while(alertDiv.firstChild){ // while there is still a child inside the parent
-                alertDiv.removeChild(alertDiv.firstChild); // remove the first child
-            }
+    
             // Basic alert of the segment text which is the prize name.
+            // UNCOMMENT WHEN DONE
             //audio.play();
-            let text = document.createElement("label");
-            text.innerText = "You have won " + winningSegment.text + " ! " + winwheelDegreesToPercent(winningSegment.size) + "%";
-        
-            let img = document.createElement("img");
-            img.src = "../image/"+winningSegment.image;
-
-            let buttonClose = document.createElement("button");
-            buttonClose.innerText = "Close";
-            buttonClose.setAttribute("onclick", "closeDialog()");
-
-            alertDiv.appendChild(text);
-            alertDiv.appendChild(img);
-            alertDiv.appendChild(buttonClose);
-            alertDiv.style.display = "block";
-            //alert("You have won " + winningSegment.text + " ! " + winwheelDegreesToPercent(winningSegment.size) + "%");
+            alert("You have won " + winningSegment.text + " ! " + winwheelDegreesToPercent(winningSegment.size) + "%");
         }
-
-        function closeDialog() {
-         alertDiv.style.display = "none";
-      }
         function winwheelDegreesToPercent(deg) {
             return (deg * 100 / 360).toFixed(2);
         }
@@ -147,13 +123,9 @@
             imgSelect.accept = "image/png, image/jpeg";
             imgSelect.id = "img"+ count;
             imgSelect.classList.add("border-solid", "border-2", "border-indigo-600");
-            imgSelect.setAttribute("onchange", "imagesChanged(this)");
+            imgSelect.setAttribute("onchange", "imagesChanged()");
 
             let img = document.createElement("img");
-            
-            let imgName = document.createElement("p");
-            imgName.id = "imgName"+count;
-            imgName.style = "display:none";
 
             divDetails.appendChild(labelTitle);
             divDetails.appendChild(title);
@@ -164,14 +136,13 @@
             divDetails.appendChild(labelImg);
             divDetails.appendChild(imgSelect);
             divDetails.appendChild(img);
-            divDetails.appendChild(imgName);
             div.appendChild(divDetails); 
             document.getElementById("games").appendChild(div);  
             count++;
             
         }
 
-        function addGames(game){
+        async function addGames(game){
             var lilcount = 0;
             let bool = true;
             let len = game.length;
@@ -236,18 +207,14 @@
                 let labelImg = document.createElement("label")
                 labelImg.for = "img"+lilcount;
                 labelImg.innerText = "Image : ";
+
                 let imgSelect = document.createElement("input");
                 imgSelect.type = "file";
                 imgSelect.name = "img"+ lilcount;
-                //imgSelect.accept = "image/png, image/jpeg";
+                imgSelect.accept = "image/png, image/jpeg";
                 imgSelect.id = "img"+ lilcount;
                 imgSelect.classList.add("border-solid", "border-2", "border-indigo-600");
-                imgSelect.setAttribute("onchange", "imagesChanged(this)");
-
-                let imgName = document.createElement("p");
-                imgName.id = "imgName"+lilcount;
-                imgName.innerText = game[index+4];
-                imgName.style = "display:none";
+                imgSelect.setAttribute("onchange", "imagesChanged()");
                 
                 let img = document.createElement("img");
                 img.src = "../image/"+game[index+4];
@@ -260,7 +227,6 @@
                 divDetails.appendChild(color);
                 divDetails.appendChild(labelImg);
                 divDetails.appendChild(imgSelect);
-                divDetails.appendChild(imgName);
                 divDetails.appendChild(img);
 
                 div.appendChild(divDetails); 
@@ -269,7 +235,8 @@
                 if ( theWheel.segments[parseInt(game[index+3])+1] == undefined) {
                     console.log("undef");
                     theWheel.addSegment({'size': calcWeight(parseInt(game[index+1])),'fillStyle' : game[index+2], 'text' : game[index]});
-                    theWheel.segments[parseInt(game[index+3])+1].changeImage("../image/"+game[index+4])
+                    theWheel.segments[parseInt(game[index+3])+1].changeImage("../image/"+game[index+4]);
+                    
                 } else {
                     console.log("am here");
                     theWheel.segments[parseInt(game[index+3])+1].size = calcWeight(parseInt(game[index+1]));
@@ -279,6 +246,18 @@
             }  
             //console.log(theWheel.segments);
                 theWheel.deleteSegment(1);
+                let segments = theWheel.segments;
+                console.log(segments)
+                let segmentSizeSum = Tweight;
+                let segmentSizeRemainder = 360 - Tweight;
+                for(let segment of segments) {
+                    if (segment != null) {
+                        let segmentSize = segment.size !== undefined ? segment.size : null ;
+                        segment.imgData = await window.getArcClippedCanvas(segment.image, 400/2, segmentSize);
+                        delete segment.image;
+                    }
+                    
+            }
                // console.log(theWheel.segments);
         }
         function calcWeight(weight){
@@ -316,14 +295,12 @@
             for (let index = 0; index < game.length; index+=5) {
                 //console.log("laaaaaaaaaaaaa" + game[index+3])
                 //console.log(theWheel.segments);
-                theWheel.segments[parseInt(game[index+3])].image = "../image/"+game[index+4];
+                theWheel.segments[parseInt(game[index+3])].changeImage = "../image/"+game[index+4];
                 
             }  
         }
-        function imagesChanged(image) {
-            console.log("image a changé ");
-            console.log((image.id).match(/\d+/));
-            document.getElementById("imgName"+(image.id).match(/\d+/)).innerText = (image.value).replace("C:\\fakepath\\", "");
+        function imagesChanged() {
+            console.log("L'image a changé");
             imageChanged = true;
         }
         function colorsChanged() {
@@ -354,7 +331,7 @@
                     game.push(document.getElementById("color"+index).value);
                     game.push(index+1);
                     console.log(document.getElementById("img"+index).value);
-                    game.push(document.getElementById("imgName"+index).innerText);
+                    game.push((document.getElementById("img"+index).value).replace("C:\\fakepath\\", ""));
                     
                     console.log(parseInt(document.getElementById("weight"+index).value));
                     Tweight += parseInt(document.getElementById("weight"+index).value)
@@ -370,7 +347,7 @@
             }
            
         }
-        // game = [title, weight, color, id, image, counted?, trueCounted?]
+        // game = [title, weight, color, id, counted?, trueCounted?]
         function load() {  //to do : load colors
             console.log("Je load");
             window.localStorage.getItem("count") == null ? window.localStorage.setItem("count",0) : null;
@@ -405,11 +382,104 @@
             }
             
             window.localStorage.getItem("games");
-            console.log(theWheel.segments);
             theWheel.draw();
         }
-
         
+
+        async function getArcClippedCanvas(imageUrl, radius, arcSizeDeg) {   
+            let arcSizeRad = (arcSizeDeg/360)*2*Math.PI;
+            
+            // derive required width and height of canvas from radius and arc size
+            let width;
+            if(arcSizeDeg >= 180) {
+            width = radius*2;
+            } else {
+            width = radius*Math.sin(arcSizeRad/2)*2;
+            }
+            
+            let height;
+            if(arcSizeDeg <= 180) {
+            height = radius;
+            } else {
+            height = radius + radius*Math.sin( (arcSizeRad-Math.PI)/2 );
+            }
+            
+            let arcCenterX = width/2;
+            let arcCenterY = radius; // remember, y axis starts from top of canvas
+            
+            let canvas = document.createElement("canvas");
+            let ctx = canvas.getContext("2d");
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            let img = new Image();
+            await new Promise(resolve => {
+            img.onload = resolve;
+            img.src = imageUrl;
+            });
+            
+            let centerAngle = -Math.PI/2;
+            
+            ctx.beginPath();
+            ctx.moveTo(arcCenterX, arcCenterY); 
+            ctx.arc(arcCenterX, arcCenterY, radius, centerAngle - (arcSizeDeg/2)*2*Math.PI/360, centerAngle + (arcSizeDeg/2)*2*Math.PI/360);
+            ctx.clip();
+            
+            // we want to "cover" the canvas with the image without changing the image's aspect ratio
+            drawImageToCanvasContained(ctx, img, 0, 0, canvas.width, canvas.height);
+            
+            return canvas;
+        }
+
+
+        function drawImageToCanvasContained(ctx, img, x, y, w, h, offsetX, offsetY) {
+        // By Ken Fyrstenberg Nilsen: https://stackoverflow.com/a/21961894/11950764
+            if(arguments.length === 2) {
+            x = y = 0;
+            w = ctx.canvas.width;
+            h = ctx.canvas.height;
+            }
+
+            // default offset is center
+            offsetX = typeof offsetX === "number" ? offsetX : 0.5;
+            offsetY = typeof offsetY === "number" ? offsetY : 0.5;
+
+            // keep bounds [0.0, 1.0]
+            if(offsetX < 0) offsetX = 0;
+            if(offsetY < 0) offsetY = 0;
+            if(offsetX > 1) offsetX = 1;
+            if(offsetY > 1) offsetY = 1;
+
+            let iw = img.width;
+            let ih = img.height;
+            let r = Math.min(w / iw, h / ih);
+            let nw = iw * r;   // new prop. width
+            let nh = ih * r;   // new prop. height
+            let cx, cy, cw, ch, ar = 1;
+
+            // decide which gap to fill    
+            if(nw < w) ar = w / nw;                             
+            if(Math.abs(ar - 1) < 1e-14 && nh < h) ar = h / nh;  // updated
+            nw *= ar;
+            nh *= ar;
+
+            // calc source rectangle
+            cw = iw / (nw / w);
+            ch = ih / (nh / h);
+
+            cx = (iw - cw) * offsetX;
+            cy = (ih - ch) * offsetY;
+
+            // make sure source rectangle is valid
+            if(cx < 0) cx = 0;
+            if(cy < 0) cy = 0;
+            if(cw > iw) cw = iw;
+            if(ch > ih) ch = ih;
+
+            // fill image in dest. rectangle
+            ctx.drawImage(img, cx, cy, cw, ch,  x, y, w, h);
+        }
             
     
     </script>
@@ -421,3 +491,4 @@
     <div id="games">aaaaa</div>
     </body>
 </html>
+
