@@ -1,0 +1,3 @@
+bouton play again
+tout en français
+changer le trait par un triangle au milieu et en haut

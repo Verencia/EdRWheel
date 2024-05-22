@@ -1,851 +1,225 @@
-<html>
+<html lang="fr">
     <head>
         <title>My Winning Wheel</title>
         <script src='../js/winwheel/Winwheel.js'></script>
         <script src="../js/winwheel/TweenMax.min.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="../css/style.css">
-
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" href="../image/logo.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+        <script src="../js/jquery-3.7.1.min.js"></script>
     </head>
-    <body onload="load()">
-        <div class="text-center text-2xl bg-red-600">YstR Corp - Envie de runner</div>
-        <table class="flex justify-center" cellpadding="0" cellspacing="0" border="0">
+    <body onload="load()" id="body">
+        <div class="text-2xl nav h-30 content-center">
+            <div class="flex justify-center">
+                <img src="../image/logo.png" alt="Logo envie de runner" height="300px" width="300px">
+            </div>
+        </div>
+        <div class="grid grid-cols-3 justify-items-center">
+            <div class="grid grid-canvas grid-cols-1  w-full justify-items-end ">
+                <div id="power_ctrl" class="power_controls	">
+                    <div class="p-2">
+                    <table class="border-4 border-black ">
+                        <tr>
+                            <td>
+                                <table class="power border-2 border-black m-1" cellpadding="15" cellspacing="0">
+                                    <tr>
+                                        <th style="text-align: center">Puissance</th>
+                                    </tr>
+                                    <tr>
+                                        <td width="78" style="text-align: center" class="border-t-2 border-gray-500"
+                                            id="pw3"
+                                            onClick="powerSelected(3);">Forte
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center" class="border-t-2 border-gray-500" id="pw2"
+                                            onClick="powerSelected(2);">Moyenne
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    <td style="text-align: center" class="border-t-2 border-gray-500" id="pw1"
+                                        onClick="powerSelected(1);">Faible</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img id="spin_button" src="../image/spin_off.png" class="w-full cursor-pointer "
+                                    alt="Spin" onClick="startSpin();" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="resetButton text-white font-bold py-2 px-4 w-full mt-1"
+                                onClick="resetWheel(); return false;">Reset</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                    
+                    
+                    
+                    
+                </div>
+                <!-- <div id="power_ctrl" class="power_controls">
+                    <table class="power border-4 border-black" cellpadding="15" cellspacing="0">
+                        <tr>
+                            <th style="text-align: center">Puissance</th>
+                        </tr>
+                        <tr>
+                            <td width="78" style="text-align: center" class="hover:bg-red-600 border-t-2 border-gray-500"
+                                id="pw3"
+                                onClick="powerSelected(3);">Forte</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center" class="hover:bg-blue-600 border-t-2 border-gray-500" id="pw2"
+                                onClick="powerSelected(2);">Moyenne</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center" class="hover:bg-green-600  border-t-2 border-gray-500" id="pw1"
+                                onClick="powerSelected(1);">Faible</td>
+                        </tr>
+                        <tr><td class="border-t-4 border-black"></td></tr>
+                        <tr><td><img id="spin_button" src="../image/spin_off.png" class="w-full cursor-pointer"
+                            alt="Spin" onClick="startSpin();" /></td></tr>
+                        <tr><td><button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-full"
+                            onClick="resetWheel(); return false;">Relancer</button><br /></td></tr>
+                    </table>
+                </div> -->
+            </div>
+            <div id="div_canvas" class="pb-2 pt-2 h-full w-full">
+                
+                <canvas id="myCanvas" width="630" height="376">
+                    <p style="color: white"
+                        style="text-align: center">Sorry, your browser
+                        doesn't support canvas. Please try another.</p>
+                </canvas>
+            </div>
+            <div class=" grid-canvas h-full w-full"></div>
+
+        </div>
+        <!-- <table class="flex justify-center" cellpadding="10"
+            cellspacing="10" border="0">
             <tr>
-                <td>
-                    <div class="power_controls">
-                        <br />
-                        <br />
-                        <table class="power" cellpadding="10" cellspacing="0">
-                            <tr>
-                                <th style="text-align: center">Power</th>
-                            </tr>
-                            <tr>
-                                <td width="78" style="text-align: center" id="pw3" onClick="powerSelected(3);">High</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center" id="pw2" onClick="powerSelected(2);">Med</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: center" id="pw1" onClick="powerSelected(1);">Low</td>
-                            </tr>
-                        </table>
-                        <br />
-                        <img id="spin_button" src="../image/spin_off.png" alt="Spin" onClick="startSpin();" />
-                        <br /><br />
-                        &nbsp;&nbsp;<a href="#" onClick="resetWheel(); return false;">Play Again</a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(reset)
-                    </div>
+                <td class="power">
+                    
                 </td>
-                <td width="438" height="582" class="the_wheel" style="text-align: center" valign="center">
+                <td class="the_wheel bg-blue-500" cellpadding="10">
                     <canvas id="myCanvas" width="434" height="434">
-                        <p style="color: white" style="text-align: center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                        <p style="color: white"
+                            style="text-align: center">Sorry, your browser
+                            doesn't support canvas. Please try another.</p>
                     </canvas>
                 </td>
             </tr>
-        </table>
-        <!-- <div class="flex justify-center mt-10">
-            <canvas id='myCanvas' width='880' height='800'>
-                Canvas not supported, use another browser.
-            </canvas>
-        </div> -->
-        
-        
-        <div id = "alert">
-            <!-- <button id="close" onclick="closeDialog()"> Close </button> -->
+        </table> -->
+        <div class="flex justify-center ">
+            <div id="animations" class="fixed">
+                <img src="../image/prize_back.png" alt="Fond du prix" class="prize_back">
+                <img src="../image/ray1.png" alt="Rayon de lumière number 1" class="ray1" id="ray1">
+                <img src="../image/ray2.png" alt="Rayon de lumière number 2" class="ray2" id="ray2">
+            </div>
+            
+            
+            <div id="alert" class="">
+                
+            </div>
         </div>
         
-    
-        <script>
-            let wheelPower    = 0;
-            let wheelSpinning = false;
-            var titles = [];
-            var weights = [];
-            var gameAdded = true;
-            var gamesArr = [];
-            var gameNotDeleted = true;
-            var isNullSegDeleted = false;
-            var gamesHidden = false;
-            var histoHidden = false;
-            const audio = new Audio("../sounds/congratulation.mp3");
-            var colorChanged = false;
-            var weightChanged = false;
-            var titleChanged = false;
-            var imageChanged = false;
-            var param = 7;
-            var count = window.localStorage.getItem("count").toString();
-            var oldCount = count;
-            var histo = window.localStorage.getItem("histo");
-            var Tweight = window.localStorage.getItem("Tweight");
-            //console.log("Tweight : " + Tweight);
-            var alertDiv = document.getElementById("alert");
-
-            if (Tweight == null) {
-                Tweight = 0;
-                window.localStorage.setItem("Tweight",Tweight);
-            }
-            if (histo == null) {
-                histo = [true,"Init"];
-                window.localStorage.setItem("histo",histo);
-            }
-            
-            var theWheel = new Winwheel({
-                'canvasId'    : 'myCanvas',
-                
-            'animation' :                   // Note animation properties passed in constructor parameters.
-            {
-                'type'     : 'spinToStop',  // Type of animation.
-                'duration' : 10,    // Duration in seconds.
-                'spins'    : 3,               // The number of complete 360 degree rotations the wheel is to do.
-                // Remember to do something after the animation has finished specify callback function.
-                'callbackFinished' : 'alertPrize()'
-    
-                
-            },
-            'pointerGuide' :        // Turn pointer guide on.
-            {
-                'display'     : true,
-                'strokeStyle' : 'red',
-                'lineWidth'   : 3
-            }
-            
-            });
-            function powerSelected(powerLevel)
-            {
-                // Ensure that power can't be changed while wheel is spinning.
-                if (wheelSpinning == false) {
-                    // Reset all to grey incase this is not the first time the user has selected the power.
-                    document.getElementById('pw1').className = "";
-                    document.getElementById('pw2').className = "";
-                    document.getElementById('pw3').className = "";
-
-                    // Now light up all cells below-and-including the one selected by changing the class.
-                    if (powerLevel >= 1) {
-                        document.getElementById('pw1').className = "pw1";
-                    }
-
-                    if (powerLevel >= 2) {
-                        document.getElementById('pw2').className = "pw2";
-                    }
-
-                    if (powerLevel >= 3) {
-                        document.getElementById('pw3').className = "pw3";
-                    }
-
-                    // Set wheelPower var used when spin button is clicked.
-                    wheelPower = powerLevel;
-
-                    // Light up the spin button by changing it's source image and adding a clickable class to it.
-                    document.getElementById('spin_button').src = "../image/spin_on.png";
-                    document.getElementById('spin_button').className = "clickable";
-                }
-            }
-            function startSpin()
-            {
-                // Ensure that spinning can't be clicked again while already running.
-                if (wheelSpinning == false) {
-                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
-                    // to rotate with the duration of the animation the quicker the wheel spins.
-                    if (wheelPower == 1) {
-                        theWheel.animation.spins = 3;
-                    } else if (wheelPower == 2) {
-                        theWheel.animation.spins = 6;
-                    } else if (wheelPower == 3) {
-                        theWheel.animation.spins = 10;
-                    }
-
-                    // Disable the spin button so can't click again while wheel is spinning.
-                    document.getElementById('spin_button').src       = "../image/spin_off.png";
-                    document.getElementById('spin_button').className = "";
-
-                    // Begin the spin animation by calling startAnimation on the wheel object.
-                    theWheel.startAnimation();
-
-                    // Set to true so that power can't be changed and spin button re-enabled during
-                    // the current animation. The user will have to reset before spinning again.
-                    wheelSpinning = true;
-                }
-            }
-            function resetWheel()
-            {
-                theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
-                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
-                theWheel.draw();                // Call draw to render changes to the wheel.
-
-                document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
-                document.getElementById('pw2').className = "";
-                document.getElementById('pw3').className = "";
-
-                wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
-            }
-            function initWheel() {
-                var theWheel = new Winwheel({
-                'canvasId'    : 'myCanvas',
-                
-            'animation' :                   // Note animation properties passed in constructor parameters.
-            {
-                'type'     : 'spinToStop',  // Type of animation.
-                'duration' : 5,             // How long the animation is to take in seconds.
-                'spins'    : 8,              // The number of complete 360 degree rotations the wheel is to do.
-                // Remember to do something after the animation has finished specify callback function.
-                'callbackFinished' : 'alertPrize()'
-    
-                
-            },
-            'pointerGuide' :        // Turn pointer guide on.
-            {
-                'display'     : true,
-                'strokeStyle' : 'red',
-                'lineWidth'   : 3
-            }
-            
-            });
-            }
-            function alertPrize()
-            {
-                // Call getIndicatedSegment() function to return pointer to the segment pointed to on wheel.
-                let winningSegment = theWheel.getIndicatedSegment();
-                while(alertDiv.firstChild){ // while there is still a child inside the parent
-                    alertDiv.removeChild(alertDiv.firstChild); // remove the first child
-                }
-                // Basic alert of the segment text which is the prize name.
-                //audio.play();
-                let text = document.createElement("label");
-                text.innerText = "You have won " + winningSegment.text + " ! " + winwheelDegreesToPercent(winningSegment.size) + "%";
-            
-                let img = document.createElement("img");
-                img.src = "../image/"+winningSegment.image;
-                img.alt = "Normalement y'a une image du jeu là";
-
-                let buttonCount = document.createElement("button");
-                buttonCount.innerText = "Compter";
-                buttonCount.setAttribute("onclick", "countTrue("+winningSegment.id+",'"+winningSegment.text+"')");
-
-                let buttonHide = document.createElement("button");
-                buttonHide.innerText = "Ne pas compter";
-                buttonHide.setAttribute("onclick", "cheatCount("+winningSegment.id+",'"+winningSegment.text+"')");
-
-                let buttonClose = document.createElement("button");
-                buttonClose.innerText = "Close";
-                buttonClose.setAttribute("onclick", "closeDialog()");
-
-
-                alertDiv.appendChild(text);
-                alertDiv.appendChild(img);
-                alertDiv.appendChild(buttonCount);
-                alertDiv.appendChild(buttonHide);
-                alertDiv.appendChild(buttonClose);
-                alertDiv.style.display = "block";
-                //alert("You have won " + winningSegment.text + " ! " + winwheelDegreesToPercent(winningSegment.size) + "%");
-            }
-
-            function countTrue(winningSegmentId,winningSegmentText) {
-                winningSegmentId--;
-                document.getElementById("trueCount"+winningSegmentId).innerText = parseInt(document.getElementById("trueCount"+winningSegmentId).innerText)+1;
-                alertDiv.style.display = "none";
-                addToHisto(true,winningSegmentText);
-                gameAdded = true;
-            }
-
-            function cheatCount(winningSegmentId,winningSegmentText) {
-                winningSegmentId--;
-                document.getElementById("cheatCount"+winningSegmentId).innerText = parseInt(document.getElementById("cheatCount"+winningSegmentId).innerText)+1;
-                alertDiv.style.display = "none";
-                addToHisto(false,winningSegmentText);
-                gameAdded = true;
-            }
-
-            function addToHisto(bool,winningSegmentText) {    
-                histo = localStorage.getItem('histo').split(',');
-                //console.log(histo);
-                histo.push(bool);
-                histo.push(winningSegmentText);
-                localStorage.setItem('histo',histo);
-                updateHisto()
-            }
-
-            function updateHisto(){
-                divHisto = document.getElementById("historique");
-                histo = localStorage.getItem('histo').split(',');
-                histo.reverse();
-                //console.log(histo);
-                while(divHisto.firstChild){ // while there is still a child inside the parent
-                    divHisto.removeChild(divHisto.firstChild); // remove the first child
-                }
-                //console.log("avant for");
-                for (let index = 0; index < histo.length; index+=2) {
-                    if (histo[index] != '') {
-                        //console.log("pendant for");
-                        let div = document.createElement("div");
-                        let p = document.createElement("p");
-                        //console.log(histo[index]);
-                        if (histo[index+1] == 'true') {
-                            p.innerText = "Vous avez tiré "+ histo[index] + " - Auto";
-                        } else {
-                            p.innerText = "Vous avez tiré "+ histo[index] + " - Cheaté";
-                        }
-                        div.appendChild(p);
-                        divHisto.appendChild(div);
-                    }
-                    
-                }
-                //console.log("après for");
-
-            }
-            function closeDialog() {
-                alertDiv.style.display = "none";
-            }
-
-            function winwheelDegreesToPercent(deg) {
-                return (deg * 100 / 360).toFixed(2);
-            }
-            function addGame(){
-                gameAdded = true;
-                let div = document.createElement("div");
-                    let divDetails = document.createElement("div");
-                    let divGrid = document.createElement("div");
-                    
-                    div.id = "div_"+ count ;
-                    div.classList.add("flex","pb-5");
-                    //div.style = "background-color: red;";
-                    
-                    divDetails.id = "div_det_"+ count ;
-                    divDetails.classList.add("flex","grid","grid-cols-2","border-solid","border-2", "border-indigo-600","rounded-md","p-1");
-                    //divDetails.style = "background-color: grey;";
-
-                    divGrid.id = "div_grid"+ count ;
-                    divGrid.classList.add("flex","grid", "grid-cols-2","col-span-2","gap-y-1");
-
-                    let labelTitle = document.createElement("label");
-                    labelTitle.for = "title"+ count;
-                    labelTitle.innerText = "Titre du jeu : ";
-
-                    let title = document.createElement("input");
-                    title.type = "text";
-                    title.name = "title"+ count;
-                    title.id = "title"+ count;
-                    //console.log(game[index]);
-                    title.setAttribute("onchange", "titlesChanged()");
-                    title.setAttribute("onfocusout", "save()");
-                    title.classList.add("border-solid", "border-2", "border-indigo-600");
-
-                    let labelWeight = document.createElement("label");
-                    labelWeight.for = "weight"+count;
-                    labelWeight.innerText = "Poids : ";
-
-                    let weight = document.createElement("input");
-                    weight.type = "number";
-                    weight.name = "weight"+ count;
-                    weight.id = "weight"+ count;
-                    weight.setAttribute("onchange", "weightsChanged()");
-                    weight.setAttribute("onfocusout", "save()");
-                    //console.log(game[index+1]);
-                    weight.classList.add("border-solid", "border-2", "border-indigo-600");
-
-                    let color = document.createElement("input");
-                    color.type = "color";
-                    color.name = "color"+ count;
-                    color.value = "#f6b73c";
-                    color.id = "color"+ count;
-                    color.classList.add("border-solid", "border-2", "border-indigo-600");
-                    color.setAttribute("onchange", "colorsChanged()");
-                    color.setAttribute("onfocusout", "save()");
-
-
-                    let labelColor = document.createElement("label");
-                    labelColor.for = "color"+count;
-                    labelColor.innerText = "Couleur : ";
-
-                    let labelImg = document.createElement("label")
-                    labelImg.for = "img"+count;
-                    labelImg.innerText = "Image : ";
-
-                    let imgSelect = document.createElement("input");
-                    imgSelect.type = "file";
-                    imgSelect.name = "img"+ count;
-                    //imgSelect.accept = "image/png, image/jpeg";
-                    imgSelect.id = "img"+ count;
-                    imgSelect.classList.add("border-solid", "border-2", "border-indigo-600");
-                    imgSelect.setAttribute("onchange", "imagesChanged(this)");
-                    imgSelect.setAttribute("onfocusout", "save()");
-
-                    let imgName = document.createElement("p");
-                    imgName.id = "imgName"+count;
-                    imgName.style = "display:none";
-                    
-                    let img = document.createElement("img");
-                    img.id = "imgShow"+count;
-                    img.classList.add("mr-5");
-                    img.style.height = "200px";
-                    img.style.width = "200px";
-
-                    let trueCount = document.createElement("p");
-                    trueCount.id = "trueCount"+count;
-                    trueCount.style = "display:none";
-
-                    let cheatCount = document.createElement("p");
-                    cheatCount.id = "cheatCount"+count;
-                    cheatCount.style = "display:none";
-
-                    let buttonDelete = document.createElement("button");
-                    buttonDelete.id = "buttonDelete"+count;
-                    buttonDelete.classList.add("text-white" ,"bg-red-700","col-span-2");
-                    buttonDelete.innerText = "DELETE";
-                    buttonDelete.setAttribute("onclick", "deleteGame("+count+")");
-
-                    div.appendChild(img);
-                    divGrid.appendChild(labelTitle);
-                    divGrid.appendChild(title);
-                    divGrid.appendChild(labelWeight);
-                    divGrid.appendChild(weight);
-                    divGrid.appendChild(labelColor);
-                    divGrid.appendChild(color);
-                    divGrid.appendChild(labelImg);
-                    divGrid.appendChild(imgSelect);
-                    divGrid.appendChild(imgName);
-                    divGrid.appendChild(trueCount);
-                    divGrid.appendChild(cheatCount);
-                    divGrid.appendChild(buttonDelete);
-                    divDetails.appendChild(divGrid);
-                    div.appendChild(divDetails); 
-                document.getElementById("games").appendChild(div);  
-                gamesArr.push(div);
-                count++;
-                
-            }
-
-            function addGames(game){
-                var lilcount = 0;
-                let bool = true;
-                let len = game.length;
-
-                while(document.getElementById("games").firstChild){ // while there is still a child inside the parent
-                    document.getElementById("games").removeChild(document.getElementById("games").firstChild); // remove the first child
-                }
-                
-                
-                console.log(game);
-                for (let index = 0; index < game.length; index+=param) {
-                
-                    console.log("je pass là " +index);
-
-                    let div = document.createElement("div");
-                    let divDetails = document.createElement("div");
-                    let divGrid = document.createElement("div");
-                    
-                    div.id = "div_"+ lilcount ;
-                    div.classList.add("flex","pb-5");
-                    //div.style = "background-color: red;";
-                    
-                    divDetails.id = "div_det_"+ lilcount ;
-                    divDetails.classList.add("flex","grid","grid-cols-2","border-solid","border-2", "border-indigo-600","rounded-md","p-1");
-                    //divDetails.style = "background-color: grey;";
-
-                    divGrid.id = "div_grid"+ lilcount ;
-                    divGrid.classList.add("flex","grid", "grid-cols-2","col-span-2","gap-y-1");
-
-                    let labelTitle = document.createElement("label");
-                    labelTitle.for = "title"+ lilcount;
-                    labelTitle.innerText = "Titre du jeu : ";
-
-                    let title = document.createElement("input");
-                    title.type = "text";
-                    title.name = "title"+ lilcount;
-                    title.id = "title"+ lilcount;
-                    title.value = game[index];
-                    //console.log(game[index]);
-                    title.setAttribute("onchange", "titlesChanged()");
-                    title.setAttribute("onfocusout", "save()");
-                    title.classList.add("border-solid", "border-2", "border-indigo-600");
-
-                    let labelWeight = document.createElement("label");
-                    labelWeight.for = "weight"+lilcount;
-                    labelWeight.innerText = "Poids : ";
-
-                    let weight = document.createElement("input");
-                    weight.type = "number";
-                    weight.name = "weight"+ lilcount;
-                    weight.id = "weight"+ lilcount;
-                    weight.setAttribute("onchange", "weightsChanged()");
-                    weight.setAttribute("onfocusout", "save()");
-                    //console.log(game[index+1]);
-                    weight.value = game[index+1];
-                    weight.classList.add("border-solid", "border-2", "border-indigo-600");
-
-                    let color = document.createElement("input");
-                    color.type = "color";
-                    color.name = "color"+ lilcount;
-                    color.id = "color"+ lilcount;
-                    color.classList.add("border-solid", "border-2", "border-indigo-600");
-                    color.value = game[index+2];
-                    color.setAttribute("onchange", "colorsChanged()");
-                    color.setAttribute("onfocusout", "save()");
-
-
-                    let labelColor = document.createElement("label");
-                    labelColor.for = "color"+lilcount;
-                    labelColor.innerText = "Couleur : ";
-
-                    let labelImg = document.createElement("label")
-                    labelImg.for = "img"+lilcount;
-                    labelImg.innerText = "Image : ";
-
-                    let imgSelect = document.createElement("input");
-                    imgSelect.type = "file";
-                    imgSelect.name = "img"+ lilcount;
-                    //imgSelect.accept = "image/png, image/jpeg";
-                    imgSelect.id = "img"+ lilcount;
-                    imgSelect.classList.add("border-solid", "border-2", "border-indigo-600");
-                    imgSelect.setAttribute("onchange", "imagesChanged(this)");
-                    imgSelect.setAttribute("onfocusout", "save()");
-
-                    let imgName = document.createElement("p");
-                    imgName.id = "imgName"+lilcount;
-                    imgName.innerText = game[index+4];
-                    imgName.style = "display:none";
-                    
-                    let img = document.createElement("img");
-                    img.id = "imgShow"+lilcount;
-                    img.src = "../image/"+game[index+4];
-                    img.classList.add("mr-5");
-                    img.style.height = "200px";
-                    img.style.width = "200px";
-
-                    let trueCount = document.createElement("p");
-                    trueCount.id = "trueCount"+lilcount;
-                    trueCount.innerText = game[index+5];
-                    trueCount.style = "display:none";
-
-                    let cheatCount = document.createElement("p");
-                    cheatCount.id = "cheatCount"+lilcount;
-                    cheatCount.innerText = game[index+6];
-                    cheatCount.style = "display:none";
-
-                    let buttonDelete = document.createElement("button");
-                    buttonDelete.id = "buttonDelete"+lilcount;
-                    buttonDelete.classList.add("text-white" ,"bg-red-700","col-span-2");
-                    buttonDelete.innerText = "DELETE";
-                    buttonDelete.setAttribute("onclick", "deleteGame("+lilcount+")");
-
-                    div.appendChild(img);
-                    divGrid.appendChild(labelTitle);
-                    divGrid.appendChild(title);
-                    divGrid.appendChild(labelWeight);
-                    divGrid.appendChild(weight);
-                    divGrid.appendChild(labelColor);
-                    divGrid.appendChild(color);
-                    divGrid.appendChild(labelImg);
-                    divGrid.appendChild(imgSelect);
-                    divGrid.appendChild(imgName);
-                    divGrid.appendChild(trueCount);
-                    divGrid.appendChild(cheatCount);
-                    divGrid.appendChild(buttonDelete);
-                    divDetails.appendChild(divGrid);
-                    div.appendChild(divDetails); 
-                    document.getElementById("games").appendChild(div); 
-                    gamesArr.push(div); 
-                    lilcount++;
-                    //console.log(theWheel.segments);
-                
-                    //console.log("ici");
-                    //console.log(parseInt(game[index+3]));
-                    //console.log(theWheel.segments[parseInt(game[index+3])+1]);
-                /*  
-                    console.log("id "+(parseInt(game[index+3])+1));
-                    if (theWheel.segments[(parseInt(game[index+3])+1)]) {
-                        console.log("Je passe ici");
-                        theWheel.segments[parseInt(game[index+3])+1].size = calcWeight(parseInt(game[index+1]));
-                    }
-                    else{
-                        console.log("undef");
-                        theWheel.addSegment({'size': calcWeight(parseInt(game[index+1])),'fillStyle' : game[index+2], 'text' : game[index], 'id' :game[index+3]-1,'image' : "../image/"+game[index+4]});
-                        
-                        //theWheel.segments[parseInt(game[index+3])+1].changeImage("../image/"+game[index+4])
-                    }  */
-                    
-                    
-                }  
-                /* console.log(theWheel.segments);
-                if (theWheel.segments[1].text == '') {
-                    console.log("efsssssssssssssss");
-                    theWheel.deleteSegment(1);
-                    theWheel.segments.pop();
-                } */
-                
-                //if (gameNotDeleted && idGameDeleted != null) 
-                //idGameDeleted = null;
-                //gameNotDeleted = true;
-                // console.log(theWheel.segments);
-            }
-            function calcWeight(weight){
-                //console.log(weight);
-            // console.log(Tweight);
-                //console.log(weight / Tweight* 360);
-                
-                return (weight / Tweight) * 360;
-            }
-            function deleteGame(id) {
-                console.log("JE SUPPRIME "+id);
-                if (theWheel.segments.length > 1){
-                    let deleted= false;
-                    //console.log(window.localStorage.getItem("games").split(',')[3]);
-                    let games = window.localStorage.getItem("games").split(',');
-                    //console.log("id " + id);
-                    console.log("avant");
-                    console.log(games);
-                    for (let index = 3; index < games.length; index+=param) {
-                        console.log("id " + id);
-                        console.log(games[index]);
-                        if(games[index] == id +1 && !deleted){
-                            
-                            Tweight -= parseInt(games[index-2]);
-                            window.localStorage.setItem("Tweight",Tweight)
-                            games.splice(index-3,param);
-                            deleted = true;
-                        }
-                        if (deleted && games[index] > id +1) games[index] = games[index] -1  ;  
-                    }
-                    console.log("après");
-                console.log(games);
-                    theWheel.deleteSegment(id+1);
-                    theWheel.segments.pop();
-                    console.log("avant"+count);
-                    count--;
-                    console.log("après"+count);
-                    window.localStorage.setItem("count",parseInt(count));
-                    window.localStorage.setItem("games",games);
-                    console.log(window.localStorage.getItem("games"));
-                    gameAdded = true;
-                    addGames(games);
-
-                    save();
-                }
-            }
-            function changeColor(game){
-                for (let index = 0; index < game.length; index+=param) {
-                    //console.log("laaaaaaaaaaaaa" + game[index+3])
-                    //console.log(theWheel.segments);
-                    theWheel.segments[parseInt(game[index+3])].fillStyle = game[index+2];
-                    //theWheel.addSegment({'size': parseInt(game[index+1]),'fillStyle' : game[index+2], 'text' : game[index] +' '+ winwheelDegreesToPercent(game[index+1]) + '%'});
-                }  
-            }
-
-            function changeSize(game){
-                for (let index = 0; index < game.length; index+=param) {
-                    //console.log("laaaaaaaaaaaaa" + game[index+3])
-                    //console.log(theWheel.segments);
-                    //console.log("Size avant "+theWheel.segments[parseInt(game[index+3])].size);
-                    //console.log(theWheel.segments);
-                    theWheel.segments[parseInt(game[index+3])].size = calcWeight(parseInt(game[index+1]));
-                    //console.log("Size après "+theWheel.segments[parseInt(game[index+3])].size);
-                    //console.log(theWheel.segments);
-                    //theWheel.addSegment({'size': parseInt(game[index+1]),'fillStyle' : game[index+2], 'text' : game[index] +' '+ winwheelDegreesToPercent(game[index+1]) + '%'});
-                    theWheel.updateSegmentSizes();
-                }  
-            }
-
-            function changeImage(game){
-                for (let index = 0; index < game.length; index+=param) {
-                    //console.log("laaaaaaaaaaaaa" + game[index+3])
-                    //console.log(theWheel.segments);
-                    theWheel.segments[parseInt(game[index+3])].image = "../image/"+game[index+4];
-                    
-                }  
-            }
-            function changeTitle(game) {
-                for (let index = 0; index < game.length; index+=param) {
-                    //console.log("laaaaaaaaaaaaa" + game[index+3])
-                    //console.log(theWheel.segments);
-                    theWheel.segments[parseInt(game[index+3])].text = game[index];
-                    
-                }  
-            }
-            function imagesChanged(image) {
-                console.log("image a changé ");
-                console.log((image.id).match(/\d+/));
-                document.getElementById("imgName"+(image.id).match(/\d+/)).innerText = (image.value).replace("C:\\fakepath\\", "");
-                document.getElementById("imgShow"+(image.id).match(/\d+/)).src = "../image/"+(image.value).replace("C:\\fakepath\\", "");
-                if (!gameAdded) imageChanged = true;
-                    
-                
-            }
-            function colorsChanged() {
-                console.log("La couleur a changé");
-                if (!gameAdded) colorChanged = true;
-            }
-
-            function titlesChanged() {
-                console.log("Le titre a changé");
-                if (!gameAdded) titleChanged = true;
-            }
-
-            function weightsChanged() {
-                console.log("Le poids a changé");
-                if (!gameAdded) weightChanged = true;
-            }
-
-            function updateWheel(game) {
-                if (theWheel.segments[1].text == '') {
-                    theWheel.segments[1].size = 0;
-                } 
-                console.log(game);
-                for (let index = 0; index < game.length; index+=param) {
-                    console.log((parseInt(game[index+3])));
-                    if (game[index+3] == 1 && theWheel.segments[parseInt(game[index+3])].text == '') {
-                        theWheel.segments[1].size = calcWeight(parseInt(game[index+1]));
-                        theWheel.segments[1].fillStyle = game[index+2];
-                        theWheel.segments[1].text = game[index];
-                        theWheel.segments[1].id = game[index+3];
-                        theWheel.segments[1].image = "../image/"+game[index+4];
-                    }
-                    else if (theWheel.segments[parseInt(game[index+3])]) {
-                        console.log("Je passe ici");
-                        theWheel.segments[parseInt(game[index+3])].size = calcWeight(parseInt(game[index+1]));
-                    }
-                    else{
-                        console.log("undef");
-                        theWheel.addSegment({'size': calcWeight(parseInt(game[index+1])),'fillStyle' : game[index+2], 'text' : game[index], 'id' :parseInt(game[index+3])-1,'image' : "../image/"+game[index+4]});
-                        
-                        //theWheel.segments[parseInt(game[index+3])+1].changeImage("../image/"+game[index+4])
-                    }  
-                    theWheel.updateSegmentSizes();
-                
-                }
-            }
-            function hideGames(button){
-                console.log(gamesArr);
-                if(gamesHidden) {
-                    gamesHidden = false;
-                    button.innerText = "Hide Games";
-                    gamesArr.forEach(element => {
-                        console.log(element);
-                        element.style = "display:flex";
-                    });
-                }
-                else {
-                    gamesHidden = true;
-                    button.innerText = "Show Games";
-                    gamesArr.forEach(element => {
-                        console.log(element);
-                        element.style = "display:none";
-                    });
-                } 
-            }
-
-            function hideHisto(button) {
-                let histo = document.getElementById("historique");
-                if(histoHidden) {
-                    histoHidden = false;
-                    button.innerText = "Hide Histo";
-                    
-                    histo.style = "display:block";
-                    
-                }
-                else {
-                    histoHidden = true;
-                    button.innerText = "Show Histo";
-                    
-                        histo.style = "display:none";
-                    
-                } 
-            }
-
-            function save() {
-                if (count!=oldCount || gameAdded || weightChanged || colorChanged || titleChanged || imageChanged) {
-                    console.log("Je save");
-                    var games = [];
-                    console.log(games);
-                    Tweight = 0;
-                    for (let index = 0; index < parseInt(count); index++) {
-                        let game = [];
-                        game.push(document.getElementById("title"+index).value);
-                        game.push(document.getElementById("weight"+index).value);
-                        game.push(document.getElementById("color"+index).value);
-                        game.push(index+1);
-                        //console.log(document.getElementById("img"+index).value);
-                        game.push(document.getElementById("imgName"+index).innerText);
-                        game.push(document.getElementById("trueCount"+index).innerText);
-                        game.push(document.getElementById("cheatCount"+index).innerText);
-                        
-                        //console.log(parseInt(document.getElementById("weight"+index).value));
-                        Tweight += parseInt(document.getElementById("weight"+index).value)
-                        window.localStorage.setItem("Tweight",Tweight);
-                        //console.log("Tweight "+ localStorage.getItem("Tweight"));
-                        
-                        games.push(game);
-                    }
-                    console.log(games);
-                    window.localStorage.setItem("count",parseInt(count));
-                    window.localStorage.setItem("games",games);
-                    oldCount = count;
-                    load();
-                }
-            
-            }
-            // game = [title, weight, color, id, image, counted?, trueCounted?]
-            function load() {  //to do : load colors
-                console.log("Je load");
-                window.localStorage.getItem("count") == null ? window.localStorage.setItem("count",0) : null;
-                //window.localStorage.getItem("games") == null ? window.localStorage.setItem("games",[]) : null;
-                //console.log(window.localStorage.getItem("count"));
-                //console.log(window.localStorage.getItem("games").split(','));
-                //console.log("ici");
-                let game = window.localStorage.getItem("games").split(',');
-                //console.log(count + "segments");
-                Tweight = localStorage.getItem("Tweight");
-                if (weightChanged) {
-                    changeSize(game);
-                    weightChanged = false;
-                }
-
-                if (titleChanged) {
-                    changeTitle(game);
-                    titleChanged = false;
-                }
-                if (imageChanged) {
-                    changeImage(game);
-                    imageChanged = false;
-                }
-                if (colorChanged) {
-                    //console.log("jepasseici");
-                    changeColor(game);
-                    colorChanged = false;
-                }
-                if (gameAdded) {
-                    //console.log("jepasselà");
-                    addGames(game);
-                    gameAdded = false;
-                }
-            
-                updateWheel(game);
-
-                
-                window.localStorage.getItem("games");
-                //console.log(theWheel.segments);
-                if (histo != '') {
-                    updateHisto();
-                }
-                //console.log(gamesArr);
-                theWheel.draw();
-            }
-
-            
-                
         
-        </script>
-        <button id="bigButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="theWheel.startAnimation(); this.disabled=true;">Spin the Wheel</button>
-        <a href="javascript:void(0);" onclick="theWheel.stopAnimation(false); theWheel.rotationAngle=0; theWheel.draw(); bigButton.disabled=false;">Reset</a>
-        <button onclick="addGame()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Add Game</button>
-        <button onclick="save()"class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Save</button>
-        <button onclick="hideGames(this)"class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Hide Games</button>
-        <button onclick="hideHisto(this)"class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Hide Histo</button>
+        <script src="../js/script.js"></script>
+
+        <!-- <button id="bigButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="theWheel.startAnimation(); this.disabled=true;">Spin the Wheel</button>
+        <a href="javascript:void(0);" onclick="theWheel.stopAnimation(false); theWheel.rotationAngle=0; theWheel.draw(); bigButton.disabled=false;">Reset</a> -->
+        
+        
+        <!-- <button onclick="randomizeSegments()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Randomiser</button> -->
         <!-- <button onclick="load()"class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Load</button> -->
-        <div class="grid grid-cols-2 gap-x-20">
-            <div id="games" class="ml-5">aaaaa
+        <!-- <div id="div_grid_menu" class="grid grid-cols-2 gap-x-20">
+            <div id="menuOpt" class=" menu rounded-tr-lg text-center shadow shadow-black">
+                <div class="flex justify-center mb-1">
+                    <div class="w-fit border-2 border-black pl-2 pr-2 menuGame mt-1">
+                            <div class="flex justify-center">
+                            <p class="mr-1 font-bold">Menu des options</p>
+                            <input class="imageButton justify-right align-bottom" id="imageButtonGames" type="image" src="../image/hide.png" onclick="hideGames(this)" class="text-white font-bold py-2 px-4 rounded"></input>
+                        </div>
+                        
+                        
+                        <div id="div_buttons" class="block mb-1">
+                            <button onclick="addGame()" class="menuButton  text-white font-bold py-2 px-4 rounded">Ajouter un jeu</button>
+                            <button onclick="save()"class="menuButton  text-white font-bold py-2 px-4 rounded">Sauvegarder</button>
+                        </div>
+                    </div>
+                </div>
 
+                <div id="games" class="ml-5">
+                    Menu des options du cul
+                </div>
             </div>
-            <div id="historique" class="border-solid border-2 border-indigo-600 rounded-md p-1 mb-1 overflow-auto mr-5" style="height: 90%;">
-    
+            <div id="menuHisto" class="menu rounded-tl-lg text-center shadow shadow-black ">
+                <div class="flex justify-center">
+                    <div class="flex justify-center w-fit border-2 border-black w-fit pl-2 pr-2 menuHisto mt-1">
+                        <p class="font-bold mr-1">Historique</p>
+                        <input class="imageButton justify-right align-bottom" id="imageButtonHisto" type="image" src="../image/hide.png" onclick="hideHisto(this)"class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"></input>
+                    </div>
+                </div>
+                <div id="historique"
+                    class="border-solid p-1 mb-1 overflow-auto mr-5"
+                    style="height: 90%;">
+
+                </div>
+            </div>
+        </div> -->
+
+
+            <div class="flex div_menu" id="div_menu">
+            <div id="menuOpt" class=" content-center  menu3 rounded-tr-lg text-center shadow shadow-black ">
+                <div id="titleOpt" class="flex justify-center mb-1">
+                    <div class="w-fit border-2 border-black pl-2 pr-2 menuGame mt-1 ltr">
+                            <div class="flex justify-center hideMenu" onclick="hideGames()">
+                            <p class="mr-1 font-bold">Menu des options</p>
+                            <input class="imageButton justify-right align-bottom" id="imageButtonGames" type="image" src="../image/hide.png"  class="text-white font-bold py-2 px-4 rounded"></input>
+                        </div>
+                        
+                        
+                        <div id="div_buttons" class="block mb-1">
+                            <button onclick="addGame()" class="menuButton  text-white font-bold py-2 px-4 rounded">Ajouter un jeu</button>
+                            <button onclick="save()"class="menuButton  text-white font-bold py-2 px-4 rounded">Sauvegarder</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="games" class="mr-5 overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                </div>
+            </div>
+            <div id="menuHisto" class=" menu2 rounded-tl-lg text-center shadow shadow-black" >
+                <div id="titleHisto" class="grid grid-cols-2 justify-items-center">
+                    <div id="ongletHisto" class="w-full rounded-tl-lg flex justify-center border-r-2 border-gray-400 pb-1 ongletChosen" onclick=ongletHistoClicked();>
+                        <div class="flex justify-center w-fit h-fit border-2 border-black pl-2 pr-2 menuHisto mt-1 hideMenu" onclick="hideHisto()">
+                            <p class="font-bold mr-1">Historique</p>
+                            <input class="imageButton justify-right align-bottom" id="imageButtonHisto" type="image" src="../image/hide.png" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"></input>
+                        </div>
+                    </div>
+                    <div id="ongletResume" class="w-full flex justify-center pb-1 ongletNotChosen" onclick=ongletResumeClicked();>
+                        <div class="flex justify-center w-fit  h-fit border-2 border-black  pl-2 pr-2 menuHisto mt-1 hideMenu" onclick="hideHisto()">
+                            <p class="font-bold mr-1">Résumé session</p>
+                            <input class="imageButton justify-right align-bottom" id="imageButtonHisto2" type="image" src="../image/hide.png" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"></input>
+                        </div>
+                    </div>  
+                </div>
+                <div class="overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                    <div id="historique"class="historique border-solid p-1 mb-1" >
+                    </div>
+                </div>
+                <div id="buttonArchive"><button class="bg-white p-1 border-2 border-black font-bold mb-1 mt-1">Archiver Session</button></div>
+                
+                <div id="resumeSession" class="hideContent"> aaaaaaa</div>
             </div>
         </div>
-        
     </body>
 </html>
