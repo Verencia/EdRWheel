@@ -1,6 +1,6 @@
 <html lang="fr">
     <head>
-        <title>My Winning Wheel</title>
+        <title>Envie de Runner - Ystr Corp</title>
         <script src='../js/winwheel/Winwheel.js'></script>
         <script src="../js/winwheel/TweenMax.min.js"></script>
         <script src="https://cdn.tailwindcss.com"></script>
@@ -100,8 +100,27 @@
                         doesn't support canvas. Please try another.</p>
                 </canvas>
             </div>
-            <div class="grid-canvas h-full w-full flex justify-center items-center">
-                <p id="winLoseTotal" class="text-8xl"></p>
+            <div class="grid-canvas flex justify-center items-center">
+                <div id="scoreDiv" style="background-color: #e4debe;" >
+                    <div id="score" class="border-4 border-red-500 m-1 pl-12 pr-12" style="background-color: #e4debe;">
+                        <div class="flex justify-center">
+                            <img src="../image/score_edr.png" alt="" srcset="" style="height: 180px; width: 300px;" class="flex ">
+                        </div>
+                        <div class="">
+                            <div class="flex justify-center items-center">
+                                <p id="winTotal" class="text-7xl"></p>
+                                <p class="text-4xl ml-10 mr-10">/</p>
+                                <p id="loseTotal" class="text-7xl"></p>
+                            </div>
+                            <div class="flex">
+                                <p class="victory mr-5">Victoires</p>
+                                <p class="defeat ml-5">Défaites</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                
             </div>
 
         </div>
@@ -134,7 +153,7 @@
         </div>
         
         
-        <script src="../js/script.js"></script>
+        <script src="../js/script2.js"></script>
 
         <!-- <button id="bigButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="theWheel.startAnimation(); this.disabled=true;">Spin the Wheel</button>
         <a href="javascript:void(0);" onclick="theWheel.stopAnimation(false); theWheel.rotationAngle=0; theWheel.draw(); bigButton.disabled=false;">Reset</a> -->

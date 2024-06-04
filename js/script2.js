@@ -36,6 +36,7 @@ var animationsDiv = document.getElementById("animations");
 var div_canvas = document.getElementById("div_canvas");
 var power_ctrl = document.getElementById("power_ctrl");
 
+// Catch user leaving if draws are not archived
 window.onbeforeunload = function (){
   histo = window.localStorage.getItem("histo");
 	if(histo.length > 0){
@@ -94,12 +95,9 @@ var theWheel = new Winwheel({
     'callbackAfter': 'drawTriangle()',
     //'callbackSound' : 'playTickSound()',
     'callbackFinished': 'alertPrize()'
-
-
   },
-
-
 });
+// function called when wheel is spinning (plays a sound)
 function playTickSound() {
   // Stop and rewind the sound (stops it if already playing).
   TickAudio.pause();
@@ -108,6 +106,7 @@ function playTickSound() {
   // Play the sound.
   TickAudio.play();
 }
+// function to select the power at which the wheel spins
 function powerSelected(powerLevel) {
   // Ensure that power can't be changed while wheel is spinning.
   if (wheelSpinning == false) {
@@ -134,10 +133,7 @@ function powerSelected(powerLevel) {
       document.getElementById('pw1').style.background = "#cccccc";
       document.getElementById('pw2').style.background = "#cccccc";
       document.getElementById('pw3').style.background = "#ff3333";
-
-
     }
-
     // Set wheelPower var used when spin button is clicked.
     wheelPower = powerLevel;
 
@@ -145,6 +141,7 @@ function powerSelected(powerLevel) {
     document.getElementById('spin_button').src = "../image/spin_on.png";
   }
 }
+// function called when spin button is pressed
 function startSpin() {
   // Ensure that spinning can't be clicked again while already running.
   resetWheel();
@@ -172,6 +169,7 @@ function startSpin() {
     wheelSpinning = true;
   }
 }
+// reset wheel and audio
 function resetWheel() {
   theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
   theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
@@ -185,6 +183,7 @@ function resetWheel() {
   wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
   drawTriangle();
 }
+// not used
 function initWheel() {
   var theWheel = new Winwheel({
     'canvasId': 'myCanvas',
@@ -197,13 +196,10 @@ function initWheel() {
       'spins': 8,              // The number of complete 360 degree rotations the wheel is to do.
       // Remember to do something after the animation has finished specify callback function.
       'callbackFinished': 'alertPrize()'
-
-
     },
-
-
   });
 }
+// shows a popup with the game chosen
 function alertPrize() {
   // Call getIndicatedSegment() function to return pointer to the segment pointed to on wheel.
   let winningSegment = theWheel.getIndicatedSegment();
@@ -211,11 +207,13 @@ function alertPrize() {
     alertDiv.removeChild(alertDiv.firstChild); // remove the first child
   }
   alertDiv.style.width = "300px";
+  alertDiv.style.height = "fit-content";
   alertDiv.classList.add("appear");
+  let textGame = document.getElementById("title"+winningSegment.id).value;
   // Basic alert of the segment text which is the prize name.
   //audio.play();
   let text = document.createElement("label");
-  text.innerHTML = "Tu vas runner sur <b>" + winningSegment.text + "</b> ! (" + winwheelDegreesToPercent(winningSegment.size) + "%)";
+  text.innerHTML = "Tu vas runner sur <b>" + textGame + "</b> ! (" + winwheelDegreesToPercent(winningSegment.size) + "%)";
 
   let img = document.createElement("img");
   img.src = ImgPath + winningSegment.image;
@@ -226,16 +224,15 @@ function alertPrize() {
 
   let div = document.createElement("div");
   div.classList.add("flex", "justify-center");
-
-
+  
   let buttonCount = document.createElement("button");
   buttonCount.innerText = "Compter";
-  buttonCount.setAttribute("onclick", "countTrue(" + winningSegment.id + ",'" + winningSegment.text + "'," + winningSegment.size + ")");
+  buttonCount.setAttribute("onclick", "countTrue(" + winningSegment.id + ",'" + textGame + "'," + winningSegment.size + ")");
   buttonCount.classList.add("menuButton", "text-white", "font-bold", "mr-2", "py-2", "px-2", "rounded")
   //menuButton  text-white font-bold py-2 px-4 rounded
   let buttonHide = document.createElement("button");
   buttonHide.innerText = "Ne pas compter";
-  buttonHide.setAttribute("onclick", "cheatCount(" + winningSegment.id + ",'" + winningSegment.text + "'," + winningSegment.size + ")");
+  buttonHide.setAttribute("onclick", "cheatCount(" + winningSegment.id + ",'" + textGame + "'," + winningSegment.size + ")");
   buttonHide.classList.add("menuButton", "text-white", "font-bold", "py-2", "px-2", "rounded")
 
   let buttonClose = document.createElement("button");
@@ -256,6 +253,7 @@ function alertPrize() {
 
   //alert("You have won " + winningSegment.text + " ! " + winwheelDegreesToPercent(winningSegment.size) + "%");
 }
+// Close button of the popup
 function closeDialog() {
   alertDiv.style.display = "none";
   animationsDiv.style.display = "none";
@@ -277,6 +275,7 @@ function countTrue(winningSegmentId, winningSegmentText, winningSegmentSize) {
   addToHisto(true, winningSegmentText, winningSegmentId, winningSegmentSize);
 
 }
+// Manually add a played game
 function addPlayedGame(winningSegmentId, winningSegmentText, winningSegmentSize) {
   //console.log("winningSegmentId " + winningSegmentId)
   //console.log("winningSegmentId-- " + winningSegmentId)
@@ -299,38 +298,58 @@ function cheatCount(winningSegmentId, winningSegmentText, winningSegmentSize) {
 // bool = counted or cheated
 // Add to histo in localStorage
 function addToHisto(bool, winningSegmentText, winningSegmentId, winningSegmentSize) {
-  histo = localStorage.getItem('histo').split(',');
   histoCount = localStorage.getItem('histoCount');
-  resultsHisto = window.localStorage.getItem("resultsHisto").split(',');
-  if (resultsHisto[0] == "") resultsHisto.pop();
-  if (histo[0] == "") histo.pop();
+  histo = (localStorage.getItem('histo'));
+  resultsHisto = localStorage.getItem("resultsHisto");
+  if (histo != "") {
+    histo = (JSON.parse(localStorage.getItem("histo")));
+  } else {
+    histo = [];
+  }
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
   //console.log(winningSegmentId);
   let trueCount = document.getElementById("trueCount" + winningSegmentId).innerText;
   let cheatCount = document.getElementById("cheatCount" + winningSegmentId).innerText;
-  histo.push(bool);
-  histo.push(winningSegmentText);
-  histo.push(trueCount);
-  histo.push(cheatCount);
-  histo.push(winwheelDegreesToPercent(winningSegmentSize));
-  histo.push(winningSegmentId);
-  localStorage.setItem('histo', histo);
+  histo.push({"bool":bool,
+    "title":winningSegmentText,
+    "trueCount":trueCount,
+    "cheatCount":cheatCount,
+    "percent":winwheelDegreesToPercent(winningSegmentSize),
+    "id":winningSegmentId
+  })
+  localStorage.setItem('histo', JSON.stringify(histo));
   if (bool == false) {
     console.log("CEST CHEATER");
-    resultsHisto.push(parseInt(histoCount), true, "cheated");
-    resultsHisto = localStorage.setItem('resultsHisto', resultsHisto);
+    resultsHisto.push({
+      "id":parseInt(histoCount),
+      "result": "cheated"});
+    resultsHisto = localStorage.setItem('resultsHisto', JSON.stringify(resultsHisto));
   }
   histoCount++;
   histoCount = localStorage.setItem('histoCount', histoCount);
   updateHisto();
   closeDialog();
 }
+
 // Show histo[id,%,cheatCount,trueCount,text,bool] reverse
 function updateHisto() {
   divHisto = document.getElementById("historique");
-  histo = localStorage.getItem('histo').split(',');
-  if (histo[0] == "") histo.pop();
-  resultsHisto = window.localStorage.getItem("resultsHisto").split(',');
-  if (resultsHisto[0] == "") resultsHisto.pop();
+  histo = (localStorage.getItem('histo'));
+  resultsHisto = localStorage.getItem("resultsHisto");
+  if (histo != "") {
+    histo = (JSON.parse(localStorage.getItem("histo")));
+  } else {
+    histo = [];
+  }
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
   console.log(resultsHisto);
   //histo.reverse();
   //console.log(histo);
@@ -339,139 +358,134 @@ function updateHisto() {
   }
   //console.log("avant for");
   let histoCount = 0;
-  for (let index = 0; index < histo.length; index += 6) {
-    if (histo[index] != '') {
-      //console.log(histo[index+1]);
-      let winningSegmentId = histo[index + 5];
-      let div = document.createElement("div");
-      let divTexte = document.createElement("div");
-      let divButton = document.createElement("div");
-      let divResultat = document.createElement("div");
+  histo.forEach(tirage => {
+    let winningSegmentId = tirage.id;
+    let div = document.createElement("div");
+    let divTexte = document.createElement("div");
+    let divButton = document.createElement("div");
+    let divResultat = document.createElement("div");
 
-      let buttonW = document.createElement("button");
-      let buttonL = document.createElement("button");
-      let buttonArrow = document.createElement("button");
-      let imgArrow = document.createElement("img");
-      let p = document.createElement("p");
-      let p2 = document.createElement("p");
-      let pResultChosen = document.createElement("p");
-      let pResult = document.createElement("p");
-      let pIdGame = document.createElement("p");
-      let pPosition = document.createElement("p");
+    let buttonW = document.createElement("button");
+    let buttonL = document.createElement("button");
+    let buttonArrow = document.createElement("button");
+    let imgArrow = document.createElement("img");
+    let p = document.createElement("p");
+    let p2 = document.createElement("p");
+    let pResultChosen = document.createElement("p");
+    let pResult = document.createElement("p");
+    let pIdGame = document.createElement("p");
+    let pPosition = document.createElement("p");
 
-      div.style.backgroundColor = "#ffe88f";
-      div.classList.add("border-solid", "border-2", "border-black", "mb-1", "grid", "grid-cols-6")
+    div.style.backgroundColor = "#ffe88f";
+    div.classList.add("border-solid", "border-2", "border-black", "mb-1", "grid", "grid-cols-6")
 
-      divTexte.classList.add("col-span-4", "text-right")
+    divTexte.classList.add("col-span-4", "text-right")
 
-      divButton.id = "divButton" + histoCount;
+    divButton.id = "divButton" + histoCount;
 
-      divResultat.id = "divResultat" + histoCount;
-      divResultat.classList.add("hideContent", "ml-4");
+    divResultat.id = "divResultat" + histoCount;
+    divResultat.classList.add("hideContent", "ml-4");
 
-      buttonW.classList.add("pl-1", "pr-1", "mr-1", "font-bold", "text-green-600", "bg-white", "border", "border-black", "justify-self-end");
-      buttonW.innerText = "W";
-      buttonW.setAttribute("onclick", "winButton(" + histoCount + "," + winningSegmentId + ")");
+    buttonW.classList.add("pl-1", "pr-1", "mr-1", "font-bold", "text-green-600", "bg-white", "border", "border-black", "justify-self-end");
+    buttonW.innerText = "W";
+    buttonW.setAttribute("onclick", "winButton(" + histoCount + "," + winningSegmentId + ")");
 
-      buttonL.classList.add("pl-1", "pr-1", "font-bold", "text-red-600", "bg-white", "border", "border-black", "justify-self-end");
-      buttonL.innerText = "L";
-      buttonL.setAttribute("onclick", "loseButton(" + histoCount + "," + winningSegmentId + ")");
+    buttonL.classList.add("pl-1", "pr-1", "font-bold", "text-red-600", "bg-white", "border", "border-black", "justify-self-end");
+    buttonL.innerText = "L";
+    buttonL.setAttribute("onclick", "loseButton(" + histoCount + "," + winningSegmentId + ")");
 
-      buttonArrow.id = "buttonArrow" + histoCount;
-      buttonArrow.setAttribute("onclick", "swapResult(" + histoCount + "," + winningSegmentId + ")");
-      imgArrow.src = ImgPath + "arrowR.svg";
-      imgArrow.style.height = "20px";
-      imgArrow.style.weight = "20px";
-      p.classList.add("font-bold");
-      p2.classList.add("font-bold", "mr-2");
+    buttonArrow.id = "buttonArrow" + histoCount;
+    buttonArrow.setAttribute("onclick", "swapResult(" + histoCount + "," + winningSegmentId + ")");
+    imgArrow.src = ImgPath + "arrowR.svg";
+    imgArrow.style.height = "20px";
+    imgArrow.style.weight = "20px";
+    p.classList.add("font-bold");
+    p2.classList.add("font-bold", "mr-2");
 
-      pResultChosen.id = "pResultChosen" + histoCount;
-      pResultChosen.classList.add("hideContent");
-      pResult.id = "pResult" + histoCount;
-      pResult.classList.add("hideContent");
-      pIdGame.id = "pIdGame" + histoCount;
-      pPosition.id = "pPosition" + histoCount;
-
-      for (let index2 = 0; index2 < resultsHisto.length; index2 += 3) {
-        if (histoCount == parseInt(resultsHisto[index2])) {
-          //console.log("OUICAMARCHE");
-          if (resultsHisto[index2 + 1] != undefined) {
-            console.log("ici" + resultsHisto[index2 + 2]);
-            //console.log("JEPASSE");
-            pResultChosen.innerText = "true";
-            pResult.innerText = resultsHisto[index2 + 1];
-            divButton.style.display = "none";
-            divResultat.classList.remove("hideContent");
-            divResultat.classList.add("flex");
-            if (resultsHisto[index2 + 2] == "true") {
-              console.log(" RUN WIN");
-              p2.innerText = "Run gagnée";
-              p2.classList.add("text-green-600");
-            }
-            else if (resultsHisto[index2 + 2] == "false") {
-              console.log(" RUN LOSE");
-              p2.innerText = "Run perdue";
-              p2.classList.add("text-red-600");
-            }
-            else if (resultsHisto[index2 + 2] == "cheated") {
-              console.log(" RUN CHEATE");
-              p2.innerText = "Run cheaté";
-              p2.classList.add("text-blue-600");
-            }
-          } else {
-            pResultChosen.innerText = "false";
-            pResult.innerText = "";
+    pResultChosen.id = "pResultChosen" + histoCount;
+    pResultChosen.classList.add("hideContent");
+    pResult.id = "pResult" + histoCount;
+    pResult.classList.add("hideContent");
+    pIdGame.id = "pIdGame" + histoCount;
+    pPosition.id = "pPosition" + histoCount;
+    resultsHisto.forEach(results => {
+      if (histoCount == parseInt(results.id)) {
+          pResultChosen.innerText = "true";
+          pResult.innerText = results.result;
+          divButton.style.display = "none";
+          divResultat.classList.remove("hideContent");
+          divResultat.classList.add("flex");
+          if (results.result == true) {
+            console.log(" RUN WIN");
+            p2.innerText = "Run gagnée";
+            p2.classList.add("text-green-600");
           }
-          console.log(resultsHisto);
-          console.log(resultsHisto[index2 - 1]);
-        }
-
+          else if (results.result == false) {
+            console.log(" RUN LOSE");
+            p2.innerText = "Run perdue";
+            p2.classList.add("text-red-600");
+          }
+          else if (results.result == "cheated") {
+            console.log(" RUN CHEATE");
+            p2.innerText = "Run cheaté";
+            p2.classList.add("text-blue-600");
+          }
       }
-      pIdGame.innerText = winningSegmentId;
-      pIdGame.classList.add("hideContent");
-      pPosition.innerText = histoCount;
-      pPosition.classList.add("hideContent");
-      //console.log(histo);
-      if (histo[index] == 'true') {
-        p.innerText = "Vous avez tiré " + histo[index + 1] + " - Auto " + histo[index + 2] + "(" + histo[index + 3] + ")" + " - (" + histo[index + 4] + "%)";
-      } else {
-        p.innerText = "Vous avez tiré " + histo[index + 1] + " - Cheaté " + histo[index + 2] + "(" + histo[index + 3] + ")" + " - (" + histo[index + 4] + "%)";
+      else {
+        pResultChosen.innerText = "false";
+        pResult.innerText = "";
       }
-      divTexte.appendChild(p);
-
-      divResultat.appendChild(p2);
-      if (histo[index] == 'true') {
-        divButton.appendChild(buttonW);
-        divButton.appendChild(buttonL);
-
-        buttonArrow.appendChild(imgArrow);
-        divResultat.appendChild(buttonArrow);
-      }
-
-
-      divResultat.appendChild(pResultChosen);
-      divResultat.appendChild(pResult);
-      divResultat.appendChild(pIdGame);
-      divResultat.appendChild(pPosition);
-      div.appendChild(divTexte);
-      div.appendChild(divButton);
-      div.appendChild(divResultat);
-      divHisto.appendChild(div);
-      histoCount++;
+    });
+    pIdGame.innerText = winningSegmentId;
+    pIdGame.classList.add("hideContent");
+    pPosition.innerText = histoCount;
+    pPosition.classList.add("hideContent");
+    console.log("ici !" +tirage.bool)
+    if (tirage.bool == true) {
+      p.innerText = "Vous avez tiré " + tirage.title + " - Auto " + tirage.trueCount+ "(" + tirage.cheatCount + ")" + " - (" + tirage.percent+ "%)";
+    } else {
+      p.innerText = "Vous avez tiré " + tirage.title + " - Cheaté " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent+ "%)";
     }
+    divTexte.appendChild(p);
 
-  }
-  //console.log("après for");
+    divResultat.appendChild(p2);
+    if (tirage.bool == true) {
+      divButton.appendChild(buttonW);
+      divButton.appendChild(buttonL);
+
+      buttonArrow.appendChild(imgArrow);
+      divResultat.appendChild(buttonArrow);
+    }
+    divResultat.appendChild(pResultChosen);
+    divResultat.appendChild(pResult);
+    divResultat.appendChild(pIdGame);
+    divResultat.appendChild(pPosition);
+    div.appendChild(divTexte);
+    div.appendChild(divButton);
+    div.appendChild(divResultat);
+    divHisto.appendChild(div);
+    histoCount++;    
+  });
+      
   save();
 }
 //resultsHisto[idHisto,resultChosen,result]
+// When you clicked on W button
+// Add result to resultsHisto
 function winButton(histoCount, winningSegmentId) {
   let divButton = document.getElementById("divButton" + histoCount);
   let divResultat = document.getElementById("divResultat" + histoCount);
   let pResultChosen = document.getElementById("pResultChosen" + histoCount);
   let pResult = document.getElementById("pResult" + histoCount);
-  resultsHisto = window.localStorage.getItem("resultsHisto").split(',');
-  if (resultsHisto[0] == "") resultsHisto.pop();
+  let win = document.getElementById("win" + winningSegmentId);
+  let winSession = document.getElementById("winSession" + winningSegmentId);
+
+  resultsHisto = localStorage.getItem("resultsHisto");
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
 
   divButton.style.display = "none";
   divResultat.classList.remove("hideContent");
@@ -482,23 +496,29 @@ function winButton(histoCount, winningSegmentId) {
   pResultChosen.innerText = "true";
   pResult.innerText = "true";
 
-  resultsHisto.push(histoCount, true, true);
-  window.localStorage.setItem("resultsHisto", resultsHisto);
-  console.log(winningSegmentId);
-  document.getElementById("win" + winningSegmentId).innerText = parseInt(document.getElementById("win" + winningSegmentId).innerText) + 1;
-  document.getElementById("winSession" + winningSegmentId).innerText = parseInt(document.getElementById("winSession" + winningSegmentId).innerText) + 1;
+  resultsHisto.push({"id":histoCount, "result":true});
+  window.localStorage.setItem("resultsHisto", JSON.stringify(resultsHisto));
+  win.innerText = parseInt(win.innerText) + 1;
+  winSession.innerText = parseInt(winSession.innerText) + 1;
   resultChanged = true;
   save();
-
 }
-
+// When you clicked on L button
+// Add result to resultsHisto
 function loseButton(histoCount, winningSegmentId) {
   let divButton = document.getElementById("divButton" + histoCount);
   let divResultat = document.getElementById("divResultat" + histoCount);
   let pResultChosen = document.getElementById("pResultChosen" + histoCount);
   let pResult = document.getElementById("pResult" + histoCount);
-  resultsHisto = window.localStorage.getItem("resultsHisto").split(',');
-  if (resultsHisto[0] == "") resultsHisto.pop();
+  let lose = document.getElementById("lose" + winningSegmentId);
+  let loseSession = document.getElementById("loseSession" + winningSegmentId)
+
+  resultsHisto = localStorage.getItem("resultsHisto");
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
 
   divButton.style.display = "none";
   divResultat.classList.remove("hideContent");
@@ -509,82 +529,103 @@ function loseButton(histoCount, winningSegmentId) {
   pResultChosen.innerText = "true";
   pResult.innerText = "false";
 
-  resultsHisto.push(histoCount, true, false);
-  window.localStorage.setItem("resultsHisto", resultsHisto);
+  resultsHisto.push({"id":histoCount, "result":false});
+  window.localStorage.setItem("resultsHisto", JSON.stringify(resultsHisto));
   console.log(resultsHisto);
-  document.getElementById("lose" + winningSegmentId).innerText = parseInt(document.getElementById("lose" + winningSegmentId).innerText) + 1;
-  document.getElementById("loseSession" + winningSegmentId).innerText = parseInt(document.getElementById("loseSession" + winningSegmentId).innerText) + 1;
+  lose.innerText = parseInt(lose.innerText) + 1;
+  loseSession.innerText = parseInt(loseSession.innerText) + 1;
 
   resultChanged = true;
   save();
 
 }
-
+// You swap the result of a played game
 function swapResult(histoCount, winningSegmentId) {
+  console.log("laaaaaaaaaaaaaa " +winningSegmentId);
   let divResultat = document.getElementById("divResultat" + histoCount);
   let pResult = document.getElementById("pResult" + histoCount);
-  resultsHisto = window.localStorage.getItem("resultsHisto").split(',');
+  let win = document.getElementById("win" + winningSegmentId);
+  let winSession = document.getElementById("winSession" + winningSegmentId);
+  let lose = document.getElementById("lose" + winningSegmentId);
+  let loseSession = document.getElementById("loseSession" + winningSegmentId)
+  resultsHisto = localStorage.getItem("resultsHisto");
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
 
   if (pResult.innerText == "true") {
+    console.log("LAAAAAAAAAAAAAAAAAAAAA")
     pResult.innerText = "false";
     divResultat.firstElementChild.innerText = "Run perdue";
     divResultat.firstElementChild.classList.add("text-red-600");
     divResultat.firstElementChild.classList.remove("text-green-600");
-    document.getElementById("lose" + winningSegmentId).innerText = parseInt(document.getElementById("lose" + winningSegmentId).innerText) + 1;
-    document.getElementById("loseSession" + winningSegmentId).innerText = parseInt(document.getElementById("loseSession" + winningSegmentId).innerText) + 1;
-    document.getElementById("win" + winningSegmentId).innerText = parseInt(document.getElementById("win" + winningSegmentId).innerText) - 1;
-    document.getElementById("winSession" + winningSegmentId).innerText = parseInt(document.getElementById("winSession" + winningSegmentId).innerText) - 1;
-    for (let index = 0; index < resultsHisto.length; index += 3) {
-      console.log(resultsHisto[index]);
-      if (resultsHisto[index] == histoCount) {
+    lose.innerText = parseInt(lose.innerText) + 1;
+    loseSession.innerText = parseInt(loseSession).innerText + 1;
+    win.innerText = parseInt(win.innerText) - 1;
+    winSession.innerText = parseInt(winSession.innerText) - 1;
+    resultsHisto.forEach(result => {
+      if (result.id == histoCount) {
         console.log("JE SWAP");
-        resultsHisto[index + 2] = false;
-        window.localStorage.setItem("resultsHisto", resultsHisto);
+        result.result = false;
+        window.localStorage.setItem("resultsHisto", JSON.stringify(resultsHisto));
       }
-    }
+    });
   }
   else {
     pResult.innerText = "true";
     divResultat.firstElementChild.innerText = "Run gagnée";
     divResultat.firstElementChild.classList.add("text-green-600");
     divResultat.firstElementChild.classList.remove("text-red-600");
-    document.getElementById("lose" + winningSegmentId).innerText = parseInt(document.getElementById("lose" + winningSegmentId).innerText) - 1;
-    document.getElementById("loseSession" + winningSegmentId).innerText = parseInt(document.getElementById("loseSession" + winningSegmentId).innerText) - 1;
-    document.getElementById("win" + winningSegmentId).innerText = parseInt(document.getElementById("win" + winningSegmentId).innerText) + 1;
-    document.getElementById("winSession" + winningSegmentId).innerText = parseInt(document.getElementById("winSession" + winningSegmentId).innerText) + 1;
-    for (let index = 0; index < resultsHisto.length; index += 3) {
+    lose.innerText = parseInt(lose.innerText) - 1;
+    loseSession.innerText = parseInt(loseSession.innerText) - 1;
+    win.innerText = parseInt(win.innerText) + 1;
+    winSession.innerText = parseInt(winSession.innerText) + 1;
+    resultsHisto.forEach(result => {
       console.log(resultsHisto[index]);
-      if (resultsHisto[index] == histoCount) {
+      if (resultsHisto.id == histoCount) {
         console.log("JE SWAP");
-        resultsHisto[index + 2] = true;
-        window.localStorage.setItem("resultsHisto", resultsHisto);
+        resultsHisto.result = true;
+        window.localStorage.setItem("resultsHisto", JSON.stringify(resultsHisto));
       }
-    }
+    });
   }
   resultChanged = true;
   save();
 
 }
+// Add zeros to date
 function addZero(i) {
   if (i < 10) { i = "0" + i }
   return i;
 }
-//histo[bool,text,trueCount,cheatCount,%,id]
+// histo[bool,text,trueCount,cheatCount,%,id]
 // game[title,weight,color,id,imgName,trueCount,cheatCount,played,win,lose,winSession,loseSession,playedSession]
-//FAIRE POUR QUE LES CHEATER SOIENT COMPTE
+// Archive draws 
 function archiveSession() {
   archiveChanged = true;
-  let histo = window.localStorage.getItem("histo").split(',');
-  let resultsHisto = window.localStorage.getItem("resultsHisto").split(',');
+  histo = (localStorage.getItem('histo'));
+  resultsHisto = localStorage.getItem("resultsHisto");
+  if (histo != "") {
+    histo = (JSON.parse(localStorage.getItem("histo")));
+  } else {
+    histo = [];
+  }
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
   let histoCount = 0;
   window.localStorage.setItem("histoCount", histoCount);
-  for (let index = 0; index < histo.length / 6; index++) {
+  for (let index = 0; index < histo.length; index++) {
     if (document.getElementById("pResultChosen" + index).innerText == false) {
       confirm("Merci de choisir un résultat pour les runs terminées");
       return;
     }
   }
-  let game = window.localStorage.getItem("games").split(',');
+  let games = JSON.parse(window.localStorage.getItem("games"));
   histoTirage = (localStorage.getItem("histoTirage"));
   if (histoTirage != "") {
     histoTirage = (JSON.parse(localStorage.getItem("histoTirage")));
@@ -592,18 +633,15 @@ function archiveSession() {
     histoTirage = [];
   }
   let arrTirage = [];
-  for (let index = 0; index < histo.length; index += 6) {
-    for (let index2 = 0; index2 < resultsHisto.length; index2 += 3) {
-      console.log("CALCUL");
-      console.log(histo);
-      console.log(parseInt(histo[index]));
-      console.log(parseInt(resultsHisto[index2]));
-      if (histoCount == parseInt(resultsHisto[index2])) {
-        arrTirage.push({ "id": histo[index + 5], "percent": histo[index + 4], "cheatCount": histo[index + 3], "trueCount": histo[index + 2], "text": histo[index + 1], "trueOrCheat": histo[index], "wonOrLost": resultsHisto[index2 + 2] });
+
+  histo.forEach(tirage => {
+    resultsHisto.forEach(result => {
+      if (histoCount == parseInt(result.id)) {
+        arrTirage.push({ "id": tirage.id, "percent": tirage.percent, "cheatCount": tirage.cheatCount, "trueCount": tirage.trueCount, "text": tirage.title, "trueOrCheat": tirage.bool, "wonOrLost": result.result });
       }
-    }
+    });
     histoCount++;
-  }
+  });
   console.log(arrTirage);
   histo = [];
   resultsHisto = [];
@@ -613,27 +651,14 @@ function archiveSession() {
   } else {
     archive = [];
   }
-  //console.log(archive);
-  let today = new Date();
-  let dd = String(today.getDate()).padStart(2, '0');
-  let mm = String(today.getMonth() + 1).padStart(2, '0');
-  let yyyy = today.getFullYear();
-  let h = addZero(today.getHours());
-  let m = addZero(today.getMinutes());
-  let s = addZero(today.getSeconds());
-
-  today = dd + '/' + mm + '/' + yyyy + " " + h + ":" + m + ":" + s;
-
   let arrArchive = [];
-  for (let index = 0; index < game.length; index += param) {
-    if (parseInt(game[index + 12]) != 0) {
-      var toBeArchived = { "title": game[index], "win": game[index + 10], "lose": game[index + 11], "played": game[index + 12], "date": today };
+  games.forEach(game => {
+    if (parseInt(game.playedSession) != 0) {
+      var toBeArchived = { "title": game.title, "win": game.winSession, "lose": game.loseSession, "played": game.playedSession, "date": today() };
       arrArchive.push(toBeArchived);
     }
-  }
+  });
 
-  //arrArchive.push(today);
-  //console.log(arrArchive);
   archive.push(arrArchive);
   histoTirage.push(arrTirage);
   histoTirage = JSON.stringify(histoTirage);
@@ -643,22 +668,25 @@ function archiveSession() {
   archive = JSON.parse(localStorage.getItem("archive"));
   localStorage.setItem("histo", histo);
   localStorage.setItem("resultsHisto", resultsHisto);
+  console.log(localStorage.getItem("resultsHisto"));
   updateHisto();
   updateResumeSession();
   resetSession();
-  //console.log(archive);
-
-
-  /* var obj2 = { "name":"John", "age":30, "city":"New York"};
-  let bit3 =[obj,obj2];
-  bit3.push(obj);
-  bit3 = JSON.stringify(bit3);
-  localStorage.setItem("bit3",bit3);
-  bit3 = JSON.parse(localStorage.getItem("bit3"));
-  console.log(bit3);
-  console.log(bit3[0].age); */
 }
+// get today's date
+function today(){
+  let today = new Date();
+  let dd = String(today.getDate()).padStart(2, '0');
+  let mm = String(today.getMonth() + 1).padStart(2, '0');
+  let yyyy = today.getFullYear();
+  let h = addZero(today.getHours());
+  let m = addZero(today.getMinutes());
+  let s = addZero(today.getSeconds());
 
+  today = dd + '/' + mm + '/' + yyyy + " " + h + ":" + m + ":" + s;
+  return today;
+}
+// Show archived game sessions
 function updateResumeSession() {
   let resumeSession = document.getElementById("resumeSession");
   while (resumeSession.firstChild) { // while there is still a child inside the parent
@@ -712,7 +740,7 @@ function updateResumeSession() {
   });
   updateWinLoseTotal();
 }
-
+// Allows to see draws of selected session
 function showTirage(sessionCount, date) {
   histoTirage = localStorage.getItem("histoTirage");
   let buttonClose = document.createElement("button");
@@ -751,9 +779,9 @@ function showTirage(sessionCount, date) {
       let pPosition = document.createElement("p");
 
       div.style.backgroundColor = "#ffe88f";
-      div.classList.add("border-solid", "border-2", "border-black", "mb-1", "grid", "grid-cols-3")
+      div.classList.add("border-solid", "border-2", "border-black", "mb-1","flex")
 
-      divTexte.classList.add("text-left", "col-span-2", "ml-1")
+      divTexte.classList.add( "ml-1","flex")
 
       divResultat.id = "divResultat" + histoCount;
       divResultat.classList.add("ml-4");
@@ -768,8 +796,8 @@ function showTirage(sessionCount, date) {
       pIdGame.id = "pIdGame" + histoCount;
       pPosition.id = "pPosition" + histoCount;
 
-      if (tirage.trueOrCheat == "true") {
-        if (tirage.wonOrLost == "true") {
+      if (tirage.trueOrCheat == true) {
+        if (tirage.wonOrLost == true) {
           console.log(" MARQUE WIN");
           p2.innerText = "Run gagnée";
           p2.classList.add("text-green-600");
@@ -787,6 +815,9 @@ function showTirage(sessionCount, date) {
       pPosition.innerText = histoCount;
       pPosition.classList.add("hideContent");
       //console.log(histo);
+      if (tirage.text.length > 19) {
+        tirage.text = replaceChar(tirage.text,"...",16);
+      }
       if (tirage.trueOrCheat == "true") {
         p.innerText = "Vous avez tiré " + tirage.text + " - Auto " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent + "%)";
       } else {
@@ -805,6 +836,7 @@ function showTirage(sessionCount, date) {
       histoCount++;
 
     });
+  
     p3.innerText = "Tirage session  " + date + " (" + histoCount + " tirages)";
     p3.classList.add("font-semibold");
     alertDiv.appendChild(p3);
@@ -818,15 +850,12 @@ function showTirage(sessionCount, date) {
     alertDiv.appendChild(div3);
     alertDiv.appendChild(buttonClose);
     alertDiv.style.display = "block";
-
   }
   console.log(histoTirage[sessionCount]);
 }
-
+// Resets counters after archiving
 function resetSession() {
-  let game = window.localStorage.getItem("games").split(',');
   for (let index = 0; index < parseInt(count); index++) {
-    console.log(game[index + 3]);
     document.getElementById("winSession" + index).innerText = 0;
     document.getElementById("loseSession" + index).innerText = 0;
     document.getElementById("playedSession" + index).innerText = 0;
@@ -834,21 +863,28 @@ function resetSession() {
     save();
   }
 }
-
+function replaceChar(origString, replaceChar, index) {
+  let firstPart = origString.substr(0, index);
+  //let lastPart = origString.substr(index + 1);
+    
+  let newString = firstPart + replaceChar;
+  return newString;
+}
+// Updates totals wins and loses
 function updateWinLoseTotal() {
   winTotal = localStorage.getItem("winTotal");
   loseTotal = localStorage.getItem("loseTotal");
-  let winLoseTotal = document.getElementById("winLoseTotal");
-
-  winLoseTotal.innerText = winTotal + "W/" + loseTotal + "L";
-
+  let divWinTotal = document.getElementById("winTotal");
+  let divLoseTotal = document.getElementById("loseTotal");
+  divWinTotal.innerText = winTotal;
+  divLoseTotal.innerText = loseTotal;
 }
-
+// Converts segments degrees to a percentage
 function winwheelDegreesToPercent(deg) {
   return (deg * 100 / 360).toFixed(2);
 }
 // When you click on "Add game"
-
+// Creates a new div in game section
 function addGame() {
   gameAdded = true;
   let div = document.createElement("div");
@@ -859,11 +895,9 @@ function addGame() {
 
   div.id = "div_" + count;
   div.classList.add("flex", "pb-5");
-  //div.style = "background-color: red;";
 
   divDetails.id = "div_det_" + count;
   divDetails.classList.add("flex", "grid", "grid-cols-2", "border-solid", "border-2", "borderGame2", "rounded-md", "p-1");
-  //divDetails.style = "background-color: grey;";
 
   divGrid.id = "div_grid" + count;
   divGrid.classList.add("flex", "grid", "grid-cols-2", "col-span-2", "gap-y-1");
@@ -877,7 +911,6 @@ function addGame() {
   title.name = "title" + count;
   title.id = "title" + count;
   title.value = "";
-  //console.log(game[index]);
   title.setAttribute("onchange", "titlesChanged()");
   title.setAttribute("onfocusout", "save()");
   title.classList.add("border-solid", "border-2", "borderGame");
@@ -893,7 +926,6 @@ function addGame() {
   weight.value = "";
   weight.setAttribute("onchange", "weightsChanged()");
   weight.setAttribute("onfocusout", "save()");
-  //console.log(game[index+1]);
   weight.classList.add("border-solid", "border-2", "borderGame");
 
   let color = document.createElement("input");
@@ -904,7 +936,6 @@ function addGame() {
   color.classList.add("border-solid", "border-2", "borderGame");
   color.setAttribute("onchange", "colorsChanged()");
   color.setAttribute("onfocusout", "save()");
-
 
   let labelColor = document.createElement("label");
   labelColor.for = "color" + count;
@@ -917,7 +948,6 @@ function addGame() {
   let imgSelect = document.createElement("input");
   imgSelect.type = "file";
   imgSelect.name = "img" + count;
-  //imgSelect.accept = "image/png, image/jpeg";
   imgSelect.id = "img" + count;
   imgSelect.classList.add("border-solid", "border-2", "borderGame");
   imgSelect.setAttribute("onchange", "imagesChanged(this)");
@@ -982,7 +1012,8 @@ function addGame() {
   played.type = "number";
   played.classList.add("border-solid", "border-2", "borderGame", "ltr");
   played.setAttribute("onchange", "playedChanged()");
-  //played.setAttribute("onfocusout", "save()");
+  played.setAttribute("onfocusout", "save()");
+  played.setAttribute('disabled', '');
 
   let divEmpty = document.createElement("div");
   let addPlayed = document.createElement("button");
@@ -1056,24 +1087,17 @@ function addGame() {
   gamesArr.push(div);
   count++;
   save();
-
 }
+
 // Load already existing games
-function addGames(game) {
+function addGames(games) {
   var lilcount = 0;
-  let bool = true;
-  let len = game.length;
 
   while (document.getElementById("games").firstChild) { // while there is still a child inside the parent
     document.getElementById("games").removeChild(document.getElementById("games").firstChild); // remove the first child
   }
 
-
-  //console.log(game);
-  for (let index = 0; index < game.length; index += param) {
-
-    console.log("je pass là " + index);
-
+  games.forEach(game => {
     let div = document.createElement("div");
     let divDetails = document.createElement("div");
     let divGrid = document.createElement("div");
@@ -1082,27 +1106,22 @@ function addGames(game) {
 
     div.id = "div_" + lilcount;
     div.classList.add("flex", "pb-5");
-    //div.style = "background-color: red;";
 
     divDetails.id = "div_det_" + lilcount;
     divDetails.classList.add("flex", "grid", "grid-cols-2", "border-solid", "border-2", "borderGame2", "rounded-md", "p-1");
-    //divDetails.style = "background-color: grey;";
 
     divGrid.id = "div_grid" + lilcount;
     divGrid.classList.add("flex", "grid", "grid-cols-4", "col-span-4", "gap-y-1");
-
 
     let labelTitle = document.createElement("label");
     labelTitle.for = "title" + lilcount;
     labelTitle.innerText = ": Titre du jeu  ";
 
-
     let title = document.createElement("input");
     title.type = "text";
     title.name = "title" + lilcount;
     title.id = "title" + lilcount;
-    title.value = game[index];
-    //console.log(game[index]);
+    title.value = game.title;
     title.setAttribute("onchange", "titlesChanged()");
     title.setAttribute("onfocusout", "save()");
     title.classList.add("border-solid", "border-2", "borderGame", "ltr");
@@ -1117,8 +1136,7 @@ function addGames(game) {
     weight.id = "weight" + lilcount;
     weight.setAttribute("onchange", "weightsChanged()");
     weight.setAttribute("onfocusout", "save()");
-    //console.log(game[index+1]);
-    weight.value = game[index + 1];
+    weight.value = game.weight;
     weight.classList.add("border-solid", "border-2", "borderGame", "ltr");
 
     let color = document.createElement("input");
@@ -1126,7 +1144,7 @@ function addGames(game) {
     color.name = "color" + lilcount;
     color.id = "color" + lilcount;
     color.classList.add("border-solid", "border-2", "borderGame");
-    color.value = game[index + 2];
+    color.value = game.color;
     color.setAttribute("onchange", "colorsChanged()");
     color.setAttribute("onfocusout", "save()");
 
@@ -1142,7 +1160,6 @@ function addGames(game) {
     let imgSelect = document.createElement("input");
     imgSelect.type = "file";
     imgSelect.name = "img" + lilcount;
-    //imgSelect.accept = "image/png, image/jpeg";
     imgSelect.id = "img" + lilcount;
     imgSelect.classList.add("border-solid", "border-2", "borderGame", "ltr");
     imgSelect.setAttribute("onchange", "imagesChanged(this)");
@@ -1150,24 +1167,24 @@ function addGames(game) {
 
     let imgName = document.createElement("p");
     imgName.id = "imgName" + lilcount;
-    imgName.innerText = game[index + 4];
+    imgName.innerText = game.imgName;
     imgName.style = "display:none";
 
     let img = document.createElement("img");
     img.id = "imgShow" + lilcount;
-    img.src = ImgPath + game[index + 4];
+    img.src = ImgPath + game.imgName;
     img.classList.add("mr-2", "ml-1");
     img.style.height = "200px";
     img.style.width = "200px";
 
     let trueCount = document.createElement("p");
     trueCount.id = "trueCount" + lilcount;
-    trueCount.innerText = game[index + 5];
+    trueCount.innerText = game.trueCount;
     trueCount.style = "display:none";
 
     let cheatCount = document.createElement("p");
     cheatCount.id = "cheatCount" + lilcount;
-    cheatCount.innerText = game[index + 6];
+    cheatCount.innerText = game.cheatCount;
     cheatCount.style = "display:none";
 
     let buttonDelete = document.createElement("button");
@@ -1186,11 +1203,12 @@ function addGames(game) {
 
     let tas = document.createElement("input");
     tas.id = "tas" + lilcount;
-    tas.value = game[index + 5];
+    tas.value = game.trueCount;
     tas.type = "number";
     tas.classList.add("border-solid", "border-2", "borderGame", "ltr");
     tas.setAttribute("onchange", "resultsChanged()");
     tas.setAttribute("onfocusout", "save()");
+    tas.setAttribute('disabled', '');
 
     let labelTasIgnored = document.createElement("label");
     labelTasIgnored.for = "labelTas" + lilcount;
@@ -1198,11 +1216,12 @@ function addGames(game) {
 
     let tasIgnored = document.createElement("input");
     tasIgnored.id = "tasIgnored" + lilcount;
-    tasIgnored.value = game[index + 6];
+    tasIgnored.value = game.cheatCount;
     tasIgnored.type = "number";
     tasIgnored.classList.add("border-solid", "border-2", "borderGame", "ltr");
     tasIgnored.setAttribute("onchange", "resultsChanged()");
     tasIgnored.setAttribute("onfocusout", "save()");
+    tasIgnored.setAttribute('disabled', '');
 
     let labelPlayed = document.createElement("label");
     labelPlayed.for = "labelPlayed" + lilcount;
@@ -1212,10 +1231,11 @@ function addGames(game) {
     let played = document.createElement("input");
     played.id = "played" + lilcount;
     played.type = "number";
-    played.value = game[index + 7];
+    played.value = game.played;
     played.classList.add("border-solid", "border-2", "borderGame", "ltr");
     played.setAttribute("onchange", "playedChanged(" + lilcount + ")");
-    //played.setAttribute("onfocusout", "save()");
+    played.setAttribute("onfocusout", "save()");
+    played.setAttribute('disabled', '');
 
     let divEmpty = document.createElement("div");
     let addPlayed = document.createElement("button");
@@ -1226,27 +1246,27 @@ function addGames(game) {
 
     let win = document.createElement("p");
     win.id = "win" + lilcount;
-    win.innerText = game[index + 8];
+    win.innerText = game.win;
     win.classList.add("hideContent");
 
     let lose = document.createElement("p");
     lose.id = "lose" + lilcount;
-    lose.innerText = game[index + 9];
+    lose.innerText = game.lose;
     lose.classList.add("hideContent");
 
     let winSession = document.createElement("p");
     winSession.id = "winSession" + lilcount;
-    winSession.innerText = game[index + 10];
+    winSession.innerText = game.winSession;
     winSession.classList.add("hideContent");
 
     let loseSession = document.createElement("p");
     loseSession.id = "loseSession" + lilcount;
-    loseSession.innerText = game[index + 11];
+    loseSession.innerText = game.loseSession;
     loseSession.classList.add("hideContent");
 
     let playedSession = document.createElement("p");
     playedSession.id = "playedSession" + lilcount;
-    playedSession.innerText = game[index + 12];
+    playedSession.innerText = game.playedSession;
     playedSession.classList.add("hideContent");
 
     divGrid.appendChild(titleResult);
@@ -1277,8 +1297,6 @@ function addGames(game) {
     divGrid.appendChild(addPlayed);
     divGrid.appendChild(divEmpty);
 
-
-
     divGrid.appendChild(win);
     divGrid.appendChild(lose);
     divGrid.appendChild(winSession);
@@ -1291,38 +1309,10 @@ function addGames(game) {
     document.getElementById("games").appendChild(div);
     gamesArr.push(div);
     lilcount++;
-    //console.log(theWheel.segments);
-
-    //console.log("ici");
-    //console.log(parseInt(game[index+3]));
-    //console.log(theWheel.segments[parseInt(game[index+3])+1]);
-    /*  
-        console.log("id "+(parseInt(game[index+3])+1));
-        if (theWheel.segments[(parseInt(game[index+3])+1)]) {
-            console.log("Je passe ici");
-            theWheel.segments[parseInt(game[index+3])+1].size = calcWeight(parseInt(game[index+1]));
-        }
-        else{
-            console.log("undef");
-            theWheel.addSegment({'size': calcWeight(parseInt(game[index+1])),'fillStyle' : game[index+2], 'text' : game[index], 'id' :game[index+3]-1,'image' : "../image/"+game[index+4]});
-            
-            //theWheel.segments[parseInt(game[index+3])+1].changeImage("../image/"+game[index+4])
-        }  */
-
-
-  }
-  /* console.log(theWheel.segments);
-  if (theWheel.segments[1].text == '') {
-      console.log("efsssssssssssssss");
-      theWheel.deleteSegment(1);
-      theWheel.segments.pop();
-  } */
-
-  //if (gameNotDeleted && idGameDeleted != null) 
-  //idGameDeleted = null;
-  //gameNotDeleted = true;
-  // console.log(theWheel.segments);
+  });
 }
+// When users wants to play a certain game
+// Add a 100% draw to histo
 function addPlayed(count) {
   console.log("hello");
   let title = document.getElementById("title" + count).value;
@@ -1333,127 +1323,102 @@ function addPlayed(count) {
   addPlayedGame(count, title, 360);
 }
 
-// Calculate the size of the segments with their weights
+// Calculates the size of the segments with their weights
 function calcWeight(weight) {
   return (weight / Tweight) * 360;
 }
-// Delete a game
+// Deletes a game
 function deleteGame(id) {
   console.log("JE SUPPRIME " + id);
   if (confirm("Voulez vous vraiment supprimer ce jeu ?") && theWheel.segments.length > 1) {
     let deleted = false;
-    //console.log(window.localStorage.getItem("games").split(',')[3]);
-    let games = window.localStorage.getItem("games").split(',');
-    //console.log("id " + id);
+    let games = JSON.parse(window.localStorage.getItem("games"));
     console.log("avant");
-    //console.log(games);
-    for (let index = 3; index < games.length; index += param) {
-      console.log("id " + id);
-      console.log(games[index]);
-      if (games[index] == id + 1 && !deleted) {
-
-        Tweight -= parseInt(games[index - 2]);
+    games.forEach(game => {
+      if (game.id == id + 1 && !deleted) {
+        Tweight -= parseInt(game.weight);
         window.localStorage.setItem("Tweight", Tweight)
-        games.splice(index - 3, param);
+        games.splice(games.indexOf(game), 1);
         deleted = true;
       }
-      if (deleted && games[index] > id + 1) games[index] = games[index] - 1;
-    }
-    console.log("après");
-    //console.log(games);
+    });
     theWheel.deleteSegment(id + 1);
     theWheel.segments.pop();
-    console.log("avant" + count);
     count--;
-    console.log("après" + count);
     window.localStorage.setItem("count", parseInt(count));
-    window.localStorage.setItem("games", games);
-    console.log(window.localStorage.getItem("games"));
+    window.localStorage.setItem("games", JSON.stringify(games));
     gameAdded = true;
     addGames(games);
-
     save();
   }
 }
-function changeColor(game) {
-  for (let index = 0; index < game.length; index += param) {
-    //console.log("laaaaaaaaaaaaa" + game[index+3])
-    //console.log(theWheel.segments);
-    theWheel.segments[parseInt(game[index + 3])].fillStyle = game[index + 2];
-    //theWheel.addSegment({'size': parseInt(game[index+1]),'fillStyle' : game[index+2], 'text' : game[index] +' '+ winwheelDegreesToPercent(game[index+1]) + '%'});
-  }
+// When a color changes, reload segments color
+function changeColor(games) {
+  games.forEach(game => {
+    theWheel.segments[parseInt(game.id)].fillStyle = game.color;
+  });
 }
-
-function changeSize(game) {
-  for (let index = 0; index < game.length; index += param) {
-    //console.log("laaaaaaaaaaaaa" + game[index+3])
-    //console.log(theWheel.segments);
-    //console.log("Size avant "+theWheel.segments[parseInt(game[index+3])].size);
-    //console.log(theWheel.segments);
-    theWheel.segments[parseInt(game[index + 3])].size = calcWeight(parseInt(game[index + 1]));
-    //console.log("Size après "+theWheel.segments[parseInt(game[index+3])].size);
-    //console.log(theWheel.segments);
-    //theWheel.addSegment({'size': parseInt(game[index+1]),'fillStyle' : game[index+2], 'text' : game[index] +' '+ winwheelDegreesToPercent(game[index+1]) + '%'});
-    theWheel.updateSegmentSizes();
-  }
+// When a size changes, reload segments sizes
+function changeSize(games) {
+  games.forEach(game => {
+    theWheel.segments[parseInt(game.id)].size = calcWeight(parseInt(game.weight));
+  });
+  theWheel.updateSegmentSizes();
 }
-
-function changeImage(game) {
-  for (let index = 0; index < game.length; index += param) {
-    //console.log("laaaaaaaaaaaaa" + game[index+3])
-    //console.log(theWheel.segments);
-    theWheel.segments[parseInt(game[index + 3])].image = ImgPath + game[index + 4];
-
-  }
+// When an image changes, reload segments image path
+function changeImage(games) {
+  games.forEach(game => {
+    theWheel.segments[parseInt(game.id)].image = ImgPath + game.imgName;
+  });
 }
-function changeTitle(game) {
-  for (let index = 0; index < game.length; index += param) {
-    //console.log("laaaaaaaaaaaaa" + game[index+3])
-    //console.log(theWheel.segments);
-    theWheel.segments[parseInt(game[index + 3])].text = game[index];
-
-  }
+// When a title changes, reload segments titles
+function changeTitle(games) {
+  games.forEach(game => {
+    theWheel.segments[parseInt(game.id)].text = game.title;
+  });
 }
+// When an image changes, change image path in game div
 function imagesChanged(image) {
   console.log("image a changé ");
   console.log((image.id).match(/\d+/));
   document.getElementById("imgName" + (image.id).match(/\d+/)).innerText = (image.value).replace("C:\\fakepath\\", "");
   document.getElementById("imgShow" + (image.id).match(/\d+/)).src = ImgPath + (image.value).replace("C:\\fakepath\\", "");
   if (!gameAdded) imageChanged = true;
-
-
+  save();
 }
+// When a color changes allow to save
 function colorsChanged() {
   console.log("La couleur a changé");
   if (!gameAdded) colorChanged = true;
+  save();
 }
-
+// When a title changes allow to save
 function titlesChanged() {
   console.log("Le titre a changé");
   if (!gameAdded) titleChanged = true;
+  save();
 }
-
+// When a weight changes allow to save
 function weightsChanged() {
   console.log("Le poids a changé");
   if (!gameAdded) weightChanged = true;
+  save();
 }
-
+// When a result changes allow to save
 function resultsChanged() {
   console.log("Les résultats ont changé");
   if (!gameAdded) resultChanged = true;
-  //save();
+  save();
 }
-
+// When played count changes allow to save
 function playedChanged(lilcount) {
   console.log("Les parties jouées ont changé");
-  let title = document.getElementById("title" + lilcount).value;
+  //let title = document.getElementById("title" + lilcount).value;
   console.log(lilcount);
   if (!gameAdded) playedCountChanged = true;
-
-  addPlayedGame(lilcount, title, 360);
-  //save();
+  //addPlayedGame(lilcount, title, 360);
 }
-
+// not used
 function shuffleArray(array) {
   for (var i = array.length - 1; i > 0; i--) {
 
@@ -1467,14 +1432,13 @@ function shuffleArray(array) {
 
   return array;
 }
+// not used
 function randomizeSegments() {
   let arrRandom = [];
   let game = localStorage.getItem("games").split(',');
-  //console.log(game);
   for (let index = 0; index < game.length; index += param) {
     console.log("index" + index);
     arrRandom.push(parseInt(game[index + 3]));
-    //arrRandom.push(arrTemp);
   }
   shuffleArray(arrRandom);
   for (let index = 0; index < game.length; index += param) {
@@ -1498,36 +1462,39 @@ function randomizeSegments() {
   theWheel.updateSegmentSizes();
   theWheel.draw()
 }
-function updateWheel(game) {
+// Updates segments of the wheel
+function updateWheel(games) {
   if (theWheel.segments[1].text == '') {
     theWheel.segments[1].size = 0;
   }
-  //console.log(game);
-  for (let index = 0; index < game.length; index += param) {
-    //console.log((parseInt(game[index + 3])));
-    if (game[index + 3] == 1 && theWheel.segments[parseInt(game[index + 3])].text == '') {
-      theWheel.segments[1].size = calcWeight(parseInt(game[index + 1]));
-      theWheel.segments[1].fillStyle = game[index + 2];
-      theWheel.segments[1].text = game[index];
-      theWheel.segments[1].id = parseInt(game[index + 3]) - 1;
-      theWheel.segments[1].image = ImgPath + game[index + 4];
+  games.forEach(game => {
+    if (game.id == 1 && theWheel.segments[parseInt(game.id)].text == '') {
+      theWheel.segments[1].size = calcWeight(parseInt(game.weight));
+      theWheel.segments[1].fillStyle = game.color;
+      //theWheel.segments[1].text = replaceChar(game.title,"...",5);
+      theWheel.segments[1].text = game.title;
+      theWheel.segments[1].id = parseInt(game.id) - 1;
+      theWheel.segments[1].image = ImgPath + game.imgName;
       theWheel.segments[1].textFillStyle = "#ffffff";
       theWheel.segments[1].textStrokeStyle = "#000000";
     }
-    else if (theWheel.segments[parseInt(game[index + 3])]) {
-      //console.log("Je passe ici");
-      theWheel.segments[parseInt(game[index + 3])].size = calcWeight(parseInt(game[index + 1]));
+    else if (theWheel.segments[parseInt(game.id)]) {
+      theWheel.segments[parseInt(game.id)].size = calcWeight(parseInt(game.weight));
     }
     else {
-      //console.log("undef");
-      theWheel.addSegment({ 'size': calcWeight(parseInt(game[index + 1])), 'fillStyle': game[index + 2], 'text': game[index], 'id': parseInt(game[index + 3]) - 1, 'image': ImgPath + game[index + 4], 'textFillStyle': "#ffffff", 'textStrokeStyle': "#000000" });
-
-      //theWheel.segments[parseInt(game[index+3])+1].changeImage("../image/"+game[index+4])
+      theWheel.addSegment({ 'size': calcWeight(parseInt(game.weight)), 
+      'fillStyle': game.color, 
+      'text': game.title, 
+      'id': parseInt(game.id) - 1, 
+      'image': ImgPath + game.imgName, 
+      'textFillStyle': "#ffffff", 
+      'textStrokeStyle': "#000000" 
+    });
     }
     theWheel.updateSegmentSizes();
-
-  }
+  });
 }
+// Draws little triangle on the wheel
 function drawTriangle() {
   let tcanvas = document.getElementById('myCanvas');
 
@@ -1605,11 +1572,11 @@ function drawTriangle() {
   }
 
 }
-
-
+// Wheel gets bigger when menus are hidden
 function resizeWheel() {
   let grid = document.getElementById("div_menu");
-  let winLoseTotal = document.getElementById("winLoseTotal");
+  let winLoseTotal = document.getElementById("scoreDiv");
+  
   if (gamesHidden && histoHidden) {
     grid.style.position = 'fixed';
     grid.style.left = 0;
@@ -1640,34 +1607,30 @@ function resizeWheel() {
     winLoseTotal.classList.remove("mb-36");
   }
 }
+// Hide games menu
 function hideGames() {
-  //console.log(gamesArr);
   let button = document.getElementById("imageButtonGames");
   let menuOpt = document.getElementById("menuOpt");
   let games = document.getElementById("games");
   let titleOpt = document.getElementById("titleOpt");
+
   if (gamesHidden) {
     gamesHidden = false;
-    //games.style.height = "80%";
     titleOpt.classList.remove("mt-1", "mb-12");
     menuOpt.classList.remove("hideGamesAnimation");
     games.classList.remove("hideGamesAnimation2");
     menuOpt.classList.add("appearAnimation");
     games.classList.add("appearAnimation");
     button.innerText = "Câcher les jeux";
-    //menuOpt.style.height = "49%";
     menuOpt.classList.remove("h-12", "self-end");
-    //menuOpt.classList.add("overflow-y-scroll");
     button.src = ImgPath + "hide.png";
     document.getElementById("div_buttons").style = "display:block";
     gamesArr.forEach(element => {
-      //console.log(element);
       element.style = "display:flex";
     });
   }
   else {
     gamesHidden = true;
-    //games.style.height = "auto";
     titleOpt.classList.add("mt-1", "mb-12");
     menuOpt.classList.remove("appearAnimation");
     games.classList.remove("appearAnimation");
@@ -1676,24 +1639,19 @@ function hideGames() {
     button.innerText = "Afficher les jeux";
     button.src = ImgPath + "view.png";
     menuOpt.classList.add("self-end");
-    //menuOpt.classList.remove("overflow-y-scroll");
     document.getElementById("div_buttons").style = "display:none";
-    /* gamesArr.forEach(element => {
-      console.log(element);
-      element.style = "display:none";
-    }); */
   }
   resizeWheel();
 }
-
+// Hide histo menu
 function hideHisto() {
   let histo = document.getElementById("historique");
   let histoDiv = document.getElementById("menuHisto");
   let button = document.getElementById("imageButtonHisto");
   let button2 = document.getElementById("imageButtonHisto2");
-  let titleHisto = document.getElementById("titleHisto");
   let ongletHisto = document.getElementById("ongletHisto");
   let ongletResume = document.getElementById("ongletResume");
+
   if (histoHidden) {
     ongletHisto.classList.remove("pb-4", "pt-1");
     ongletResume.classList.remove("pb-4", "pt-1");
@@ -1704,13 +1662,11 @@ function hideHisto() {
     histo.classList.add("appearAnimation");
 
     histoDiv.classList.remove("h-12", "self-end", "content-center");
-    //histoDiv.classList.add("overflow-y-scroll");
     histoHidden = false;
     button.innerText = "Câcher historique";
     button.src = ImgPath + "hide.png";
     button2.innerText = "Câcher historique";
     button2.src = ImgPath + "hide.png";
-    //histo.style = "display:block";
   }
   else {
     ongletHisto.classList.add("pb-4", "rounded-tl-lg", "pt-1");
@@ -1722,20 +1678,14 @@ function hideHisto() {
     histoDiv.classList.add("hideHistoAnimation");
     histo.classList.add("hideHistoAnimation2");
 
-    //histoDiv.classList.add("h-12","self-end","content-center");
-    //histoDiv.classList.remove("overflow-y-scroll");
     button.innerText = "Afficher historique";
     button.src = ImgPath + "view.png";
     button2.innerText = "Afficher historique";
     button2.src = ImgPath + "view.png";
-    //histo.classList.add("hideAnimation");
-
-    //histo.style = "display:none"; 
-    //histo.classList.add("hideAnimation");
-
   }
   resizeWheel();
 }
+// When you click on histo tab
 function ongletHistoClicked() {
   let ongletHisto = document.getElementById("ongletHisto");
   let ongletResume = document.getElementById("ongletResume");
@@ -1762,7 +1712,7 @@ function ongletHistoClicked() {
     buttonArchive.classList.add("showContent");
   }
 }
-
+// When you click on resume session tab
 function ongletResumeClicked() {
   let ongletHisto = document.getElementById("ongletHisto");
   let ongletResume = document.getElementById("ongletResume");
@@ -1791,6 +1741,7 @@ function ongletResumeClicked() {
   }
 }
 // game[title,weight,color,id,imgName,trueCount,cheatCount,played,win,lose,winSession,loseSession,playedSession]
+// Save all attributes
 function save() {
   if (count != oldCount || gameAdded || playedCountChanged || resultChanged || histoChanged || weightChanged || colorChanged || titleChanged || imageChanged) {
     console.log("Je save");
@@ -1798,70 +1749,60 @@ function save() {
     console.log(games);
     Tweight = 0;
     for (let index = 0; index < parseInt(count); index++) {
-      let game = [];
-      //console.log(index);
-      game.push(document.getElementById("title" + index).value);
-      game.push(document.getElementById("weight" + index).value);
-      game.push(document.getElementById("color" + index).value);
-      game.push(index + 1);
-      //console.log(document.getElementById("img"+index).value);
-      game.push(document.getElementById("imgName" + index).innerText);
-      game.push(document.getElementById("trueCount" + index).innerText);
-      game.push(document.getElementById("cheatCount" + index).innerText);
-      game.push(document.getElementById("played" + index).value);
-      game.push(parseInt(document.getElementById("win" + index).innerText));
-      game.push(parseInt(document.getElementById("lose" + index).innerText));
-      game.push(parseInt(document.getElementById("winSession" + index).innerText));
-      game.push(parseInt(document.getElementById("loseSession" + index).innerText));
-      game.push(parseInt(document.getElementById("playedSession" + index).innerText));
-
-      //console.log(parseInt(document.getElementById("weight"+index).value));
+      let game = ({'title':document.getElementById("title" + index).value, 
+        "weight":document.getElementById("weight" + index).value, 
+        "color":document.getElementById("color" + index).value,
+        "id":index+1, 
+        "imgName":document.getElementById("imgName" + index).innerText, 
+        "trueCount":document.getElementById("trueCount" + index).innerText, 
+        "cheatCount":document.getElementById("cheatCount" + index).innerText,
+        "played":document.getElementById("played" + index).value,
+        "win":parseInt(document.getElementById("win" + index).innerText),
+        "lose":parseInt(document.getElementById("lose" + index).innerText),
+        "winSession":parseInt(document.getElementById("winSession" + index).innerText),
+        "loseSession":parseInt(document.getElementById("loseSession" + index).innerText),
+        "playedSession":parseInt(document.getElementById("playedSession" + index).innerText),
+      });
       Tweight += parseInt(document.getElementById("weight" + index).value)
       window.localStorage.setItem("Tweight", Tweight);
-      //console.log("Tweight "+ localStorage.getItem("Tweight"));
 
       games.push(game);
     }
-    //console.log(games);
     window.localStorage.setItem("count", parseInt(count));
-    window.localStorage.setItem("games", games);
+    window.localStorage.setItem("games", JSON.stringify(games));
+    console.log(JSON.parse(localStorage.getItem("games")));
     oldCount = count;
     load();
   }
 
 }
 // game = [title, weight, color, id, image, trueCount, cheatCount, played]
-function load() {  //to do : load colors
+// Load games, histo, resume session
+function load() {
   console.log("Je load");
   window.localStorage.getItem("count") == null ? window.localStorage.setItem("count", 0) : null;
-  //window.localStorage.getItem("games") == null ? window.localStorage.setItem("games",[]) : null;
-  //console.log(window.localStorage.getItem("count"));
-  //console.log(window.localStorage.getItem("games").split(','));
-  //console.log("ici");
-  let game = window.localStorage.getItem("games").split(',');
-  //console.log(count + "segments");
+  let games = JSON.parse(window.localStorage.getItem("games"));
+  if (games == null) games = [];
   Tweight = localStorage.getItem("Tweight");
   if (weightChanged) {
-    changeSize(game);
+    changeSize(games);
     weightChanged = false;
   }
 
   if (titleChanged) {
-    changeTitle(game);
+    changeTitle(games);
     titleChanged = false;
   }
   if (imageChanged) {
-    changeImage(game);
+    changeImage(games);
     imageChanged = false;
   }
   if (colorChanged) {
-    //console.log("jepasseici");
-    changeColor(game);
+    changeColor(games);
     colorChanged = false;
   }
   if (gameAdded) {
-    //console.log("jepasselà");
-    addGames(game);
+    addGames(games);
     gameAdded = false;
   }
   if (histoChanged) {
@@ -1874,11 +1815,10 @@ function load() {  //to do : load colors
   if (playedCountChanged) {
     playedCountChanged = false;
   }
-  updateWheel(game);
+  updateWheel(games);
 
 
-  window.localStorage.getItem("games");
-  //console.log(theWheel.segments);
+  window.localStorage.getItem("gamess");
   if (histo != '') {
     updateHisto();
   }
@@ -1886,7 +1826,6 @@ function load() {  //to do : load colors
     archiveChanged = false;
     updateResumeSession();
   }
-  //console.log(gamesArr);
   theWheel.draw();
   drawTriangle();
 }

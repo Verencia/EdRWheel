@@ -8,6 +8,10 @@
   padding: 6px 8px 8px;
   text-align: center;
   z-index: 99;
+  
+}
+
+.appear {
   animation: scale-up-center;
   animation-duration: 1s;
   animation-delay: 0s;
@@ -15,7 +19,6 @@
   animation-timing-function : linear;
   animation-iteration-count: 1;
 }
-
 #animations {
   display: none;
   
@@ -97,6 +100,12 @@ td.pw3
     position: fixed;
     height: 44.3%;   
 }
+.resumeSession {
+  height: 90%;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  display: flex;
+}
 .historique {
   height: 80%;
   flex-direction: column-reverse;
@@ -137,6 +146,9 @@ td.pw3
     position: fixed;
     
 }
+input:disabled {
+  background-color: white;
+}
 body {
     
     font-family: 'Roboto', sans-serif;
@@ -144,6 +156,19 @@ body {
 }
 .grid-canvas {
     background-color: #e6baa3;
+}
+.score {
+  border-color: #d24545;
+}
+.victory {
+  font-size: 42px;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: green;
+}
+.defeat {
+  font-size: 42px;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgba(255, 0, 0, 0.568);
 }
 
 .menuButton {
@@ -155,8 +180,6 @@ body {
 
 .menuButton2 {
     background-color: #e4debe;
-    
-    
 }
 
 .resetButton {
@@ -176,7 +199,9 @@ body {
 .borderGame {
     border-color: #000000;
 }
-
+.session {
+  background-color: #e4debe;
+}
 .borderGame2 {
     border-color: #a94438;
 }
@@ -194,7 +219,7 @@ body {
   transition-duration: 3s;
 }
 .hideGamesAnimation {
-  transform: translateY(89.7%);
+  transform: translateY(89%);
   transition-duration: 1s;
 }
 .hideGamesAnimation2 {
