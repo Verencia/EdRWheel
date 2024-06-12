@@ -5,6 +5,7 @@
   position: fixed;
   width: 300px;
   top: 25%; 
+  left: 42%;
   padding: 6px 8px 8px;
   text-align: center;
   z-index: 99;
@@ -39,41 +40,9 @@ h1, p
 
 div.power_controls
 {
-    margin-right:70px;
+    margin-right:10%;
+    margin-top: 35%;
 }
-
-
-
-/* Styles for the power selection controls */
-table.power
-{
-    background-color: #cccccc;
-    cursor: pointer;
-    
-    
-}
-
-table.power th
-{
-    background-color: white;
-}
-
-td.pw1
-{
-    background-color: #6fe8f0;
-}
-
-td.pw2
-{
-    background-color: #86ef6f;
-}
-
-td.pw3
-{
-    background-color: rgb(239, 111, 111);
-    
-}
-
 /* Style applied to the spin button once a power has been selected */
 .clickable
 {
@@ -81,12 +50,13 @@ td.pw3
 }
 
 .imageButton {
-    height: 23px;
-    width: 23px;
+    height: 30px;
+    width: 30px;
 }
 
 .nav {
     background-color:#d24545 ;
+
 }
 
 .menu {
@@ -99,6 +69,15 @@ td.pw3
     top: 55.85%;
     position: fixed;
     height: 44.3%;   
+}
+.menu3 {
+  /* margin-right: 72px; */
+  background-color:#d24545 ;
+  width: 66.2%;
+  position: fixed;
+  height: 84.85%;
+  left: 0%;
+  top: 15.15%;
 }
 .resumeSession {
   height: 90%;
@@ -113,8 +92,11 @@ td.pw3
   display: flex;
 }
 
+
 #games {
-  height: 80%;
+  height: 85%;
+  flex-direction: column;
+  
 }
 .ongletChosen {
   background-color:#d24545 ;
@@ -132,23 +114,18 @@ td.pw3
 .showContentFlex {
   display: flex;
 }
-.menu3 {
-    margin-right: 72px;
-    background-color:#d24545 ;
-    width: 48%;
-    position: fixed;
-    height: 44.3%;
-    left: 0%;
-    top: 55.85%;
-}
+
 .div_menu {
-    height: 44.3%;
+    height: 84.85%;
     position: fixed;
+    left: 0%;
+    top: 15.15%;
     
 }
 input:disabled {
   background-color: white;
 }
+ body{overflow:hidden;}
 body {
     
     font-family: 'Roboto', sans-serif;
@@ -173,7 +150,7 @@ body {
 
 .menuButton {
     background-color: #e4debe;
-    font-size: larger;
+    font-size: large;
     -webkit-text-stroke-width: 1px;
     -webkit-text-stroke-color: black;
 }
@@ -207,7 +184,7 @@ body {
 }
 
 .menuGame {
-    background-color: #e76f62;
+    background-color: #d24545;
 }
 
 .hideHistoAnimation {
@@ -219,12 +196,12 @@ body {
   transition-duration: 3s;
 }
 .hideGamesAnimation {
-  transform: translateY(89%);
+  transform: translateY(100%);
   transition-duration: 1s;
 }
 .hideGamesAnimation2 {
   transform: translateY(10%);
-  transition-duration: 3s;
+  transition-duration: 5s;
 }
 
 .appearAnimation {
@@ -260,7 +237,12 @@ body {
 #menuOpt {
     direction: rtl;
 }
-
+.menuClosed {
+  background-color: #d24545;
+}
+#cogMenu {
+  top:96.65%;
+}
 .ltr {
     direction: ltr;
 }
