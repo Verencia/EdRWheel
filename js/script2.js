@@ -184,7 +184,6 @@ function resetWheel() {
   wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
   drawTriangle();
 }
-// not used
 function initWheel(idCanvas) {
   theWheel = new Winwheel({
     'canvasId': idCanvas,
@@ -235,7 +234,7 @@ function alertPrize() {
   //menuButton  text-white font-bold py-2 px-4 rounded
   let buttonHide = document.createElement("button");
   buttonHide.innerText = "Ne pas compter";
-  buttonHide.setAttribute("onclick", "cheatCount(" + winningSegment.id + ",'" + winningSegment.text + "'," + winningSegment.size + ")");
+  buttonHide.setAttribute("onclick", "cheatCount(" + winningSegment.id  + ",'" + winningSegment.text + "'," + winningSegment.size + ")");
   buttonHide.classList.add("menuButton", "text-white", "font-bold", "py-2", "px-2", "rounded")
 
   let buttonClose = document.createElement("button");
@@ -270,6 +269,7 @@ function countTrue(winningSegmentId, winningSegmentText, winningSegmentSize) {
   //console.log("winningSegmentId " + winningSegmentId)
   //console.log("winningSegmentId-- " + winningSegmentId)
   document.getElementById("trueCount" + winningSegmentId).innerText = parseInt(document.getElementById("trueCount" + winningSegmentId).innerText) + 1;
+  document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
   alertDiv.style.display = "none";
   histoChanged = true;
   document.getElementById("played" + winningSegmentId).value = parseInt(document.getElementById("played" + winningSegmentId).value) + 1;
@@ -283,6 +283,8 @@ function addPlayedGame(winningSegmentId, winningSegmentText, winningSegmentSize)
   //console.log("winningSegmentId " + winningSegmentId)
   //console.log("winningSegmentId-- " + winningSegmentId)
   histoChanged = true;
+  document.getElementById("trueCount" + winningSegmentId).innerText = parseInt(document.getElementById("trueCount" + winningSegmentId).innerText) + 1;
+  document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
   addToHisto(true, winningSegmentText, winningSegmentId, winningSegmentSize);
 
 }
@@ -363,6 +365,7 @@ function updateHisto() {
   let histoCount = 0;
   histo.forEach(tirage => {
     let winningSegmentId = tirage.id;
+    let winningSegmentTitle = tirage.title;
     let div = document.createElement("div");
     let divTexte = document.createElement("div");
     let divButton = document.createElement("div");
@@ -448,7 +451,7 @@ function updateHisto() {
     pPosition.classList.add("hideContent");
     //console.log("ici !" +tirage.bool)
     if (tirage.bool == true) {
-      p.innerText = "Vous avez tiré " + tirage.title + " - Auto " + tirage.trueCount+ "(" + tirage.cheatCount + ")" + " - (" + tirage.percent+ "%)";
+      p.innerText = "Vous avez tiré " + tirage.title + " - Joué " + tirage.trueCount+ "(" + tirage.cheatCount + ")" + " - (" + tirage.percent+ "%)";
     } else {
       p.innerText = "Vous avez tiré " + tirage.title + " - Cheaté " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent+ "%)";
     }
@@ -476,6 +479,29 @@ function updateHisto() {
   save();
 }
 //resultsHisto[idHisto,resultChosen,result]
+function updateIdHisto() {
+  histo = (localStorage.getItem('histo'));
+  if (histo != "") {
+    histo = (JSON.parse(localStorage.getItem("histo")));
+  } else {
+    histo = [];
+  }
+  games = JSON.parse(localStorage.getItem("games"));
+
+  games.forEach(game => {
+    let id = game.id;
+    let title = game.title;
+    histo.forEach(tirage => {
+      if (tirage.title == String(title)) {
+        console.log("Oui c'est égale");
+        tirage.id = id - 1;
+        console.log(tirage.id );
+      }
+    });
+  });
+  localStorage.setItem('histo', JSON.stringify(histo));
+  updateHisto();
+}
 // When you clicked on W button
 // Add result to resultsHisto
 function winButton(histoCount, winningSegmentId) {
@@ -483,9 +509,15 @@ function winButton(histoCount, winningSegmentId) {
   let divResultat = document.getElementById("divResultat" + histoCount);
   let pResultChosen = document.getElementById("pResultChosen" + histoCount);
   let pResult = document.getElementById("pResult" + histoCount);
+  //let games = JSON.parse(window.localStorage.getItem("games"));
+  /* let winningSegmentId;
+  games.forEach(game => {
+    if (game.title == winningSegmentTitle) {
+      winningSegmentId = game.id - 1;
+    }
+  }); */
   let win = document.getElementById("win" + winningSegmentId);
   let winSession = document.getElementById("winSession" + winningSegmentId);
-  
   resultsHisto = localStorage.getItem("resultsHisto");
   if (resultsHisto != "") {
     resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
@@ -553,6 +585,7 @@ function swapResult(histoCount, winningSegmentId) {
   let divResultat = document.getElementById("divResultat" + histoCount);
   let pResult = document.getElementById("pResult" + histoCount);
   console.log(pResult);
+  
   let win = document.getElementById("win" + winningSegmentId);
   let winSession = document.getElementById("winSession" + winningSegmentId);
   let lose = document.getElementById("lose" + winningSegmentId);
@@ -631,7 +664,7 @@ function archiveSession() {
   let histoCount = 0;
   window.localStorage.setItem("histoCount", histoCount);
   for (let index = 0; index < histo.length; index++) {
-    if (document.getElementById("pResultChosen" + index).innerText == false) {
+    if (document.getElementById("pResultChosen" + index).innerText == "false") {
       confirm("Merci de choisir un résultat pour les runs terminées");
       return;
     }
@@ -790,9 +823,9 @@ function showTirage(sessionCount, date) {
       let pPosition = document.createElement("p");
 
       div.style.backgroundColor = "#ffe88f";
-      div.classList.add("border-solid", "border-2", "border-black", "mb-1","flex")
+      div.classList.add("border-solid", "border-2", "border-black", "mb-1","grid","grid-cols-3")
 
-      divTexte.classList.add( "ml-1","flex")
+      divTexte.classList.add( "ml-1","flex","col-span-2")
 
       divResultat.id = "divResultat" + histoCount;
       divResultat.classList.add("ml-4");
@@ -830,7 +863,7 @@ function showTirage(sessionCount, date) {
         tirage.text = replaceChar(tirage.text,"...",16);
       }
       if (tirage.trueOrCheat == true) {
-        p.innerText = "Vous avez tiré " + tirage.text + " - Auto " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent + "%)";
+        p.innerText = "Vous avez tiré " + tirage.text + " - Joué " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent + "%)";
       } else {
         p.innerText = "Vous avez tiré " + tirage.text + " - Cheaté " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent + "%)";
       }
@@ -1019,7 +1052,7 @@ function addGame() {
 
   let buttonDelete = document.createElement("button");
   buttonDelete.id = "buttonDelete" + count;
-  buttonDelete.classList.add("text-white", "bg-red-700", "col-span-2");
+  buttonDelete.classList.add("text-white", "bg-red-700", "col-span-2","buttonDelete");
   buttonDelete.innerText = "DELETE";
   buttonDelete.setAttribute("onclick", "deleteGame(" + count + ")");
 
@@ -1060,10 +1093,11 @@ function addGame() {
   played.setAttribute('disabled', '');
 
   let divEmpty = document.createElement("div");
+
   let addPlayed = document.createElement("button");
   addPlayed.id = "addPlayed" + count;
   addPlayed.innerText = "Ajouter partie";
-  addPlayed.classList.add("text-white", "bg-blue-700", "mr-1");
+  addPlayed.classList.add("text-white", "bg-blue-700", "mr-1","addPlayed");
   addPlayed.setAttribute("onclick", "addPlayed(" + count + ")");
 
   let win = document.createElement("p");
@@ -1200,23 +1234,31 @@ function showGameDetails(id) {
 $( function() {
   $( "#games" ).sortable({
     stop: function( event, ui ) {
-      gameAdded = true;
       colorChanged = true;
       imageChanged = true;
       weightChanged = true;
       titleChanged = true;
+      gameAdded = true;
       save();
+      updateIdHisto();
+
+      
     }
   });
 } );
+function hideGameOnWheel(id) {
+  document.getElementById("weight"+id).value = 0;
+  weightChanged = true;
+  save();
+}
 // Load already existing games
 function addGames(games) {
   var lilcount = 0;
 
-  while (document.getElementById("games").firstChild) { // while there is still a child inside the parent
+  /* while (document.getElementById("games").firstChild) { // while there is still a child inside the parent
     document.getElementById("games").removeChild(document.getElementById("games").firstChild); // remove the first child
-  }
-
+  } */
+  $("#games").empty();
   games.forEach(game => {
     let div = document.createElement("div");
     let divDetails = document.createElement("div");
@@ -1229,11 +1271,18 @@ function addGames(games) {
     div.setAttribute('draggable', true);
 
     let cogImage = document.createElement("img");
-    cogImage.classList.add("hideMenu","self-center","ml-5","mr-1");
+    cogImage.classList.add("hideMenu","self-center","ml-1","mr-2");
     cogImage.src = ImgPath + "cog.svg";
     cogImage.style.height = "25px";
     cogImage.style.width = "25px";
     cogImage.setAttribute("onclick", "showGameDetails("+lilcount+")");
+
+    let hideImage = document.createElement("img");
+    hideImage.classList.add("hideMenu","self-center","mr-1");
+    hideImage.src = ImgPath + "hide.png";
+    hideImage.style.height = "25px";
+    hideImage.style.width = "25px";
+    hideImage.setAttribute("onclick", "hideGameOnWheel("+lilcount+")");
 
     divDetails.id = "div_det_" + lilcount;
     divDetails.classList.add("flex","border-solid", "border-2", "borderGame2", "rounded-md", "p-1");
@@ -1329,7 +1378,7 @@ function addGames(games) {
 
     let buttonDelete = document.createElement("button");
     buttonDelete.id = "buttonDelete" + lilcount;
-    buttonDelete.classList.add("text-white", "bg-red-700","px-2","rounded");
+    buttonDelete.classList.add("text-white", "bg-red-700","px-2","rounded","buttonDelete");
     buttonDelete.innerText = "SUPPRIMER";
     buttonDelete.setAttribute("onclick", "deleteGame(" + lilcount + ")");
     
@@ -1394,7 +1443,7 @@ function addGames(games) {
     let addPlayed = document.createElement("button");
     addPlayed.id = "addPlayed" + lilcount;
     addPlayed.innerText = "Ajouter partie";
-    addPlayed.classList.add("text-white", "bg-blue-700", "mr-1","px-2","rounded");
+    addPlayed.classList.add("text-white", "bg-blue-700", "mr-1","px-2","rounded","addPlayed");
     addPlayed.setAttribute("onclick", "addPlayed(" + lilcount + ")");
 
     let win = document.createElement("p");
@@ -1475,6 +1524,7 @@ function addGames(games) {
     div.appendChild(img);
     div.appendChild(divDetails);
     div.appendChild(cogImage);
+    div.appendChild(hideImage);
     document.getElementById("games").appendChild(div);
     gamesArr.push(div);
     lilcount++;
@@ -1504,12 +1554,15 @@ function deleteGame(id) {
     let games = JSON.parse(window.localStorage.getItem("games"));
     console.log("avant");
     games.forEach(game => {
+      console.log("gameId "+ game.id + " id +1 " + id+1)
       if (game.id == id + 1 && !deleted) {
+        console.log("DELETE")
         Tweight -= parseInt(game.weight);
         window.localStorage.setItem("Tweight", Tweight)
         games.splice(games.indexOf(game), 1);
         deleted = true;
       }
+      //if (deleted && game.id > id + 1) game.id = game.id - 1;
     });
     theWheel.deleteSegment(id + 1);
     theWheel.segments.pop();
@@ -1672,17 +1725,32 @@ function updateWheel(games) {
         'textStrokeStyle': "#000000" 
       });
       counter++;
-      theWheel.updateSegmentSizes();
+      
     }
     
   }
   else if (theWheel.segments[parseInt(game.id)] && game.weight == 0){
     theWheel.segments[parseInt(game.id)].size = 0;
     theWheel.segments[parseInt(game.id)].text = ""; 
-    theWheel.updateSegmentSizes();
   }
+  theWheel.updateSegmentSizes();
   });
-  
+  updateTextsWheel();
+}
+
+function updateTextsWheel(){
+  theWheel.segments.forEach(element => {
+    if (element != null) {
+      console.log((element.text).length );
+      if ((element.text).length >= 17) {
+        element.textFontSize = 16;
+      }
+      else if ((element.text).length >= 14) {
+        element.textFontSize = 18;
+      }
+    }
+    
+  });
 }
 // Draws little triangle on the wheel
 function drawTriangle() {
@@ -2052,6 +2120,13 @@ function save() {
         "loseSession":parseInt(this.querySelector('.loseSession').innerText),
         "playedSession":parseInt(this.querySelector('.playedSession').innerText),
       });
+      //$("#buttonDelete"+(counter-1)).attr("onclick","");
+      //$("#addPlayed"+(counter-1)).attr("onclick","");
+      //console.log(this.querySelector('.buttonDelete'+(counter-1)).innerText)
+      this.querySelector('.addPlayed').setAttribute("onclick", "addPlayed(" + (counter-1) + ")");
+      this.querySelector('.buttonDelete').setAttribute("onclick", "deleteGame(" + (counter-1) + ")");
+      //$("#buttonDelete"+(counter-1)).attr("onclick","deleteGame("+(counter-1)+")");
+      //$("#addPlayed"+(counter-1)).attr("onclick","addPlayed("+(counter-1)+")");
       Tweight += parseInt(this.querySelector('.weight').value)
       window.localStorage.setItem("Tweight", Tweight);
       counter++;
@@ -2074,7 +2149,6 @@ function save() {
       }); */
       
     //}
-    
     window.localStorage.setItem("count", parseInt(count));
     window.localStorage.setItem("games", JSON.stringify(games));
     console.log(JSON.parse(localStorage.getItem("games")));
@@ -2177,7 +2251,6 @@ function load() {
   updateWheel(games);
 
 
-  window.localStorage.getItem("gamess");
   if (histo != '') {
     updateHisto();
   }
@@ -2189,5 +2262,3 @@ function load() {
   drawTriangle();
   updateWinLoseTotal();
 }
-
-
