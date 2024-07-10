@@ -25,6 +25,7 @@ var param = 13;
 var winTotal = localStorage.getItem("winTotal");
 var loseTotal = localStorage.getItem("loseTotal");
 var histoCount = window.localStorage.getItem("histoCount");
+var  archiveCheated = localStorage.getItem("archiveCheated");
 var count = window.localStorage.getItem("count").toString();
 var oldCount = count;
 var histo = window.localStorage.getItem("histo");
@@ -76,7 +77,11 @@ if (archive == null) {
   archive = [];
   window.localStorage.setItem("archive", archive);
 }
-
+if (archiveCheated == null) {
+  console.log("archarchiveCheatedive est null !")
+  archiveCheated = [];
+  window.localStorage.setItem("archiveCheated", archiveCheated);
+}
 if (histoTirage == null) {
   console.log("histoTirage est null !")
   histoTirage = [];
@@ -90,11 +95,11 @@ var theWheel = new Winwheel({
   'animation':                   // Note animation properties passed in constructor parameters.
   {
     'type': 'spinToStop',  // Type of animation.
-    'duration': 1,    // Duration in seconds.
-    'spins': 1,               // The number of complete 360 degree rotations the wheel is to do.
+    'duration': 5,    // Duration in seconds.
+    'spins': 10,               // The number of complete 360 degree rotations the wheel is to do.
     // Remember to do something after the animation has finished specify callback function.
+    'callbackSound' : 'playTickSound()',
     'callbackAfter': 'drawTriangle()',
-    //'callbackSound' : 'playTickSound()',
     'callbackFinished': 'alertPrize()'
   },
 });
@@ -192,10 +197,11 @@ function initWheel(idCanvas) {
     'animation':                   // Note animation properties passed in constructor parameters.
     {
       'type': 'spinToStop',  // Type of animation.
-      'duration': 1,             // How long the animation is to take in seconds.
-      'spins': 1,              // The number of complete 360 degree rotations the wheel is to do.
+      'duration': 5,             // How long the animation is to take in seconds.
+      'spins': 10,              // The number of complete 360 degree rotations the wheel is to do.
       // Remember to do something after the animation has finished specify callback function.
       'callbackAfter': 'drawTriangle()',
+      'callbackSound' : 'playTickSound()',
       'callbackFinished': 'alertPrize()'
     },
   });
@@ -213,7 +219,7 @@ function alertPrize() {
   alertDiv.classList.add("appear");
   let textGame = document.getElementById("title"+winningSegment.id).value;
   // Basic alert of the segment text which is the prize name.
-  //audio.play();
+  PrizeAudio.play();
   let text = document.createElement("label");
   text.innerHTML = "Tu vas runner sur <b>" + winningSegment.text + "</b> ! (" + winwheelDegreesToPercent(winningSegment.size) + "%)";
 
@@ -651,6 +657,8 @@ function archiveSession() {
   archiveChanged = true;
   histo = (localStorage.getItem('histo'));
   resultsHisto = localStorage.getItem("resultsHisto");
+   archiveCheated = localStorage.getItem("archiveCheated");
+
   if (histo != "") {
     histo = (JSON.parse(localStorage.getItem("histo")));
   } else {
@@ -661,6 +669,12 @@ function archiveSession() {
   } else {
     resultsHisto = [];
   }
+  if (archiveCheated != "") {
+    archiveCheated = (JSON.parse(localStorage.getItem("archiveCheated")));
+  } else {
+    archiveCheated = [];
+  }
+
   let histoCount = 0;
   window.localStorage.setItem("histoCount", histoCount);
   for (let index = 0; index < histo.length; index++) {
@@ -677,16 +691,30 @@ function archiveSession() {
     histoTirage = [];
   }
   let arrTirage = [];
-
+  let arrTirageCheat = {};
   histo.forEach(tirage => {
     resultsHisto.forEach(result => {
       if (histoCount == parseInt(result.id)) {
         arrTirage.push({ "id": tirage.id, "percent": tirage.percent, "cheatCount": tirage.cheatCount, "trueCount": tirage.trueCount, "text": tirage.title, "trueOrCheat": tirage.bool, "wonOrLost": result.result });
+        if (!tirage.bool) {
+          if (!(tirage.title in arrTirageCheat)) {
+            // no order found, add this one
+            arrTirageCheat[tirage.title] = 1
+          } else{
+            // order found, add the date
+            arrTirageCheat[tirage.title] += 1
+          }
+        }
       }
     });
+    
     histoCount++;
   });
-  console.log(arrTirage);
+  archiveCheated.push(arrTirageCheat);
+  localStorage.setItem("archiveCheated", JSON.stringify(archiveCheated));
+  console.log( JSON.parse(localStorage.getItem("archiveCheated")));
+  console.log(arrTirageCheat);
+  //console.log(arrTirage);
   histo = [];
   resultsHisto = [];
   archive = (localStorage.getItem("archive"));
@@ -740,6 +768,14 @@ function updateResumeSession() {
   let loseTotal = 0;
   let sessionCount = 0;
   archive = (JSON.parse(localStorage.getItem("archive")));
+  archiveCheated = localStorage.getItem("archiveCheated");
+  
+  if (archiveCheated != "") {
+    archiveCheated = (JSON.parse(localStorage.getItem("archiveCheated")));
+  } else {
+    archiveCheated = [];
+  }
+  console.log(archiveCheated[0]);
   archive.forEach(archivedGame => {
     let win = 0;
     let lose = 0;
@@ -768,6 +804,22 @@ function updateResumeSession() {
       p.innerText = gameResults.title + " " + gameResults.win + "W / " + gameResults.lose + "L";
       divRight.appendChild(p);
     });
+    
+    let object = archiveCheated[sessionCount];
+    if (!isEmpty(object)) {
+      let p = document.createElement("p");
+      p.innerText = "Run cheatées : ";
+      divRight.appendChild(p);
+      for (const key in object) {
+        if (Object.hasOwnProperty.call(object, key)) {
+          let p = document.createElement("p");
+          p.innerText = key + " " + object[key];
+          divRight.appendChild(p);
+        }
+      }
+    }
+    
+      
     sessionDate.innerText = "Résumé session " + archivedGame[0].date;
     divLeft.appendChild(sessionDate);
     score.innerText = "Score : " + win + "W / " + lose + "L " + " | Score Total : " + winTotal + "W / " + loseTotal + "L";
@@ -781,8 +833,18 @@ function updateResumeSession() {
     //localStorage.setItem("winTotal", winTotal);
     //localStorage.setItem("loseTotal", loseTotal);
     sessionCount++;
+
   });
   //updateWinLoseTotal();
+}
+function isEmpty(obj) {
+  for (const prop in obj) {
+    if (Object.hasOwn(obj, prop)) {
+      return false;
+    }
+  }
+
+  return true;
 }
 // Allows to see draws of selected session
 function showTirage(sessionCount, date) {
@@ -1125,6 +1187,16 @@ function addGame() {
   playedSession.innerText = 0;
   playedSession.classList.add("hideContent","playedSession");
 
+  let oldWeight = document.createElement("p");
+    oldWeight.id = "oldWeight" + count;
+    oldWeight.innerText = 0;
+    oldWeight.classList.add("hideContent","oldWeight");
+
+  let gameHidden = document.createElement("p");
+  gameHidden.id = "gameHidden" + count;
+  gameHidden.innerText = "false"
+  gameHidden.classList.add("hideContent","gameHidden");  
+
   div.appendChild(img);
   divGrid.appendChild(titleResult);
   divGrid.appendChild(title);
@@ -1159,6 +1231,9 @@ function addGame() {
   divGrid.appendChild(winSession);
   divGrid.appendChild(loseSession);
   divGrid.appendChild(playedSession);
+  divGrid.appendChild(oldWeight);
+  divGrid.appendChild(gameHidden);
+
   divDetails.appendChild(divGrid);
   div.appendChild(divDetails);
   document.getElementById("games").appendChild(div);
@@ -1247,9 +1322,24 @@ $( function() {
   });
 } );
 function hideGameOnWheel(id) {
-  document.getElementById("weight"+id).value = 0;
+  let hidden = document.getElementById("gameHidden"+id).innerText;
+  let val = document.getElementById("weight"+id).value;
+  let oldVal = document.getElementById("oldWeight"+id).innerText;
+  if (hidden == "false") {
+    document.getElementById("weight"+id).value = 0;
+    document.getElementById("oldWeight"+id).innerText = val;
+    document.getElementById("gameHidden"+id).innerText = "true";
+  } else {
+    document.getElementById("weight"+id).value = parseInt(oldVal);
+    document.getElementById("gameHidden"+id).innerText = "false";
+  }
+  
+  
+  
+  
   weightChanged = true;
   save();
+  
 }
 // Load already existing games
 function addGames(games) {
@@ -1476,6 +1566,20 @@ function addGames(games) {
     detailsOpened.innerText = "false";
     detailsOpened.classList.add("hideContent");
 
+    let oldWeight = document.createElement("p");
+    oldWeight.id = "oldWeight" + lilcount;
+    oldWeight.innerText = game.oldWeight;
+    oldWeight.classList.add("hideContent","oldWeight");
+
+    let gameHidden = document.createElement("p");
+    gameHidden.id = "gameHidden" + lilcount;
+    if (game.weight == 0) {
+      gameHidden.innerText = "true";
+    }else {
+      gameHidden.innerText = "false"
+    }
+    gameHidden.classList.add("hideContent","gameHidden");
+
     /* let no = document.createElement("img");
     no.src = ImgPath + "giphy.gif";
     no.style.height = "50px";
@@ -1519,6 +1623,8 @@ function addGames(games) {
     divGrid.appendChild(loseSession);
     divGrid.appendChild(playedSession);
     divGrid.appendChild(detailsOpened);
+    divGrid.appendChild(oldWeight);
+    divGrid.appendChild(gameHidden);
 
     divDetails.appendChild(divGrid);
     div.appendChild(img);
@@ -1741,7 +1847,7 @@ function updateWheel(games) {
 function updateTextsWheel(){
   theWheel.segments.forEach(element => {
     if (element != null) {
-      console.log((element.text).length );
+      //console.log((element.text).length );
       if ((element.text).length >= 17) {
         element.textFontSize = 16;
       }
@@ -2100,7 +2206,7 @@ function save() {
   if (count != oldCount || gameAdded || playedCountChanged || resultChanged || histoChanged || weightChanged || colorChanged || titleChanged || imageChanged) {
     console.log("Je save");
     var games = [];
-    console.log(games);
+    //console.log(games);
     Tweight = 0;
     let counter = 1;
     $('#games').children('.box').each(function () {
@@ -2119,6 +2225,8 @@ function save() {
         "winSession":parseInt(this.querySelector('.winSession').innerText),
         "loseSession":parseInt(this.querySelector('.loseSession').innerText),
         "playedSession":parseInt(this.querySelector('.playedSession').innerText),
+        "oldWeight":parseInt(this.querySelector('.oldWeight').innerText), 
+
       });
       //$("#buttonDelete"+(counter-1)).attr("onclick","");
       //$("#addPlayed"+(counter-1)).attr("onclick","");
@@ -2151,7 +2259,7 @@ function save() {
     //}
     window.localStorage.setItem("count", parseInt(count));
     window.localStorage.setItem("games", JSON.stringify(games));
-    console.log(JSON.parse(localStorage.getItem("games")));
+    //console.log(JSON.parse(localStorage.getItem("games")));
     oldCount = count;
     load();
   }
