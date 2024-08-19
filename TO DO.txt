@@ -1,0 +1,40 @@
+
+TO DO
+roue qui se tp de droite à gauche
+cacher 2nd roue
+Ajouter un easter egg avec le tuer de bougnoules avec la tete de romain et fred 
+
+
+FAIT
+fusionner les menus d'options, voir schéma
+petits menu option en bas à gauche quand fermé et oeils à droite quand ouvert, ne pas faire depop
+Enlever puissance, bonton spin et reset plus gros, laisser à droite
+baisser le menu seulement si l'onglet est actif
+reduire la taille du jeu en affichant seulement nom image ajouter partie, petits engrenage
+Changer l'ordre des jeux dans la roue
+FIX DELETE
+changer score quand win et lose pas quand archive 
+Joué aulieu de auto dans histo
+avoir un compteur pour traquer les cartes sorties; qu’on peut éditer. Un bouton si on veut qu’on compte et un comptage auto. Ex: Isaac 2 (3). [Pour vérifier la triche]message erreur archiver si pas score
+archiver session mal placé sur écran romain 
+roue mal placé chez Romain 
+ajouter ombre sur menu top 
+Réaligner l'historique comme avant
+enregistrer ancienne valeur poid quand on cache
+bigger spin et reset police
+pas barre grise au top?
+1px rouge en bas?
+montrer les runs cheatés dans archive 
+Run Cheaté: Isaac (2) - Petit jeu 2 (1) - la mère à maipuf (3)
+scrollable chez romain pas chez moi ?
+curseur click sur menus
+espace entre le menus et menu nav/titre
+enlever scrollbar
+
+FAIT ?
+ajouter jeu au début de la liste ?
+Changer taille texte roue quand trop grand ?
+bug quand on fini par run cheaté
+changer texte quand ajouter manuellement
+Mettre des textes style " y'a rien ici pour le moment"
+tirage ignoré buggué

@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 #alert {
   display: none;
   background-color: #f58478;
@@ -70,6 +74,13 @@ div.power_controls
     position: fixed;
     height: 44.3%;   
 }
+.title {
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
 .menu3 {
   /* margin-right: 72px; */
   background-color:#d24545 ;
@@ -77,7 +88,7 @@ div.power_controls
   position: fixed;
   height: 84.85%;
   left: 0%;
-  top: 15.65%;
+  top: 15.7%;
 }
 .resumeSession {
   height: 90%;
@@ -92,11 +103,13 @@ div.power_controls
   display: flex;
 }
 
-
 #games {
   height: 85%;
   flex-direction: column;
-  
+  scrollbar-width: none;
+}
+.noScrollBar {
+  scrollbar-width: none;
 }
 .ongletChosen {
   background-color:#d24545 ;
@@ -110,6 +123,11 @@ div.power_controls
 }
 .showContent {
   display: block;
+}
+
+.showContent2 {
+  transform: translate(-100%,20%);
+  transition-duration: 1s;
 }
 .showContentFlex {
   display: flex;
@@ -127,7 +145,7 @@ input:disabled {
 }
  body{overflow:hidden;}
 body {
-    
+    z-index:99;
     font-family: 'Roboto', sans-serif;
     background-image: url(../image/backg.png);
 }
@@ -209,6 +227,37 @@ body {
   transition-duration: 1s;
 }
 
+.moveToRightSide {
+  transform: translate(150%,-10%);
+  transition-duration: 1s;
+}
+
+.backToMiddle{
+  animation: appear2 1s ;
+}
+
+.moveToRightSide2 {
+  animation: slideCanvas2 1s;
+}
+
+.easterShip {
+  position: fixed;
+  animation: slideEaster 5s 1 linear forwards;
+}
+
+.backToMiddle2{
+  /* transform: translate(-100%,35%);
+  transition-duration: 1s; */
+  animation: slideCanvas 1s;
+}
+
+.slideUp {
+  animation: slide2 0.8s;
+}
+
+.slideDown {
+  animation: slide 1s;
+}
 
 .menuHisto {
     background-color: #e76f62;
@@ -216,6 +265,75 @@ body {
 .divDetail {
     background-color: #e4debe;
     font-weight: bold;
+}
+
+@keyframes slideCanvas {
+  from { 
+    transform: translateX(-100%) translateY(35%);
+    margin-bottom: 10%;
+  }to {
+    transform: translate(0%,0%);
+    margin-bottom: 0%;
+  }
+}
+
+@keyframes slideCanvas2 {
+  
+    
+    
+
+  0% {
+    transform: translate(-100%,35%) scale(1.5);
+    
+  }
+  
+  100% {
+    transform: translate(0%,0%) scale(1);
+    margin-bottom: 0%;
+  }
+}
+
+@keyframes slide {
+  
+  0% {
+    transform: translateY(-80%);
+    
+  }
+  50% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes slideEaster {
+  
+  0% {
+    transform: translateX(0%);
+    opacity: 1;
+    
+  }
+  100% {
+    transform: translateX(800%);
+    opacity: 0;
+    display: none;
+  }
+}
+
+@keyframes slide2 {
+  
+
+  0% {
+    transform: translateY(25%);
+  }
+  50% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+  
 }
 
 @keyframes slideaway {
@@ -344,6 +462,19 @@ body {
     to {
       transform: scale(1);
     }
+  }
+
+  @keyframes appear2 {
+    from{
+      transform: translate(100%,-20%) scale(0.656);
+      margin-bottom: 40%;
+    }
+    to {
+      transform: translate(0%,0%) scale(1);
+      margin-bottom: 0%;
+    }
+    
+    
   }
  
 @-webkit-keyframes scale-up-center {

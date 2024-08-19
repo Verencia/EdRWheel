@@ -1,5 +1,6 @@
 const PrizeAudio = new Audio("../sounds/congratulation.mp3");
 const TickAudio = new Audio("../sounds/tick.mp3");
+const PirateAudio = new Audio("../sounds/pirate.mp3");
 const ImgPath = "../image/";
 var canvas = document.getElementById("myCanvas");
 var wheelPower = 0;
@@ -244,7 +245,7 @@ function alertPrize() {
   buttonHide.classList.add("menuButton", "text-white", "font-bold", "py-2", "px-2", "rounded")
 
   let buttonClose = document.createElement("button");
-  buttonClose.innerText = "Close";
+  buttonClose.innerText = "Fermer";
   buttonClose.setAttribute("onclick", "closeDialog()");
   buttonClose.classList.add("resetButton", "text-white", "font-bold", "py-2", "px-4", "rounded", "mt-1")
 
@@ -275,7 +276,7 @@ function countTrue(winningSegmentId, winningSegmentText, winningSegmentSize) {
   //console.log("winningSegmentId " + winningSegmentId)
   //console.log("winningSegmentId-- " + winningSegmentId)
   document.getElementById("trueCount" + winningSegmentId).innerText = parseInt(document.getElementById("trueCount" + winningSegmentId).innerText) + 1;
-  document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
+  //document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
   alertDiv.style.display = "none";
   histoChanged = true;
   document.getElementById("played" + winningSegmentId).value = parseInt(document.getElementById("played" + winningSegmentId).value) + 1;
@@ -291,7 +292,7 @@ function addPlayedGame(winningSegmentId, winningSegmentText, winningSegmentSize)
   histoChanged = true;
   document.getElementById("trueCount" + winningSegmentId).innerText = parseInt(document.getElementById("trueCount" + winningSegmentId).innerText) + 1;
   document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
-  addToHisto(true, winningSegmentText, winningSegmentId, winningSegmentSize);
+  addToHisto("manu", winningSegmentText, winningSegmentId, winningSegmentSize);
 
 }
 // Get the ID and text of the winning segment
@@ -348,6 +349,7 @@ function addToHisto(bool, winningSegmentText, winningSegmentId, winningSegmentSi
 
 // Show histo[id,%,cheatCount,trueCount,text,bool] reverse
 function updateHisto() {
+  
   divHisto = document.getElementById("historique");
   histo = (localStorage.getItem('histo'));
   resultsHisto = localStorage.getItem("resultsHisto");
@@ -458,13 +460,16 @@ function updateHisto() {
     //console.log("ici !" +tirage.bool)
     if (tirage.bool == true) {
       p.innerText = "Vous avez tiré " + tirage.title + " - Joué " + tirage.trueCount+ "(" + tirage.cheatCount + ")" + " - (" + tirage.percent+ "%)";
-    } else {
+    } else if (tirage.bool == "manu") {
+      p.innerText = "Vous avez ajouté une run de : " + tirage.title + " - " + tirage.trueCount+ "(" + tirage.cheatCount + ")";
+    }
+    else {
       p.innerText = "Vous avez tiré " + tirage.title + " - Cheaté " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent+ "%)";
     }
     divTexte.appendChild(p);
 
     divResultat.appendChild(p2);
-    if (tirage.bool == true) {
+    if (tirage.bool == true || tirage.bool == "manu") {
       divButton.appendChild(buttonW);
       divButton.appendChild(buttonL);
 
@@ -481,6 +486,10 @@ function updateHisto() {
     divHisto.appendChild(div);
     histoCount++;    
   });
+  if (histoCount != 0) {
+    document.getElementById("textHisto").classList.add("hideContent");
+    document.getElementById("textHisto").classList.remove("showContent");
+  }
       
   save();
 }
@@ -654,6 +663,7 @@ function addZero(i) {
 // game[title,weight,color,id,imgName,trueCount,cheatCount,played,win,lose,winSession,loseSession,playedSession]
 // Archive draws 
 function archiveSession() {
+  
   archiveChanged = true;
   histo = (localStorage.getItem('histo'));
   resultsHisto = localStorage.getItem("resultsHisto");
@@ -683,6 +693,8 @@ function archiveSession() {
       return;
     }
   }
+  document.getElementById("textHisto").classList.remove("hideContent");
+  document.getElementById("textHisto").classList.add("showContent");
   let games = JSON.parse(window.localStorage.getItem("games"));
   histoTirage = (localStorage.getItem("histoTirage"));
   if (histoTirage != "") {
@@ -696,7 +708,7 @@ function archiveSession() {
     resultsHisto.forEach(result => {
       if (histoCount == parseInt(result.id)) {
         arrTirage.push({ "id": tirage.id, "percent": tirage.percent, "cheatCount": tirage.cheatCount, "trueCount": tirage.trueCount, "text": tirage.title, "trueOrCheat": tirage.bool, "wonOrLost": result.result });
-        if (!tirage.bool) {
+        if (tirage.bool ==  false) {
           if (!(tirage.title in arrTirageCheat)) {
             // no order found, add this one
             arrTirageCheat[tirage.title] = 1
@@ -724,6 +736,7 @@ function archiveSession() {
     archive = [];
   }
   let arrArchive = [];
+  arrArchive.push({"date": today()});
   games.forEach(game => {
     if (parseInt(game.playedSession) != 0) {
       var toBeArchived = { "title": game.title, "win": game.winSession, "lose": game.loseSession, "played": game.playedSession, "date": today() };
@@ -753,9 +766,9 @@ function today(){
   let yyyy = today.getFullYear();
   let h = addZero(today.getHours());
   let m = addZero(today.getMinutes());
-  let s = addZero(today.getSeconds());
+  //let s = addZero(today.getSeconds());
 
-  today = dd + '/' + mm + '/' + yyyy + " " + h + ":" + m + ":" + s;
+  today = dd + '/' + mm + '/' + yyyy + " " + h + ":" + m;
   return today;
 }
 // Show archived game sessions
@@ -796,6 +809,7 @@ function updateResumeSession() {
 
     archivedGame.forEach(gameResults => {
       //console.log(gameResults);
+      if (gameResults.win || gameResults.lose) {
       win += parseInt(gameResults.win);
       lose += parseInt(gameResults.lose);
       winTotal += parseInt(gameResults.win);
@@ -803,6 +817,7 @@ function updateResumeSession() {
       let p = document.createElement("p");
       p.innerText = gameResults.title + " " + gameResults.win + "W / " + gameResults.lose + "L";
       divRight.appendChild(p);
+      }
     });
     
     let object = archiveCheated[sessionCount];
@@ -813,7 +828,7 @@ function updateResumeSession() {
       for (const key in object) {
         if (Object.hasOwnProperty.call(object, key)) {
           let p = document.createElement("p");
-          p.innerText = key + " " + object[key];
+          p.innerText = key + " | " + object[key];
           divRight.appendChild(p);
         }
       }
@@ -1059,9 +1074,10 @@ function addGame() {
   weight.type = "number";
   weight.name = "weight" + count;
   weight.id = "weight" + count;
-  weight.value = "";
+  weight.value = "0";
   weight.setAttribute("onchange", "weightsChanged()");
   weight.setAttribute("onfocusout", "save()");
+  weight.setAttribute("min", 0);
   weight.classList.add("border-solid", "border-2", "borderGame","weight");
 
   let color = document.createElement("input");
@@ -1236,7 +1252,8 @@ function addGame() {
 
   divDetails.appendChild(divGrid);
   div.appendChild(divDetails);
-  document.getElementById("games").appendChild(div);
+  //document.getElementById("games").appendChild(div);
+  document.getElementById("games").insertBefore(div, document.getElementById("games").firstChild)
   gamesArr.push(div);
   count++;
   save();
@@ -1394,7 +1411,8 @@ function addGames(games) {
     title.value = game.title;
     title.setAttribute("onchange", "titlesChanged()");
     title.setAttribute("onfocusout", "save()");
-    title.classList.add("border-solid", "border-2", "borderGame", "ltr","title");
+    title.classList.add("border-solid", "border-2", "borderGame", "ltr","title")
+    
 
     let labelWeight = document.createElement("label");
     labelWeight.id = "labelWeight"+lilcount;
@@ -1408,6 +1426,7 @@ function addGames(games) {
     weight.id = "weight" + lilcount;
     weight.setAttribute("onchange", "weightsChanged()");
     weight.setAttribute("onfocusout", "save()");
+    weight.setAttribute("min", 0);
     weight.value = game.weight;
     weight.classList.add("border-solid", "border-2", "borderGame", "ltr","weight");
 
@@ -1640,6 +1659,8 @@ function addGames(games) {
 // Add a 100% draw to histo
 function addPlayed(count) {
   //console.log("hello");
+  document.getElementById("textHisto").classList.add("hideContent");
+  document.getElementById("textHisto").classList.remove("showContent");
   let title = document.getElementById("title" + count).value;
   let played = document.getElementById("played" + count);
   let playedSession = document.getElementById("playedSession" + count);
@@ -2105,6 +2126,9 @@ function ongletGameClicked() {
 
     buttonArchive.classList.remove("showContent");
     buttonArchive.classList.add("hideContent");
+
+    document.getElementById("textHisto").classList.add("hideContent");
+    document.getElementById("textHisto").classList.remove("showContent");
   } else {
     hideGames();
   }
@@ -2150,6 +2174,12 @@ function ongletHistoClicked() {
 
     buttonArchive.classList.remove("hideContent");
     buttonArchive.classList.add("showContent");
+
+    if ($('#historique').is(':empty')) {
+      document.getElementById("textHisto").classList.remove("hideContent");
+      document.getElementById("textHisto").classList.add("showContent");
+    }
+
   } else {
     hideHisto();
   }
@@ -2195,6 +2225,9 @@ function ongletResumeClicked() {
 
     buttonArchive.classList.remove("showContent");
     buttonArchive.classList.add("hideContent");
+
+    document.getElementById("textHisto").classList.add("hideContent");
+    document.getElementById("textHisto").classList.remove("showContent");
   }
   else {
     hideResume();
@@ -2269,7 +2302,10 @@ function menuOpened() {
   let games = JSON.parse(window.localStorage.getItem("games"));
   let score1 = document.getElementById("score1");
   let score2 = document.getElementById("score2");
+  var canvas = document.getElementById("div_canvas");
   var canvas2 = document.getElementById("div_canvas2");
+  
+  moveToRightSide();
   score2.innerHTML = score1.innerHTML;
   $("#score1").empty();
   score1.classList.add("hideContent");
@@ -2279,16 +2315,22 @@ function menuOpened() {
   score2.classList.remove("hideContent");
 
   canvas2.classList.add("showContent");
-  canvas2.classList.remove("hideContent");
+  canvas2.classList.remove("absolute");
+  canvas2.classList.remove("opacity-0");
+  canvas2.classList.add("opacity-100");
   initWheel("myCanvas2");
   updateWheel(games);
+  
+  //canvas2.classList.remove("backToMiddle");
 } 
 
 function menuClosed() {
   let games = JSON.parse(window.localStorage.getItem("games"));
   let score1 = document.getElementById("score1");
   let score2 = document.getElementById("score2");
+  var canvas = document.getElementById("div_canvas");
   var canvas2 = document.getElementById("div_canvas2");
+  backToMiddle();
   score1.innerHTML = score2.innerHTML;
   $("#score2").empty();
   score2.classList.add("hideContent");
@@ -2298,9 +2340,52 @@ function menuClosed() {
   score1.classList.remove("hideContent");
 
   canvas2.classList.remove("showContent");
-  canvas2.classList.add("hideContent");
+  canvas2.classList.add("absolute");
+  canvas2.classList.add("opacity-0");
+  canvas2.classList.remove("opacity-100");
   initWheel("myCanvas");
   updateWheel(games);
+  //canvas.classList.remove("moveToRightSide");
+  
+}
+function backToMiddle() {
+  let canvas = document.getElementById("div_canvas");
+  let canvas2 = document.getElementById("div_canvas2");
+  let score1 = document.getElementById("score1");
+  let score2 = document.getElementById("score2");
+
+  score1.classList.add("slideUp");
+  score2.classList.remove("slideDown");
+
+  canvas.classList.add("backToMiddle");
+  canvas.classList.remove("moveToRightSide");
+
+  canvas2.classList.add("backToMiddle2");
+  canvas2.classList.remove("moveToRightSide2");
+  
+}
+function easter(){
+  let bato = document.getElementById("bateau");
+  bato.style.height = "300px";
+  bato.style.width = "300px";
+  bato.classList.add("easterShip");
+  PirateAudio.play();
+}
+function moveToRightSide() {
+  let canvas = document.getElementById("div_canvas");
+  let canvas2 = document.getElementById("div_canvas2");
+  let score1 = document.getElementById("score1");
+  let score2 = document.getElementById("score2");
+
+  score1.classList.remove("slideUp");
+  score2.classList.add("slideDown");
+
+  canvas.classList.add("moveToRightSide");
+  canvas.classList.remove("backToMiddle");
+
+  canvas2.classList.add("moveToRightSide2");
+  canvas2.classList.remove("backToMiddle2");
+  
 }
 
 function copyWheel() {

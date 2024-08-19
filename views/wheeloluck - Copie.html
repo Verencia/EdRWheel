@@ -3,8 +3,8 @@
         <title>Envie de Runner - Ystr Corp</title>
         <script src='../js/winwheel/Winwheel.js'></script>
         <script src="../js/winwheel/TweenMax.min.js"></script>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="../css/style.css">
+        <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+        <link rel="stylesheet" href="../css/style2.css">
         <meta charset="UTF-8">
         <link rel="shortcut icon" href="../image/logo.png" />
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,6 +18,9 @@
             <div class="flex justify-center">
                 <img src="../image/logo.png" alt="Logo envie de runner" height="300px" width="300px">
             </div>
+            <div class="">
+                <img class="fixed" src="../image/bateau.jpg" id="bateau" alt="Logo envie de runner" height="10px" width="10px" onclick="easter()">
+            </div>
         </div>
         <div class="grid grid-cols-3 grid-rows-2 justify-items-center">
             <div class="grid grid-canvas grid-cols-1  w-full justify-items-end ">
@@ -27,7 +30,7 @@
                          <button class="resetButton text-white font-bold py-2 px-4 w-full mt-1 text-2xl" onClick="resetWheel(); return false;">Reset</button>
                 </div>   
             </div>
-            <div id="div_canvas" class="pb-2 pt-2 h-full w-full">
+            <div id="div_canvas" class="pb-2 pt-2 h-full w-full ">
                 <canvas id="myCanvas" width="630" height="376">
                     <p style="color: white"
                         style="text-align: center">Sorry, your browser
@@ -97,18 +100,18 @@
                             <input class="imageButton justify-right align-bottom" id="hideButton" type="image" src="../image/hide.png" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" ></input>
                         </div>
                         <div id="ongletResume" class="w-full flex items-center justify-center pb-1 ongletNotChosen" onclick=ongletResumeClicked();>
-                            <div class="flex justify-center w-fit  h-fit border-2 border-black  px-2 menuHisto hideMenu" onclick="">
+                            <div class="flex justify-center w-fit  h-fit border-2 border-black  px-2 menuHisto hideMenu rounded" onclick="">
                                 <p class="font-bold">Résumé session</p>
                             </div>
                         </div>  
                         <div id="ongletHisto" class="w-full flex items-center justify-center pb-1 ongletNotChosen" onclick=ongletHistoClicked();>
-                            <div class="flex justify-center w-fit h-fit border-2 border-black px-2 menuHisto hideMenu" onclick="">
+                            <div class="flex justify-center w-fit h-fit border-2 border-black px-2 menuHisto hideMenu rounded" onclick="">
                                 <p class="font-bold">Historique</p>
                             </div>
                         </div>
                         <div id="ongletGame" class="w-full   menuGame ltr ongletChosen" onclick="ongletGameClicked()">
                             <div class="flex justify-center hideMenu" onclick="">
-                                <p class=" font-bold border-2 border-black mb-1 mt-1 px-2 menuHisto ml-2">Jeux</p>
+                                <p class=" font-bold border-2 border-black mb-1 mt-1 px-2 menuHisto ml-2 rounded">Jeux</p>
                             </div>
                             <div id="div_buttons" class="showContentFlex mb-1 justify-center">
                                 <button onclick="addGame(); event.stopPropagation()" class="menuButton  text-white font-bold py-2 px-4 rounded mr-2">Ajouter un jeu</button>
@@ -117,17 +120,18 @@
                         </div>
                         
                     </div>
-                    <div class=" overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                    <div class="overflow-y-scroll noScrollBar">
                         <div id="games" class="showContentFlex"></div>
                     </div >
                         
                     
-                    <div class=" overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 ">
+                    <div class=" overflow-y-scroll noScrollBar">
+                        <div id="textHisto" class="hideContent"> <p>.C'est vide ici ! Cet onglet ce remplira lorsqu'une run sera ajoutée ou tirée au sort</p></div>
                         <div id="historique" class="historique ltr p-1 mb-1 w-full hideContent" ></div>
                     </div>
                 
                     <div id="buttonArchive" class="hideContent"><button class="bg-white p-1 border-2 border-black font-bold mb-1 mt-1" onclick=archiveSession();>Archiver Session</button></div>
-                    <div class="overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                    <div class="overflow-y-scroll noScrollBar">
                         <div id="resumeSession" class="resumeSession ltr hideContent "></div>
                     </div>
                 </div>
