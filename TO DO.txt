@@ -3,6 +3,7 @@ TO DO
 roue qui se tp de droite à gauche
 cacher 2nd roue
 Ajouter un easter egg avec le tueur de bougnoules avec la tete de romain et fred 
+quand run ajouté c'est marqué run cheatée dans résumé session
 
 
 FAIT

@@ -292,7 +292,7 @@ function addPlayedGame(winningSegmentId, winningSegmentText, winningSegmentSize)
   histoChanged = true;
   document.getElementById("trueCount" + winningSegmentId).innerText = parseInt(document.getElementById("trueCount" + winningSegmentId).innerText) + 1;
   document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
-  addToHisto("manu", winningSegmentText, winningSegmentId, winningSegmentSize);
+  addToHisto(true, winningSegmentText, winningSegmentId, winningSegmentSize);
 
 }
 // Get the ID and text of the winning segment
