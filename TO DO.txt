@@ -1,9 +1,5 @@
 
 TO DO
-roue qui se tp de droite à gauche
-cacher 2nd roue
-Ajouter un easter egg avec le tueur de bougnoules avec la tete de romain et fred 
-quand run ajouté c'est marqué run cheatée dans résumé session
 
 
 FAIT
@@ -39,3 +35,4 @@ bug quand on fini par run cheaté
 changer texte quand ajouter manuellement
 Mettre des textes style " y'a rien ici pour le moment"
 tirage ignoré buggué
+mettre tirage en ordre dans dernier onglet

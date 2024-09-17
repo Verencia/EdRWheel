@@ -816,7 +816,7 @@ function updateResumeSession() {
       loseTotal += parseInt(gameResults.lose);
       let p = document.createElement("p");
       p.innerText = gameResults.title + " " + gameResults.win + "W / " + gameResults.lose + "L";
-      divRight.appendChild(p);
+      divRight.prepend(p);
       }
     });
     
