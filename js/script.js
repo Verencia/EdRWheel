@@ -292,7 +292,7 @@ function addPlayedGame(winningSegmentId, winningSegmentText, winningSegmentSize)
   histoChanged = true;
   document.getElementById("trueCount" + winningSegmentId).innerText = parseInt(document.getElementById("trueCount" + winningSegmentId).innerText) + 1;
   document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
-  addToHisto(true, winningSegmentText, winningSegmentId, winningSegmentSize);
+  addToHisto("manu", winningSegmentText, winningSegmentId, winningSegmentSize);
 
 }
 // Get the ID and text of the winning segment
@@ -917,11 +917,12 @@ function showTirage(sessionCount, date) {
       pIdGame.id = "pIdGame" + histoCount;
       pPosition.id = "pPosition" + histoCount;
 
-      if (tirage.trueOrCheat == true) {
+      if (tirage.trueOrCheat == true || tirage.trueOrCheat == "manu" ) {
         if (tirage.wonOrLost == true) {
           console.log(" MARQUE WIN");
           p2.innerText = "Run gagnée";
           p2.classList.add("text-green-600");
+
         } else {
           console.log(" MARQUE LOSE");
           p2.innerText = "Run perdue";
@@ -941,7 +942,10 @@ function showTirage(sessionCount, date) {
       }
       if (tirage.trueOrCheat == true) {
         p.innerText = "Vous avez tiré " + tirage.text + " - Joué " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent + "%)";
-      } else {
+      } else if (tirage.trueOrCheat == "manu") {
+        p.innerText = "Vous avez ajouté " + tirage.text + " - Joué " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent + "%)";
+      }
+      else {
         p.innerText = "Vous avez tiré " + tirage.text + " - Cheaté " + tirage.trueCount + "(" + tirage.cheatCount + ")" + " - (" + tirage.percent + "%)";
       }
       divTexte.appendChild(p);
