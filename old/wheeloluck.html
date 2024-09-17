@@ -1,0 +1,230 @@
+<html lang="fr">
+    <head>
+        <title>My Winning Wheel</title>
+        <script src='../js/winwheel/Winwheel.js'></script>
+        <script src="../js/winwheel/TweenMax.min.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="../css/style.css">
+        <meta charset="UTF-8">
+        <link rel="shortcut icon" href="../image/logo.png" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+        <script src="../js/jquery-3.7.1.min.js"></script>
+    </head>
+    <body onload="load()" id="body">
+        <div class="text-2xl nav h-30 content-center">
+            <div class="flex justify-center">
+                <img src="../image/logo.png" alt="Logo envie de runner" height="300px" width="300px">
+            </div>
+        </div>
+        <div class="grid grid-cols-3 justify-items-center">
+            <div class="grid grid-canvas grid-cols-1  w-full justify-items-end ">
+                <div id="power_ctrl" class="power_controls	">
+                    <div class="p-2">
+                    <table class="border-4 border-black ">
+                        <tr>
+                            <td>
+                                <table class="power border-2 border-black m-1" cellpadding="15" cellspacing="0">
+                                    <tr>
+                                        <th style="text-align: center">Puissance</th>
+                                    </tr>
+                                    <tr>
+                                        <td width="78" style="text-align: center" class="border-t-2 border-gray-500"
+                                            id="pw3"
+                                            onClick="powerSelected(3);">Forte
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center" class="border-t-2 border-gray-500" id="pw2"
+                                            onClick="powerSelected(2);">Moyenne
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                    <td style="text-align: center" class="border-t-2 border-gray-500" id="pw1"
+                                        onClick="powerSelected(1);">Faible</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <img id="spin_button" src="../image/spin_off.png" class="w-full cursor-pointer "
+                                    alt="Spin" onClick="startSpin();" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button class="resetButton text-white font-bold py-2 px-4 w-full mt-1"
+                                onClick="resetWheel(); return false;">Reset</button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                    
+                    
+                    
+                    
+                </div>
+                <!-- <div id="power_ctrl" class="power_controls">
+                    <table class="power border-4 border-black" cellpadding="15" cellspacing="0">
+                        <tr>
+                            <th style="text-align: center">Puissance</th>
+                        </tr>
+                        <tr>
+                            <td width="78" style="text-align: center" class="hover:bg-red-600 border-t-2 border-gray-500"
+                                id="pw3"
+                                onClick="powerSelected(3);">Forte</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center" class="hover:bg-blue-600 border-t-2 border-gray-500" id="pw2"
+                                onClick="powerSelected(2);">Moyenne</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center" class="hover:bg-green-600  border-t-2 border-gray-500" id="pw1"
+                                onClick="powerSelected(1);">Faible</td>
+                        </tr>
+                        <tr><td class="border-t-4 border-black"></td></tr>
+                        <tr><td><img id="spin_button" src="../image/spin_off.png" class="w-full cursor-pointer"
+                            alt="Spin" onClick="startSpin();" /></td></tr>
+                        <tr><td><button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-full"
+                            onClick="resetWheel(); return false;">Relancer</button><br /></td></tr>
+                    </table>
+                </div> -->
+            </div>
+            <div id="div_canvas" class="pb-2 pt-2 h-full w-full">
+                
+                <canvas id="myCanvas" width="630" height="376">
+                    <p style="color: white"
+                        style="text-align: center">Sorry, your browser
+                        doesn't support canvas. Please try another.</p>
+                </canvas>
+            </div>
+            <div class="grid-canvas h-full w-full flex justify-center items-center">
+                <p id="winLoseTotal" class="text-8xl"></p>
+            </div>
+
+        </div>
+        <!-- <table class="flex justify-center" cellpadding="10"
+            cellspacing="10" border="0">
+            <tr>
+                <td class="power">
+                    
+                </td>
+                <td class="the_wheel bg-blue-500" cellpadding="10">
+                    <canvas id="myCanvas" width="434" height="434">
+                        <p style="color: white"
+                            style="text-align: center">Sorry, your browser
+                            doesn't support canvas. Please try another.</p>
+                    </canvas>
+                </td>
+            </tr>
+        </table> -->
+        <div class="flex justify-center ">
+            <div id="animations" class="fixed">
+                <img src="../image/prize_back.png" alt="Fond du prix" class="prize_back">
+                <img src="../image/ray1.png" alt="Rayon de lumière number 1" class="ray1" id="ray1">
+                <img src="../image/ray2.png" alt="Rayon de lumière number 2" class="ray2" id="ray2">
+            </div>
+            
+            
+            <div id="alert" class="">
+                
+            </div>
+        </div>
+        
+        
+        <script src="../js/script.js"></script>
+
+        <!-- <button id="bigButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onclick="theWheel.startAnimation(); this.disabled=true;">Spin the Wheel</button>
+        <a href="javascript:void(0);" onclick="theWheel.stopAnimation(false); theWheel.rotationAngle=0; theWheel.draw(); bigButton.disabled=false;">Reset</a> -->
+        
+        
+        <!-- <button onclick="randomizeSegments()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Randomiser</button> -->
+        <!-- <button onclick="load()"class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Load</button> -->
+        <!-- <div id="div_grid_menu" class="grid grid-cols-2 gap-x-20">
+            <div id="menuOpt" class=" menu rounded-tr-lg text-center shadow shadow-black">
+                <div class="flex justify-center mb-1">
+                    <div class="w-fit border-2 border-black pl-2 pr-2 menuGame mt-1">
+                            <div class="flex justify-center">
+                            <p class="mr-1 font-bold">Menu des options</p>
+                            <input class="imageButton justify-right align-bottom" id="imageButtonGames" type="image" src="../image/hide.png" onclick="hideGames(this)" class="text-white font-bold py-2 px-4 rounded"></input>
+                        </div>
+                        
+                        
+                        <div id="div_buttons" class="block mb-1">
+                            <button onclick="addGame()" class="menuButton  text-white font-bold py-2 px-4 rounded">Ajouter un jeu</button>
+                            <button onclick="save()"class="menuButton  text-white font-bold py-2 px-4 rounded">Sauvegarder</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="games" class="ml-5">
+                    Menu des options du cul
+                </div>
+            </div>
+            <div id="menuHisto" class="menu rounded-tl-lg text-center shadow shadow-black ">
+                <div class="flex justify-center">
+                    <div class="flex justify-center w-fit border-2 border-black w-fit pl-2 pr-2 menuHisto mt-1">
+                        <p class="font-bold mr-1">Historique</p>
+                        <input class="imageButton justify-right align-bottom" id="imageButtonHisto" type="image" src="../image/hide.png" onclick="hideHisto(this)"class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"></input>
+                    </div>
+                </div>
+                <div id="historique"
+                    class="border-solid p-1 mb-1 overflow-auto mr-5"
+                    style="height: 90%;">
+
+                </div>
+            </div>
+        </div> -->
+
+
+            <div class="flex div_menu" id="div_menu">
+            <div id="menuOpt" class=" content-center h-fit menu3 rounded-tr-lg text-center shadow shadow-black ">
+                <div id="titleOpt" class="flex justify-center mb-1">
+                    <div class="w-fit border-2 border-black pl-2 pr-2 menuGame mt-1 ltr">
+                            <div class="flex justify-center hideMenu" onclick="hideGames()">
+                            <p class="mr-1 font-bold">Menu des options</p>
+                            <input class="imageButton justify-right align-bottom" id="imageButtonGames" type="image" src="../image/hide.png"  class="text-white font-bold py-2 px-4 rounded"></input>
+                        </div>
+                        
+                        
+                        <div id="div_buttons" class="block mb-1">
+                            <button onclick="addGame()" class="menuButton  text-white font-bold py-2 px-4 rounded">Ajouter un jeu</button>
+                            <button onclick="save()"class="menuButton  text-white font-bold py-2 px-4 rounded">Sauvegarder</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="games" class="mr-5 overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                </div>
+            </div>
+            <div id="menuHisto" class=" menu2 rounded-tl-lg text-center shadow shadow-black" >
+                <div id="titleHisto" class="grid grid-cols-2 justify-items-center">
+                    <div id="ongletHisto" class="w-full rounded-tl-lg flex justify-center border-r-2 border-gray-400 pb-1 ongletChosen" onclick=ongletHistoClicked();>
+                        <div class="flex justify-center w-fit h-fit border-2 border-black pl-2 pr-2 menuHisto mt-1 hideMenu" onclick="hideHisto()">
+                            <p class="font-bold mr-1">Historique</p>
+                            <input class="imageButton justify-right align-bottom" id="imageButtonHisto" type="image" src="../image/hide.png" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"></input>
+                        </div>
+                    </div>
+                    <div id="ongletResume" class="w-full flex justify-center pb-1 ongletNotChosen" onclick=ongletResumeClicked();>
+                        <div class="flex justify-center w-fit  h-fit border-2 border-black  pl-2 pr-2 menuHisto mt-1 hideMenu" onclick="hideHisto()">
+                            <p class="font-bold mr-1">Résumé session</p>
+                            <input class="imageButton justify-right align-bottom" id="imageButtonHisto2" type="image" src="../image/hide.png" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"></input>
+                        </div>
+                    </div>  
+                </div>
+                <div class="overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                    <div id="historique"class="historique border-solid p-1 mb-1" > 
+                    </div>
+                </div>
+                <div id="buttonArchive"><button class="bg-white p-1 border-2 border-black font-bold mb-1 mt-1" onclick=archiveSession();>Archiver Session</button></div>
+                <div class="overflow-y-scroll [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300">
+                    <div id="resumeSession" class="resumeSession hideContent"></div>
+                </div>
+                    
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

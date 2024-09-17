@@ -1,0 +1,579 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#alert {
+  display: none;
+  background-color: #f58478;
+  border: 1px solid black;
+  position: fixed;
+  width: 300px;
+  top: 25%; 
+  left: 42%;
+  padding: 6px 8px 8px;
+  text-align: center;
+  z-index: 99;
+  
+}
+
+.appear {
+  animation: scale-up-center;
+  animation-duration: 1s;
+  animation-delay: 0s;
+  animation-direction: normal;
+  animation-timing-function : linear;
+  animation-iteration-count: 1;
+}
+#animations {
+  display: none;
+  
+}
+
+/* Sets the background image for the wheel */
+.the_wheel
+{
+    border-right: 5px solid red;
+    border-left: 5px solid red;
+} 
+
+/* Do some css reset on selected elements */
+h1, p
+{
+    margin: 0;
+}
+
+div.power_controls
+{
+    margin-right:10%;
+    margin-top: 35%;
+}
+/* Style applied to the spin button once a power has been selected */
+.clickable
+{
+    cursor: pointer;
+}
+
+.imageButton {
+    height: 30px;
+    width: 30px;
+}
+
+.nav {
+    background-color:#d24545 ;
+
+}
+
+.menu {
+    background-color:#d24545 ;
+}
+.menu2 {
+    background-color:#d24545 ;
+    width: 48.5%;
+    left: 51.5%;
+    top: 55.85%;
+    position: fixed;
+    height: 44.3%;   
+}
+.title {
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+.menu3 {
+  /* margin-right: 72px; */
+  background-color:#d24545 ;
+  width: 66.2%;
+  position: fixed;
+  height: 84.85%;
+  left: 0%;
+  top: 15.7%;
+}
+.resumeSession {
+  height: 90%;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  display: flex;
+}
+.historique {
+  height: 80%;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  display: flex;
+}
+
+#games {
+  height: 85%;
+  flex-direction: column;
+  scrollbar-width: none;
+}
+.noScrollBar {
+  scrollbar-width: none;
+}
+.ongletChosen {
+  background-color:#d24545 ;
+}
+.ongletNotChosen {
+  background-color: #e07e7e;
+  cursor: pointer;
+}
+.hideContent {
+  display: none;
+}
+.showContent {
+  display: block;
+}
+
+.showContent2 {
+  transform: translate(-100%,20%);
+  transition-duration: 1s;
+}
+.showContentFlex {
+  display: flex;
+}
+
+.div_menu {
+    height: 84.85%;
+    position: fixed;
+    left: 0%;
+    top: 15.15%;
+    
+}
+input:disabled {
+  background-color: white;
+}
+ body{overflow:hidden;}
+body {
+    z-index:99;
+    font-family: 'Roboto', sans-serif;
+    background-image: url(../image/backg.png);
+}
+.grid-canvas {
+    background-color: #e6baa3;
+}
+.score {
+  border-color: #d24545;
+}
+.victory {
+  font-size: 42px;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: green;
+}
+.defeat {
+  font-size: 42px;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: rgba(255, 0, 0, 0.568);
+}
+
+.menuButton {
+    background-color: #e4debe;
+    font-size: large;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+}
+
+.menuButton2 {
+    background-color: #e4debe;
+}
+
+.resetButton {
+    background-color: #d24545;
+
+}
+
+.resetButton:hover {
+    background-color: #e92e2e;
+
+}
+
+.menuButton:hover {
+    background-color: #f9bc9e;
+}
+
+.borderGame {
+    border-color: #000000;
+}
+.session {
+  background-color: #e4debe;
+}
+.borderGame2 {
+    border-color: #a94438;
+}
+
+.menuGame {
+    background-color: #d24545;
+}
+
+.hideHistoAnimation {
+  transform: translateY(90%);
+  transition-duration: 1s;
+}
+.hideHistoAnimation2 {
+  transform: translateY(10%);
+  transition-duration: 3s;
+}
+.hideGamesAnimation {
+  transform: translateY(120%);
+  transition-duration: 1s;
+}
+.hideGamesAnimation2 {
+  transform: translateY(10%);
+  transition-duration: 5s;
+}
+
+.appearAnimation {
+  transform: translateY(0%);
+  transition-duration: 1s;
+}
+
+.moveToRightSide {
+  transform: translate(150%,-10%);
+  transition-duration: 1s;
+}
+
+.backToMiddle{
+  animation: appear2 1s ;
+}
+
+.moveToRightSide2 {
+  animation: slideCanvas2 1s;
+}
+
+.easterShip {
+  position: fixed;
+  animation: slideEaster 5s 1 linear forwards;
+}
+
+.backToMiddle2{
+  /* transform: translate(-100%,35%);
+  transition-duration: 1s; */
+  animation: slideCanvas 1s;
+}
+
+.slideUp {
+  animation: slide2 0.8s;
+}
+
+.slideDown {
+  animation: slide 1s;
+}
+
+.menuHisto {
+    background-color: #e76f62;
+}
+.divDetail {
+    background-color: #e4debe;
+    font-weight: bold;
+}
+
+@keyframes slideCanvas {
+  from { 
+    transform: translateX(-100%) translateY(35%);
+    margin-bottom: 10%;
+  }to {
+    transform: translate(0%,0%);
+    margin-bottom: 0%;
+  }
+}
+
+@keyframes slideCanvas2 {
+  
+    
+    
+
+  0% {
+    transform: translate(-100%,35%) scale(1.5);
+    
+  }
+  
+  100% {
+    transform: translate(0%,0%) scale(1);
+    margin-bottom: 0%;
+  }
+}
+
+@keyframes slide {
+  
+  0% {
+    transform: translateY(-80%);
+    
+  }
+  50% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
+
+@keyframes slideEaster {
+  
+  0% {
+    transform: translateX(0%);
+    opacity: 1;
+    
+  }
+  100% {
+    transform: translateX(800%);
+    opacity: 0;
+    display: none;
+  }
+}
+
+@keyframes slide2 {
+  
+
+  0% {
+    transform: translateY(25%);
+  }
+  50% {
+    transform: translateY(100%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+  
+}
+
+@keyframes slideaway {
+  from { 
+    height: 3rem;
+  }
+}
+@keyframes slideaway2 {
+  from { 
+    transform: translateY(100px);
+    
+  }
+}
+.hide {
+  animation: slideaway 200ms;
+  display: none;
+}
+
+#menuOpt {
+    direction: rtl;
+}
+.menuClosed {
+  background-color: #d24545;
+}
+#cogMenu {
+  top:96.65%;
+}
+.ltr {
+    direction: ltr;
+}
+
+.hideMenu {
+ cursor: pointer;
+}
+@keyframes spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}
+
+.appear {
+  transition: transform 6s;
+  animation: appear 3s;
+}
+.ray1	{ /* with animation properties */	
+  width: 600px; 
+	height: 600px; 
+	position:fixed ;
+  top:12%;
+  left:34%;
+  pointer-events: none;
+	/* animation: rotate 6s infinite linear ; */
+  animation: scale-up-center,rotate;
+  animation-duration: 1s, 6s; 
+  animation-delay: 0s, 0s;
+  animation-timing-function : linear,linear;
+  animation-iteration-count: 1,infinite;
+}
+
+.ray2	{ /* with animation properties */
+	width: 600px; 
+	height: 600px; 
+	position:fixed ;
+  top:12%;
+  left:34%;
+  pointer-events: none;
+  /* animation: rotate 4s infinite linear reverse; */
+  animation: scale-up-center,rotate;
+  animation-duration: 1s, 4s; 
+  animation-delay: 0s, 0s;
+  animation-direction: normal,reverse;
+  animation-timing-function : linear,linear;
+  animation-iteration-count: 1,infinite;
+}
+
+.prize_back{
+  width: 900px; 
+	height: 900px; 
+	position:fixed ;
+  top:3%;
+  left:26%;
+  pointer-events: none;
+  animation: pulsate-bck 4s infinite;
+}
+
+.prize_div {
+  position: fixed;
+}
+
+
+
+  @keyframes rotate {
+    to {
+      transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform:  rotate(90deg) scale(0.75);
+    }
+    50% {
+        transform:  rotate(180deg) scale(1);
+    }
+    75% {
+      transform:  rotate(270deg) scale(0.75);
+    }
+    100% {
+      transform:  rotate(360deg) scale(1);
+    }
+    
+  }
+
+ @keyframes pulsate-bck {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.8);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes appear {
+    from{
+      transform: scale(0.1);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes appear2 {
+    from{
+      transform: translate(100%,-20%) scale(0.656);
+      margin-bottom: 40%;
+    }
+    to {
+      transform: translate(0%,0%) scale(1);
+      margin-bottom: 0%;
+    }
+    
+    
+  }
+ 
+@-webkit-keyframes scale-up-center {
+  0% {
+    opacity: 0.1;
+    -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+@keyframes scale-up-center {
+  0% {
+    opacity: 0.1;
+    -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: scale(1);
+            transform: scale(1);
+  }
+}
+
+
+
+
+.roboto-thin {
+    font-family: "Roboto", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+  }
+  
+  .roboto-light {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  .roboto-regular {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  .roboto-medium {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: normal;
+  }
+  
+  .roboto-bold {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+  }
+  
+  .roboto-black {
+    font-family: "Roboto", sans-serif;
+    font-weight: 900;
+    font-style: normal;
+  }
+  
+  .roboto-thin-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 100;
+    font-style: italic;
+  }
+  
+  .roboto-light-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 300;
+    font-style: italic;
+  }
+  
+  .roboto-regular-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  .roboto-medium-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 500;
+    font-style: italic;
+  }
+  
+  .roboto-bold-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 700;
+    font-style: italic;
+  }
+  
+  .roboto-black-italic {
+    font-family: "Roboto", sans-serif;
+    font-weight: 900;
+    font-style: italic;
+  }
+  
