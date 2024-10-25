@@ -498,7 +498,7 @@ function updateHisto() {
     divResultat.id = "divResultat" + histoCount;
     divResultat.classList.add("hideContent", "ml-4");
 
-    buttonDelete.classList.add("hidden","pl-1", "pr-1", "mr-1","ml-1", "font-bold", "text-red-600", "justify-self-end","hover:absolute");
+    buttonDelete.classList.add("absolute","pl-1", "pr-1", "mr-1","ml-1", "font-bold", "text-red-600", "justify-self-end");
     buttonDelete.innerText = "X";
     buttonDelete.setAttribute("onclick", "delButton(" + histoCount + "," + winningSegmentId + ")");
 
