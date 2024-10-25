@@ -26,7 +26,7 @@ var param = 13;
 var winTotal = localStorage.getItem("winTotal");
 var loseTotal = localStorage.getItem("loseTotal");
 var histoCount = window.localStorage.getItem("histoCount");
-var  archiveCheated = localStorage.getItem("archiveCheated");
+var archiveCheated = localStorage.getItem("archiveCheated");
 var count = window.localStorage.getItem("count").toString();
 var oldCount = count;
 var histo = window.localStorage.getItem("histo");
@@ -347,6 +347,102 @@ function addToHisto(bool, winningSegmentText, winningSegmentId, winningSegmentSi
   closeDialog();
 }
 
+function delButton(histoCount2,winningSegmentId){
+  histo = (JSON.parse(localStorage.getItem("histo")));
+  let deleted = histo.splice(histoCount2,1);
+  histoCount--; 
+  let trueCount = 0;
+  let cheatCount = 0;
+  let title = deleted[0].title;
+  let counter = 0;
+  let win = false;
+  let lose = false;
+
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
+  resultsHisto.forEach(result => {
+    console.log("histo2 " + histoCount2);
+    if (result.id == histoCount2) {
+      console.log("c'est égale");
+      if (result.result) {
+        console.log("oui oui");
+        console.log(win.innerText);
+        winTotal = localStorage.getItem("winTotal");
+        localStorage.setItem("winTotal",parseInt(winTotal)-1);
+        win = true;
+      } else {
+        loseTotal = localStorage.getItem("loseTotal");
+        localStorage.setItem("loseTotal",parseInt(loseTotal)-1);
+        lose = true;
+      }
+      resultsHisto.splice(resultsHisto.indexOf(result),1);
+    }  
+  });
+  console.log(resultsHisto);
+  resultsHisto.forEach(result => {
+    if (result.id > histoCount2) {
+      console.log("là je passe");
+      result.id-=1;
+    }
+    
+  });
+  console.log(resultsHisto);
+  window.localStorage.setItem("resultsHisto", JSON.stringify(resultsHisto));
+
+  if (deleted[0].bool == 'manu') {
+    trueCount += 1;
+    cheatCount += 1;
+  } else if (deleted[0].bool == true) {
+    trueCount += 1;
+  }
+  else {
+    cheatCount += 1;
+  }
+
+  histo.forEach(tirage => {
+    console.log(counter + " " + histoCount2);
+    if (counter >= histoCount2  && tirage.title == title ) {
+      if (tirage.bool == 'manu') {
+        tirage.trueCount = (parseInt(tirage.trueCount) - 1);
+        tirage.cheatCount = (parseInt(tirage.cheatCount) - 1);
+      } else if (tirage.bool == true) {
+        tirage.trueCount = (parseInt(tirage.trueCount) - 1).toString;
+      }
+      else {
+        tirage.cheatCount = (parseInt(tirage.cheatCount) - 1).toString;
+      }
+    }
+    counter++;
+  });
+  console.log(trueCount +" " + cheatCount);
+  games = JSON.parse(localStorage.getItem("games"));
+  games.forEach(game => {
+    if (game.title == title) {
+      game.trueCount = parseInt(game.trueCount) - trueCount;
+      game.cheatCount = parseInt(game.cheatCount) - cheatCount;
+      if (win) {
+        game.win--;
+        game.winSession--;
+      }
+      if (lose) {
+        game.lose--;
+        game.loseSession--;
+      }
+      console.log(game);
+    }
+  });
+  histoChanged = true;
+  window.localStorage.setItem("histo", JSON.stringify(histo));
+  window.localStorage.setItem("games", JSON.stringify(games));
+  gameAdded = true;
+  
+  load();
+  updateHisto();
+  //load();
+}
 // Show histo[id,%,cheatCount,trueCount,text,bool] reverse
 function updateHisto() {
   
@@ -379,6 +475,7 @@ function updateHisto() {
     let divButton = document.createElement("div");
     let divResultat = document.createElement("div");
 
+    let buttonDelete = document.createElement("button");
     let buttonW = document.createElement("button");
     let buttonL = document.createElement("button");
     let buttonArrow = document.createElement("button");
@@ -400,6 +497,10 @@ function updateHisto() {
 
     divResultat.id = "divResultat" + histoCount;
     divResultat.classList.add("hideContent", "ml-4");
+
+    buttonDelete.classList.add("hidden","pl-1", "pr-1", "mr-1","ml-1", "font-bold", "text-red-600", "justify-self-end","hover:absolute");
+    buttonDelete.innerText = "X";
+    buttonDelete.setAttribute("onclick", "delButton(" + histoCount + "," + winningSegmentId + ")");
 
     buttonW.classList.add("pl-1", "pr-1", "mr-1","ml-1", "font-bold", "text-green-600", "bg-white", "border", "border-black", "justify-self-end");
     buttonW.innerText = "W";
@@ -476,6 +577,7 @@ function updateHisto() {
       buttonArrow.appendChild(imgArrow);
       divResultat.appendChild(buttonArrow);
     }
+    divButton.appendChild(buttonDelete);
     divResultat.appendChild(pResultChosen);
     divResultat.appendChild(pResult);
     divResultat.appendChild(pIdGame);
@@ -483,6 +585,7 @@ function updateHisto() {
     div.appendChild(divTexte);
     div.appendChild(divButton);
     div.appendChild(divResultat);
+    div.appendChild(buttonDelete);
     divHisto.appendChild(div);
     histoCount++;    
   });

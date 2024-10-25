@@ -1,6 +1,7 @@
 
 TO DO
-
+bouton supprim avec confirm, au bout de la cas on le voit que en hover
+il faut UPDATE LES AUTRES HISTO !!!!
 
 FAIT
 fusionner les menus d'options, voir schéma
