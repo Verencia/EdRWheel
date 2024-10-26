@@ -3200,7 +3200,9 @@ body{
   left: 97%;
   position: fixed;
 }
-
+.delButton {
+  padding-top: 2px;
+}
 .ltr {
   direction: ltr;
 }
