@@ -1,7 +1,6 @@
 
 TO DO
-bouton supprim avec confirm, au bout de la cas on le voit que en hover
-il faut UPDATE LES AUTRES HISTO !!!!
+
 
 FAIT
 fusionner les menus d'options, voir schéma
@@ -28,6 +27,13 @@ scrollable chez romain pas chez moi ?
 curseur click sur menus
 espace entre le menus et menu nav/titre
 enlever scrollbar
+bouton supprim avec confirm, au bout de la cas on le voit que en hover
+il faut UPDATE LES AUTRES HISTO !!!!
+centrer haut et bas de la croix
+Décrémenter les parties jouées
+confirm sur les deletes
+On peut archiver des runs inexistante nani
+
 
 FAIT ?
 ajouter jeu au début de la liste ?

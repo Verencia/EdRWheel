@@ -348,9 +348,16 @@ function addToHisto(bool, winningSegmentText, winningSegmentId, winningSegmentSi
 }
 
 function delButton(histoCount2,winningSegmentId){
+  if (!confirm("Veux tu vraiment supprimer cette run ?"))
+ {
+    return;
+  }
   histo = (JSON.parse(localStorage.getItem("histo")));
   let deleted = histo.splice(histoCount2,1);
-  histoCount--; 
+  histoCount = localStorage.getItem("histoCount");
+  histoCount--;
+  localStorage.setItem("histoCount",histoCount);
+
   let trueCount = 0;
   let cheatCount = 0;
   let title = deleted[0].title;
@@ -366,10 +373,7 @@ function delButton(histoCount2,winningSegmentId){
   resultsHisto.forEach(result => {
     console.log("histo2 " + histoCount2);
     if (result.id == histoCount2) {
-      console.log("c'est égale");
       if (result.result) {
-        console.log("oui oui");
-        console.log(win.innerText);
         winTotal = localStorage.getItem("winTotal");
         localStorage.setItem("winTotal",parseInt(winTotal)-1);
         win = true;
@@ -384,7 +388,6 @@ function delButton(histoCount2,winningSegmentId){
   console.log(resultsHisto);
   resultsHisto.forEach(result => {
     if (result.id > histoCount2) {
-      console.log("là je passe");
       result.id-=1;
     }
     
@@ -431,6 +434,8 @@ function delButton(histoCount2,winningSegmentId){
         game.lose--;
         game.loseSession--;
       }
+      game.played--;
+      game.playedSession--;
       console.log(game);
     }
   });
@@ -787,15 +792,19 @@ function archiveSession() {
   } else {
     archiveCheated = [];
   }
+  if (histoCount ==0) return;
 
-  let histoCount = 0;
-  window.localStorage.setItem("histoCount", histoCount);
-  for (let index = 0; index < histo.length; index++) {
-    if (document.getElementById("pResultChosen" + index).innerText == "false") {
-      confirm("Merci de choisir un résultat pour les runs terminées");
-      return;
+  
+    for (let index = 0; index < histo.length; index++) {
+      if (document.getElementById("pResultChosen" + index).innerText == "false") {
+        confirm("Merci de choisir un résultat pour les runs terminées");
+        return;
+      }
     }
-  }
+  histoCount = 0;
+  window.localStorage.setItem("histoCount", histoCount);
+  console.log("pipi");
+  
   document.getElementById("textHisto").classList.remove("hideContent");
   document.getElementById("textHisto").classList.add("showContent");
   let games = JSON.parse(window.localStorage.getItem("games"));
