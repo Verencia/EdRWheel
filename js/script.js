@@ -772,6 +772,11 @@ function addZero(i) {
 // Archive draws 
 function archiveSession() {
   
+  histoCount = window.localStorage.getItem("histoCount", histoCount);
+  if (histoCount ==0)return;
+  histoCount = 0;
+  window.localStorage.setItem("histoCount", histoCount);
+  
   archiveChanged = true;
   histo = (localStorage.getItem('histo'));
   resultsHisto = localStorage.getItem("resultsHisto");
@@ -792,19 +797,12 @@ function archiveSession() {
   } else {
     archiveCheated = [];
   }
-  if (histoCount ==0) return;
-
-  
-    for (let index = 0; index < histo.length; index++) {
-      if (document.getElementById("pResultChosen" + index).innerText == "false") {
-        confirm("Merci de choisir un résultat pour les runs terminées");
-        return;
-      }
+  for (let index = 0; index < histo.length; index++) {
+    if (document.getElementById("pResultChosen" + index).innerText == "false") {
+      confirm("Merci de choisir un résultat pour les runs terminées");
+      return;
     }
-  histoCount = 0;
-  window.localStorage.setItem("histoCount", histoCount);
-  console.log("pipi");
-  
+  }
   document.getElementById("textHisto").classList.remove("hideContent");
   document.getElementById("textHisto").classList.add("showContent");
   let games = JSON.parse(window.localStorage.getItem("games"));
@@ -836,9 +834,6 @@ function archiveSession() {
   });
   archiveCheated.push(arrTirageCheat);
   localStorage.setItem("archiveCheated", JSON.stringify(archiveCheated));
-  console.log( JSON.parse(localStorage.getItem("archiveCheated")));
-  console.log(arrTirageCheat);
-  //console.log(arrTirage);
   histo = [];
   resultsHisto = [];
   archive = (localStorage.getItem("archive"));
@@ -865,7 +860,6 @@ function archiveSession() {
   archive = JSON.parse(localStorage.getItem("archive"));
   localStorage.setItem("histo", histo);
   localStorage.setItem("resultsHisto", resultsHisto);
-  console.log(localStorage.getItem("resultsHisto"));
   updateHisto();
   updateResumeSession();
   resetSession();
@@ -900,7 +894,6 @@ function updateResumeSession() {
   } else {
     archiveCheated = [];
   }
-  console.log(archiveCheated[0]);
   archive.forEach(archivedGame => {
     let win = 0;
     let lose = 0;
@@ -986,7 +979,6 @@ function showTirage(sessionCount, date) {
   alertDiv.classList.remove("appear");
   animationsDiv.style.display = "none";
   if (histoTirage != "") {
-    console.log("JE PARSE");
     histoTirage = (JSON.parse(localStorage.getItem("histoTirage")));
     tirageToShow = histoTirage[sessionCount];
 
@@ -999,7 +991,6 @@ function showTirage(sessionCount, date) {
       div2.classList.add("h-1/2");
     }
     tirageToShow.forEach(tirage => {
-      console.log("lajepasse");
       let div = document.createElement("div");
 
       let divTexte = document.createElement("div");
@@ -1031,17 +1022,14 @@ function showTirage(sessionCount, date) {
 
       if (tirage.trueOrCheat == true || tirage.trueOrCheat == "manu" ) {
         if (tirage.wonOrLost == true) {
-          console.log(" MARQUE WIN");
           p2.innerText = "Run gagnée";
           p2.classList.add("text-green-600");
 
         } else {
-          console.log(" MARQUE LOSE");
           p2.innerText = "Run perdue";
           p2.classList.add("text-red-600");
         }
       } else {
-        console.log(" MARQUE CHEAT");
         p2.innerText = "Run cheatée";
         p2.classList.add("text-blue-600");
       }
