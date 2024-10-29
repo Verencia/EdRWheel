@@ -412,22 +412,28 @@ function delButton(histoCount2,winningSegmentId){
     
     cheatCount += 1;
   }
-
+  console.log("CHECK HISTO");
+  console.log(histo);
   histo.forEach(tirage => {
     console.log(counter + " " + histoCount2);
     if (counter >= histoCount2  && tirage.title == title ) {
       if (tirage.bool == 'manu') {
+        console.log("C'est une run manu");
         tirage.trueCount = (parseInt(tirage.trueCount) - 1);
         tirage.cheatCount = (parseInt(tirage.cheatCount) - 1);
       } else if (tirage.bool == true) {
-        tirage.trueCount = (parseInt(tirage.trueCount) - 1).toString;
+        console.log("C'est une run true");
+        tirage.trueCount = (parseInt(tirage.trueCount) - 1);
       }
       else {
-        tirage.cheatCount = (parseInt(tirage.cheatCount) - 1).toString;
+        console.log("C'est une run cheat");
+        tirage.cheatCount = (parseInt(tirage.cheatCount) - 1);
       }
     }
     counter++;
   });
+  console.log("CHECK HISTO 2");
+  console.log(histo);
   console.log(trueCount +" " + cheatCount);
   games = JSON.parse(localStorage.getItem("games"));
   games.forEach(game => {

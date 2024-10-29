@@ -1,6 +1,6 @@
 
 TO DO
-
+delete une run win/lose et si il y une cheaté fait pop un undefined 
 
 FAIT
 fusionner les menus d'options, voir schéma
