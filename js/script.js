@@ -364,6 +364,7 @@ function delButton(histoCount2,winningSegmentId){
   let counter = 0;
   let win = false;
   let lose = false;
+  let cheated = false
 
   if (resultsHisto != "") {
     resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
@@ -373,11 +374,17 @@ function delButton(histoCount2,winningSegmentId){
   resultsHisto.forEach(result => {
     console.log("histo2 " + histoCount2);
     if (result.id == histoCount2) {
-      if (result.result) {
+      if (result.result == "cheated") {
+        console.log("c est cheaté ça");
+        cheated = true;
+      }
+      else if (result.result == true) {
+        console.log("c est win");
         winTotal = localStorage.getItem("winTotal");
         localStorage.setItem("winTotal",parseInt(winTotal)-1);
         win = true;
       } else {
+        console.log("c est lose");
         loseTotal = localStorage.getItem("loseTotal");
         localStorage.setItem("loseTotal",parseInt(loseTotal)-1);
         lose = true;
@@ -402,6 +409,7 @@ function delButton(histoCount2,winningSegmentId){
     trueCount += 1;
   }
   else {
+    
     cheatCount += 1;
   }
 
@@ -426,16 +434,19 @@ function delButton(histoCount2,winningSegmentId){
     if (game.title == title) {
       game.trueCount = parseInt(game.trueCount) - trueCount;
       game.cheatCount = parseInt(game.cheatCount) - cheatCount;
-      if (win) {
-        game.win--;
-        game.winSession--;
-      }
-      if (lose) {
-        game.lose--;
-        game.loseSession--;
-      }
-      game.played--;
-      game.playedSession--;
+      if (win || lose) {
+        if (win) {
+          game.win--;
+          game.winSession--;
+        }
+        if (lose) {
+          game.lose--;
+          game.loseSession--;
+        }
+        game.played--;
+        game.playedSession--;
+      } 
+      
       console.log(game);
     }
   });
