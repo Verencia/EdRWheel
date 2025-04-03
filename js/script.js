@@ -1,6 +1,13 @@
 const PrizeAudio = new Audio("../sounds/congratulation.mp3");
 const TickAudio = new Audio("../sounds/tick.mp3");
 const PirateAudio = new Audio("../sounds/pirate.mp3");
+const ButtonSelectAudio = new Audio("../sounds/button.mp3");
+const ButtonSelectAudio2 = new Audio("../sounds/button2.mp3");
+var audioTab = []
+audioTab.push(ButtonSelectAudio,ButtonSelectAudio2)
+const HoverAudio = new Audio("../sounds/hover.mp3");
+const CloseAudio = new Audio("../sounds/close.mp3");
+const OpenAudio = new Audio("../sounds/open.mp3");
 const ImgPath = "../image/";
 var canvas = document.getElementById("myCanvas");
 var wheelPower = 0;
@@ -39,6 +46,16 @@ var animationsDiv = document.getElementById("animations");
 var div_canvas = document.getElementById("div_canvas");
 var power_ctrl = document.getElementById("power_ctrl");
 
+function hoverSound() {
+  HoverAudio.play();
+}
+
+function clickSound() {
+  let random = Math.floor(Math.random() * audioTab.length);
+  audioTab[random].play()
+  //ButtonSelectAudio.play();
+  
+}
 // Catch user leaving if draws are not archived
 window.onbeforeunload = function (){
   histo = window.localStorage.getItem("histo");
@@ -289,6 +306,7 @@ function countTrue(winningSegmentId, winningSegmentText, winningSegmentSize) {
 function addPlayedGame(winningSegmentId, winningSegmentText, winningSegmentSize) {
   //console.log("winningSegmentId " + winningSegmentId)
   //console.log("winningSegmentId-- " + winningSegmentId)
+  clickSound();
   histoChanged = true;
   document.getElementById("trueCount" + winningSegmentId).innerText = parseInt(document.getElementById("trueCount" + winningSegmentId).innerText) + 1;
   document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
@@ -348,10 +366,12 @@ function addToHisto(bool, winningSegmentText, winningSegmentId, winningSegmentSi
 }
 
 function delButton(histoCount2,winningSegmentId){
+  
   if (!confirm("Veux tu vraiment supprimer cette run ?"))
  {
     return;
   }
+  clickSound();
   histo = (JSON.parse(localStorage.getItem("histo")));
   let deleted = histo.splice(histoCount2,1);
   histoCount = localStorage.getItem("histoCount");
@@ -1157,6 +1177,7 @@ function winwheelDegreesToPercent(deg) {
 // When you click on "Add game"
 // Creates a new div in game section
 function addGame() {
+  
   gameAdded = true;
   let div = document.createElement("div");
   let divDetails = document.createElement("div");
@@ -1254,6 +1275,7 @@ function addGame() {
   buttonDelete.classList.add("text-white", "bg-red-700", "col-span-2","buttonDelete");
   buttonDelete.innerText = "DELETE";
   buttonDelete.setAttribute("onclick", "deleteGame(" + count + ")");
+  buttonDelete.setAttribute("onmouseover", "hoverSound()");
 
   let titleResult = document.createElement("p");
   titleResult.innerText = "Résultats";
@@ -1298,6 +1320,7 @@ function addGame() {
   addPlayed.innerText = "Ajouter partie";
   addPlayed.classList.add("text-white", "bg-blue-700", "mr-1","addPlayed");
   addPlayed.setAttribute("onclick", "addPlayed(" + count + ")");
+  addPlayed.setAttribute("onmouseover", "hoverSound()");
 
   let win = document.createElement("p");
   win.id = "win" + count;
@@ -1325,9 +1348,9 @@ function addGame() {
   playedSession.classList.add("hideContent","playedSession");
 
   let oldWeight = document.createElement("p");
-    oldWeight.id = "oldWeight" + count;
-    oldWeight.innerText = 0;
-    oldWeight.classList.add("hideContent","oldWeight");
+  oldWeight.id = "oldWeight" + count;
+  oldWeight.innerText = 0;
+  oldWeight.classList.add("hideContent","oldWeight");
 
   let gameHidden = document.createElement("p");
   gameHidden.id = "gameHidden" + count;
@@ -1611,6 +1634,7 @@ function addGames(games) {
     buttonDelete.classList.add("text-white", "bg-red-700","px-2","rounded","buttonDelete");
     buttonDelete.innerText = "SUPPRIMER";
     buttonDelete.setAttribute("onclick", "deleteGame(" + lilcount + ")");
+    buttonDelete.setAttribute("onmouseover", "hoverSound()");
     
     let titleResult = document.createElement("p");
     titleResult.id = "titleResult"+lilcount;
@@ -1675,6 +1699,7 @@ function addGames(games) {
     addPlayed.innerText = "Ajouter partie";
     addPlayed.classList.add("text-white", "bg-blue-700", "mr-1","px-2","rounded","addPlayed");
     addPlayed.setAttribute("onclick", "addPlayed(" + lilcount + ")");
+    addPlayed.setAttribute("onmouseover", "hoverSound()");
 
     let win = document.createElement("p");
     win.id = "win" + lilcount;
@@ -1797,6 +1822,7 @@ function calcWeight(weight) {
 // Deletes a game
 function deleteGame(id) {
   console.log("JE SUPPRIME " + id);
+  clickSound();
   if (confirm("Voulez vous vraiment supprimer ce jeu ?") && theWheel.segments.length > 1) {
     let deleted = false;
     let games = JSON.parse(window.localStorage.getItem("games"));
@@ -2420,6 +2446,7 @@ function save() {
 
 }
 function menuOpened() {
+  OpenAudio.play()
   let games = JSON.parse(window.localStorage.getItem("games"));
   let score1 = document.getElementById("score1");
   let score2 = document.getElementById("score2");
@@ -2446,6 +2473,7 @@ function menuOpened() {
 } 
 
 function menuClosed() {
+  CloseAudio.play()
   let games = JSON.parse(window.localStorage.getItem("games"));
   let score1 = document.getElementById("score1");
   let score2 = document.getElementById("score2");
