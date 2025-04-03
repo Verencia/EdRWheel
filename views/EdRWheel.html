@@ -87,14 +87,14 @@
             </div>
         </div>
         <div class="version">
-            <p>v1.1.2
+            <p>v1.1.4
             </p>
         </div>
     </div>
         <script src="../js/script.js"></script>
-        <div id="cogMenu" class="flex fixed clickable menuClosed items-center pr-2 rounded-tr-lg w-fit" onclick="hideMenu()">
-            <div><img src="../image/cog.svg" alt="" srcset="" style="height: 25px; width: 25px;"></div>
-            <div class="text-2xl">Menus</div>
+        <div id="cogMenu"  class="flex fixed clickable menuClosed items-center pr-2 rounded-tr-lg w-fit" onclick="hideMenu()" onmouseover="event.stopPropagation();hoverSound() ;">
+            <div><img src="../image/cog.svg" alt="" srcset="" style="height: 25px; width: 25px;" onmouseover="event.stopPropagation()"></div>
+            <div class="text-2xl" onmouseover="event.stopPropagation()">Menus</div>
         </div>
             <div class="fixed menu3 overflow-hidden rounded-tr-lg " id="div_menu">
                 <div id="menuOpt" class="content-start h-full w-full text-center shadow shadow-black ">
@@ -102,23 +102,23 @@
                         <div class=" flex justify-center items-center px-5 hideMenu" onclick="hideMenu()">
                             <input class="imageButton justify-right align-bottom" id="hideButton" type="image" src="../image/hide.png" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" ></input>
                         </div>
-                        <div id="ongletResume" class="w-full flex items-center justify-center pb-1 ongletNotChosen" onclick=ongletResumeClicked();>
-                            <div class="flex justify-center w-fit  h-fit border-2 border-black  px-2 menuHisto hideMenu rounded" onclick="">
-                                <p class="font-bold">Résumé session</p>
+                        <div id="ongletResume" class="w-full flex items-center justify-center pb-1 ongletNotChosen" onclick="ongletResumeClicked(); clickSound()" onmouseover="hoverSound() ;">
+                            <div class="flex justify-center w-fit  h-fit border-2 border-black  px-2 menuHisto hideMenu rounded" onclick="" onmouseover="event.stopPropagation()">
+                                <p class="font-bold" onmouseover="event.stopPropagation()">Résumé session</p>
                             </div>
                         </div>  
-                        <div id="ongletHisto" class="w-full flex items-center justify-center pb-1 ongletNotChosen" onclick=ongletHistoClicked();>
-                            <div class="flex justify-center w-fit h-fit border-2 border-black px-2 menuHisto hideMenu rounded" onclick="">
-                                <p class="font-bold">Historique</p>
+                        <div id="ongletHisto" class="w-full flex items-center justify-center pb-1 ongletNotChosen" onclick="ongletHistoClicked();clickSound()" onmouseover="hoverSound() ;">
+                            <div class="flex justify-center w-fit h-fit border-2 border-black px-2 menuHisto hideMenu rounded" onclick="" onmouseover="event.stopPropagation()">
+                                <p class="font-bold" onmouseover="event.stopPropagation()">Historique</p>
                             </div>
                         </div>
-                        <div id="ongletGame" class="w-full   menuGame ltr ongletChosen" onclick="ongletGameClicked()">
-                            <div class="flex justify-center hideMenu" onclick="">
-                                <p class=" font-bold border-2 border-black mb-1 mt-1 px-2 menuHisto ml-2 rounded">Jeux</p>
+                        <div id="ongletGame" class="w-full   menuGame ltr ongletChosen" onclick="ongletGameClicked();clickSound()" onmouseover="hoverSound() ;">
+                            <div class="flex justify-center hideMenu" onclick="" onmouseover="event.stopPropagation()">
+                                <p class=" font-bold border-2 border-black mb-1 mt-1 px-2 menuHisto ml-2 rounded" onmouseover="event.stopPropagation()">Jeux</p>
                             </div>
                             <div id="div_buttons" class="showContentFlex mb-1 justify-center">
-                                <button onclick="addGame(); event.stopPropagation()" class="menuButton  text-white font-bold py-2 px-4 rounded mr-2">Ajouter un jeu</button>
-                                <button onclick="save(); event.stopPropagation()"class="menuButton  text-white font-bold py-2 px-4 rounded ml-2">Sauvegarder</button>
+                                <button onclick="addGame(); event.stopPropagation(); clickSound()" onmouseover="hoverSound();" class="menuButton  text-white font-bold py-2 px-4 rounded mr-2">Ajouter un jeu</button>
+                                <button onclick="save(); event.stopPropagation(); clickSound()" onmouseover="hoverSound();"class="menuButton  text-white font-bold py-2 px-4 rounded ml-2">Sauvegarder</button>
                             </div>
                         </div>
                         
