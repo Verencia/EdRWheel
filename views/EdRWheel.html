@@ -27,7 +27,7 @@
                 <div id="power_ctrl" class="power_controls	">     
                     <!-- <img id="spin_button" src="../image/spin_off.png" class="w-full cursor-pointer" style="height:100px; width:150px;" alt="Spin" onClick="startSpin();" /> -->
                     <button class="bg-yellow-300 hover:bg-yellow-500 font-bold py-8 px-4 rounded border-black border-2 w-full text-4xl" alt="Spin" onClick="startSpin();" >SPIN</button>
-                         <button class="resetButton text-white font-bold py-2 px-4 w-full mt-1 text-2xl" onClick="resetWheel(); return false;">Reset</button>
+                         <button class="resetButton text-white font-bold py-2 px-4 w-full mt-1 text-2xl" onClick="stopSound();resetWheel(); return false ">STOP</button>
                 </div>   
             </div>
             <div id="div_canvas" class="pb-2 pt-2 h-full w-full ">
@@ -50,6 +50,7 @@
             </div>
             <div></div>
             <div></div>
+            <div class="block">
             <div class="grid-canvas flex justify-center items-center">
                 <div id="score2" style="background-color: #e4debe;">
                     <div id="scoreDiv" >
@@ -71,7 +72,18 @@
                             </div>
                         </div>
                 </div>
+                
             </div>
+            </div>
+            <div class="block mt-1">
+                    <div class="flex justify-center">
+                        <label for="importFile" class="button flex ml-2">Importer</label>
+                        <input  class="ml-2" type="file" style="width: 100px; display: none;" id="importFile" accept="application/json">
+                        <button class="button ml-2" onclick="downloadLocalStorage();">Exporter</button>
+                    </div>
+                    
+                </div>
+            
         </div>
         
         <div class="flex justify-center ">
@@ -82,16 +94,26 @@
             </div>
             
             
-            <div id="alert" class="">
-                
-            </div>
+            <div id="alert" class=""></div>
+
+            <div id="archivedGames" class="hidden"></div>
+
+            <div id="archivedSeasons" class="hidden"></div>
+
+            <div id="seasonStats" class="hidden"></div>
         </div>
         <div class="version">
-            <p>v1.1.4
+            <p>v1.2.0
             </p>
         </div>
     </div>
+        <script src="../js/utils.js"></script>
+        <script src="../js/sound.js"></script>
+        <script src="../js/wheel.js"></script>
         <script src="../js/script.js"></script>
+        <script src="../js/game.js"></script>
+        <script src="../js/ui.js"></script>
+        
         <div id="cogMenu"  class="flex fixed clickable menuClosed items-center pr-2 rounded-tr-lg w-fit" onclick="hideMenu()" onmouseover="event.stopPropagation();hoverSound() ;">
             <div><img src="../image/cog.svg" alt="" srcset="" style="height: 25px; width: 25px;" onmouseover="event.stopPropagation()"></div>
             <div class="text-2xl" onmouseover="event.stopPropagation()">Menus</div>
@@ -118,25 +140,31 @@
                             </div>
                             <div id="div_buttons" class="showContentFlex mb-1 justify-center">
                                 <button onclick="addGame(); event.stopPropagation(); clickSound()" onmouseover="hoverSound();" class="menuButton  text-white font-bold py-2 px-4 rounded mr-2">Ajouter un jeu</button>
-                                <button onclick="save(); event.stopPropagation(); clickSound()" onmouseover="hoverSound();"class="menuButton  text-white font-bold py-2 px-4 rounded ml-2">Sauvegarder</button>
+                                <button onclick="showGameArchive(); event.stopPropagation(); clickSound()" onmouseover="hoverSound();"class="menuButton  text-white font-bold py-2 px-4 rounded ml-2">Archive</button>
                             </div>
                         </div>
                         
                     </div>
+
                     <div class="overflow-y-scroll noScrollBar">
                         <div id="games" class="showContentFlex"></div>
                     </div >
-                        
-                    
+                                           
                     <div class=" overflow-y-scroll noScrollBar">
-                        <div id="textHisto" class="hideContent"> <p>.C'est vide ici ! Cet onglet ce remplira lorsqu'une run sera ajoutée ou tirée au sort</p></div>
+                        <div id="textHisto" class="hideContent"> <p>C'est vide ici ! Cet onglet se remplira lorsqu'une run sera ajoutée ou tirée au sort</p></div>
                         <div id="historique" class="historique ltr p-1 mb-1 w-full hideContent" ></div>
                     </div>
                 
-                    <div id="buttonArchive" class="hideContent"><button class="bg-white p-1 border-2 border-black font-bold mb-1 mt-1" onclick=archiveSession();>Archiver Session</button></div>
+                    <div id="buttonArchive" class="hideContent"><button class="button" onclick=archiveSession();>Archiver Session</button></div>
                     <div class="overflow-y-scroll noScrollBar">
+                        <div id="textResume" class="hideContent"> <p>C'est vide ici ! Cet onglet se remplira lorsqu'une session sera ajoutée</p></div>
                         <div id="resumeSession" class="resumeSession ltr hideContent "></div>
                     </div>
+                    <div class="flex justify-center">
+                        <div id="buttonArchiveSeason" class="hideContent"><button class="button" onclick=archiveSeason();>Archiver Saison</button></div>
+                        <div id="buttonShowArchiveSeason" class="hideContent"><button class="mr-1 button " onclick=showSeasonsArchive();>Archive</button></div>
+                    </div>
+                    
                 </div>
 
 

@@ -1,0 +1,3 @@
+Compter et afficher les num de saisons
+archive -> highlight session + déselection quand on reclique
+Regarder si on peut pin des couleurs favoris

@@ -2841,33 +2841,6 @@ video {
   z-index: 99;
 }
 
-#archivedSeasons {
-  /* margin-top: 5px; */
-  width: 30%;
-  height: 100%;
-  top: 0;
-  left: 70%;
-  flex-direction: column;
-  /* justify-content: flex-end; */
-  position: fixed;
-  z-index: 99;
-  background-color: #f58478;
-  text-align: center;
-}
-
-#seasonStats {
-  width: 70%;
-  height: 100%;
-  top: 0;
-  left: 0%;
-  position: fixed;
-  z-index: 99;
-  background-color: #f58478;
-  text-align: center;
-  flex-direction: column;
-  /* border-right: 2px solid red; */
-}
-
 .appear {
   animation: scale-up-center;
   animation-duration: 1s;
@@ -2954,6 +2927,18 @@ div.power_controls
   flex-direction: column-reverse;
   justify-content: flex-end;
   display: flex;
+}
+
+.archiveSeason {
+  margin-top: 5px;
+  width: 99%;
+  height: 99%;
+  left: 0;
+  top: 0;
+  overflow-y: scroll;
+  flex-direction: column-reverse;
+  display: block;
+  scrollbar-width: none;
 }
 
 .historique {
@@ -3083,33 +3068,6 @@ body{
   background-color: #e4debe;
 }
 
-.button {
-  background-color: white;
-  padding: 1px 4px 1px 4px;
-  border: 2px #000 solid;
-  font-weight: bold;
-  margin-bottom: 1px;
-  margin-top: 1px;
-  border-radius:5px
-}
-.button:hover {
-  background-color: rgba(236, 229, 229, 0.822);
-}
-
-.buttonFullRounded {
-  background-color: white;
-  padding: 2px 6px 2px 6px;
-  border: 2px #000 solid;
-  font-weight: bold;
-  margin-bottom: 1px;
-  margin-top: 1px;
-  margin-left: 4px;
-  border-radius:20px
-
-}
-.buttonFullRounded:hover {
-  background-color: rgba(236, 229, 229, 0.822);
-}
 .borderGame2 {
   border-color: #a94438;
 }
@@ -3146,65 +3104,6 @@ body{
 .moveToRightSide {
   transform: translate(150%,-10%);
   transition-duration: 1s;
-}
-
-.leftToRight {
-  animation: leftToRightKey 0.5s ;
-}
-
-.rightToLeft {
-  animation: rightToLeftKey 0.5s ;
-}
-
-.leftToRight2 {
-  transform: translate(-100%);
-  transition-duration: 0.5s;
-}
-
-.rightToLeft2 {
-  transform: translate(100%);
-  transition-duration: 0.5s;
-}
-
-@keyframes rightToLeftKey {
-  from {
-    transform: translateX(100%) translateY(0%);
-  }
-
-  to {
-    transform: translate(0%,0%);
-  }
-}
-
-@keyframes leftToRightKey {
-  from {
-    transform: translateX(-100%) translateY(0%);
-  }
-
-  to {
-    transform: translate(0%,0%);
-  }
-}
-
-@keyframes rightToLeftKey2 {
-  from {
-    transform: translateX(0%) translateY(0%);
-  }
-
-  to {
-    transform: translate(100%,0%);
-    
-  }
-}
-
-@keyframes leftToRightKey2 {
-  from {
-    transform: translateX(0%) translateY(0%);
-  }
-
-  to {
-    transform: translate(-100%,0%);
-  }
 }
 
 .backToMiddle{
