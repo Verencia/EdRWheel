@@ -553,6 +553,11 @@ function addPlayedGame(winningSegmentId, winningSegmentText, winningSegmentSize)
 function countTrue(winningSegmentId, winningSegmentText, winningSegmentSize) {
   //console.log("winningSegmentId " + winningSegmentId)
   //console.log("winningSegmentId-- " + winningSegmentId)
+  sessionDebut = localStorage.getItem("sessionDebut");
+  if (sessionDebut == null || sessionDebut == "null" ) {
+    sessionDebut = today2();
+    localStorage.setItem("sessionDebut",sessionDebut);
+  }
   document.getElementById("trueCount" + winningSegmentId).innerText = parseInt(document.getElementById("trueCount" + winningSegmentId).innerText) + 1;
   //document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
   alertDiv.style.display = "none";
@@ -570,6 +575,11 @@ function countTrue(winningSegmentId, winningSegmentText, winningSegmentSize) {
 // User didn't want to count this
 function cheatCount(winningSegmentId, winningSegmentText, winningSegmentSize) {
   //onsole.log("winningSegmentId " + winningSegmentId)
+  sessionDebut = localStorage.getItem("sessionDebut");
+  if (sessionDebut == null || sessionDebut == "null" ) {
+    sessionDebut = today2();
+    localStorage.setItem("sessionDebut",sessionDebut);
+  }
   document.getElementById("cheatCount" + winningSegmentId).innerText = parseInt(document.getElementById("cheatCount" + winningSegmentId).innerText) + 1;
   //console.log("winningSegmentId-- " + winningSegmentId)
   alertDiv.style.display = "none";
@@ -582,6 +592,10 @@ function cheatCount(winningSegmentId, winningSegmentText, winningSegmentSize) {
 function addToHisto(bool, winningSegmentText, winningSegmentId, winningSegmentSize) {
   histoCount = localStorage.getItem('histoCount');
   histo = (localStorage.getItem('histo'));
+  if (sessionDebut == null) {
+  sessionDebut = today2();
+  localStorage.setItem("sessionDebut",sessionDebut);
+}
   resultsHisto = localStorage.getItem("resultsHisto");
   if (histo != "") {
     histo = (JSON.parse(localStorage.getItem("histo")));
@@ -601,7 +615,9 @@ function addToHisto(bool, winningSegmentText, winningSegmentId, winningSegmentSi
     "trueCount":trueCount,
     "cheatCount":cheatCount,
     "percent":winwheelDegreesToPercent(winningSegmentSize),
-    "id":winningSegmentId
+    "id":winningSegmentId,
+    "dateStart":today2(),
+    "dateEnd":null
   })
   localStorage.setItem('histo', JSON.stringify(histo));
   if (bool == false) {
@@ -801,6 +817,7 @@ function winButton(histoCount, winningSegmentId) {
   let divResultat = document.getElementById("divResultat" + histoCount);
   let pResultChosen = document.getElementById("pResultChosen" + histoCount);
   let pResult = document.getElementById("pResult" + histoCount);
+  histo = (JSON.parse(localStorage.getItem("histo")));
   //let games = JSON.parse(window.localStorage.getItem("games"));
   /* let winningSegmentId;
   games.forEach(game => {
@@ -827,11 +844,137 @@ function winButton(histoCount, winningSegmentId) {
   pResult.innerText = "true";
 
   resultsHisto.push({"id":histoCount, "result":true});
+  histo[histoCount].dateEnd = today2();
+  localStorage.setItem('histo', JSON.stringify(histo));
   window.localStorage.setItem("resultsHisto", JSON.stringify(resultsHisto));
   win.innerText = parseInt(win.innerText) + 1;
   winSession.innerText = parseInt(winSession.innerText) + 1;
   resultChanged = true;
   addWinTotal();
+  save();
+}
+function showActualRun () {
+  let actualRunTitle;
+  let histoSave;
+  let histoCount = 0;
+  histo = (localStorage.getItem('histo'));
+  resultsHisto = localStorage.getItem("resultsHisto");
+  if (histo != "") {
+    histo = (JSON.parse(localStorage.getItem("histo")));
+  } else {
+    return;
+  }
+  document.getElementById("actualRunWin").disabled = false;
+  document.getElementById("actualRunLose").disabled = false;
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
+  
+    histo.forEach(histoElement => {
+    let pResultChosen = document.getElementById("pResultChosen" + histoCount)
+      console.log("Ja passe par là");
+      if (pResultChosen.innerHTML == "false") {
+        console.log("Ja passe par ici");
+        actualRunId = histoElement.id;
+        actualRunTitle = histoElement.title;
+        histoSave = histoCount;
+        console.log("histoSave");
+        console.log(histoSave);
+      }
+      
+    histoCount++;
+  });
+  
+  if (histoSave == undefined) {
+    actualRunTitle = "Aucune"
+    document.getElementById("actualRunWin").disabled = true;
+    document.getElementById("actualRunLose").disabled = true;
+  }
+  actualRun.innerHTML = actualRunTitle;
+  actualRun.setAttribute("runId", actualRunId);
+  actualRun.setAttribute("histoCount", histoSave);
+}
+
+function actualRunWin () {
+  resultsHisto = localStorage.getItem("resultsHisto");
+  let winningSegmentId = actualRun.getAttribute("runId");
+  let histoCount = actualRun.getAttribute("histoCount");
+  let win = document.getElementById("win" + winningSegmentId);
+  console.log(winningSegmentId);
+  let winSession = document.getElementById("winSession" + winningSegmentId);
+  let divButton = document.getElementById("divButton" + histoCount);
+  let divResultat = document.getElementById("divResultat" + histoCount);
+  let pResultChosen = document.getElementById("pResultChosen" + histoCount);
+  let pResult = document.getElementById("pResult" + histoCount);
+
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
+  histo = (JSON.parse(localStorage.getItem("histo")));
+  histo[histoCount].dateEnd = today2();
+  localStorage.setItem('histo', JSON.stringify(histo))
+  resultsHisto.push({"id":histoCount, "result":true});
+  window.localStorage.setItem("resultsHisto", JSON.stringify(resultsHisto));
+  win.innerText = parseInt(win.innerText) + 1;
+  winSession.innerText = parseInt(winSession.innerText) + 1;
+
+  divButton.style.display = "none";
+  divResultat.classList.remove("hideContent");
+  divResultat.classList.add("flex");
+  divResultat.firstElementChild.innerText = "Run gagnée";
+  divResultat.firstElementChild.classList.add("text-green-600");
+
+  pResultChosen.innerText = "true";
+  pResult.innerText = "true";
+
+  ;
+
+  resultChanged = true;
+  addWinTotal();
+  save();
+}
+
+function actualRunLose () {
+  resultsHisto = localStorage.getItem("resultsHisto");
+  let winningSegmentId = actualRun.getAttribute("runId");
+  let histoCount = actualRun.getAttribute("histoCount");
+  let lose = document.getElementById("lose" + winningSegmentId);
+  let loseSession = document.getElementById("loseSession" + winningSegmentId);
+  let divButton = document.getElementById("divButton" + histoCount);
+  let divResultat = document.getElementById("divResultat" + histoCount);
+  let pResultChosen = document.getElementById("pResultChosen" + histoCount);
+  let pResult = document.getElementById("pResult" + histoCount);
+  
+  if (resultsHisto != "") {
+    resultsHisto = (JSON.parse(localStorage.getItem("resultsHisto")));
+  } else {
+    resultsHisto = [];
+  }
+  histo = (JSON.parse(localStorage.getItem("histo")));
+  histo[histoCount].dateEnd = today2();
+  localStorage.setItem('histo', JSON.stringify(histo));
+  resultsHisto.push({"id":histoCount, "result":false});
+  window.localStorage.setItem("resultsHisto", JSON.stringify(resultsHisto));
+  lose.innerText = parseInt(lose.innerText) + 1;
+  loseSession.innerText = parseInt(loseSession.innerText) + 1;
+
+  divButton.style.display = "none";
+  divResultat.classList.remove("hideContent");
+  divResultat.classList.add("flex");
+  divResultat.firstElementChild.innerText = "Run perdue";
+  divResultat.firstElementChild.classList.add("text-red-600");
+
+  
+
+  pResultChosen.innerText = "true";
+  pResult.innerText = "false";
+
+  resultChanged = true;
+  addLoseTotal();
   save();
 }
 // When you clicked on L button
@@ -842,7 +985,7 @@ function loseButton(histoCount, winningSegmentId) {
   let pResultChosen = document.getElementById("pResultChosen" + histoCount);
   let pResult = document.getElementById("pResult" + histoCount);
   let lose = document.getElementById("lose" + winningSegmentId);
-  let loseSession = document.getElementById("loseSession" + winningSegmentId)
+  let loseSession = document.getElementById("loseSession" + winningSegmentId);
 
   resultsHisto = localStorage.getItem("resultsHisto");
   if (resultsHisto != "") {
@@ -865,6 +1008,10 @@ function loseButton(histoCount, winningSegmentId) {
   console.log(resultsHisto);
   lose.innerText = parseInt(lose.innerText) + 1;
   loseSession.innerText = parseInt(loseSession.innerText) + 1;
+
+  histo = (JSON.parse(localStorage.getItem("histo")));
+  histo[histoCount].dateEnd = today2();
+  localStorage.setItem('histo', JSON.stringify(histo));
 
   resultChanged = true;
   addLoseTotal();
@@ -997,6 +1144,7 @@ function archiveSession() {
       return;
     }
   }
+  playSound(archiveSessionAudio);
   histoCount = 0;
   window.localStorage.setItem("histoCount", histoCount);
   archiveChanged = true;
@@ -1053,7 +1201,7 @@ function archiveSession() {
   });
   archiveCheated.push(arrTirageCheat);
   localStorage.setItem("archiveCheated", JSON.stringify(archiveCheated));
-  histo = [];
+  
   resultsHisto = [];
   archive = (localStorage.getItem("archive"));
   if (archive != "") {
@@ -1062,11 +1210,20 @@ function archiveSession() {
     archive = [];
   }
   let arrArchive = [];
+  sessionDebut = localStorage.getItem("sessionDebut");
+  
   seasonCount = window.localStorage.getItem("seasonCount");
-  arrArchive.push({"date": today(), "season" : seasonCount});
+  arrArchive.push({"date": sessionDebut, "season" : seasonCount});
   games.forEach(game => {
     if (parseInt(game.playedSession) != 0) {
-      var toBeArchived = { "title": game.title, "win": game.winSession, "lose": game.loseSession, "played": game.playedSession, "date": today() };
+      let tpsJeu = 0;
+      histo.forEach(element => {
+        
+        if (element.title == game.title) {
+          tpsJeu += differenceDates2(element.dateEnd,element.dateStart);
+        }
+      });
+      var toBeArchived = { "title": game.title, "win": game.winSession, "lose": game.loseSession, "played": game.playedSession, "date": today2(),"tpsJeu":tpsJeu, "imgName" : game.imgName };
       arrArchive.push(toBeArchived);
       game.playedSession = 0;
       game.winSession = 0;
@@ -1080,7 +1237,7 @@ if (gameArchive != "") {
   gameArchive = (JSON.parse(localStorage.getItem("gameArchive")));
   gameArchive.forEach(game => {
     if (parseInt(game.playedSession) != 0) {
-      var toBeArchived = { "title": game.title, "win": game.winSession, "lose": game.loseSession, "played": game.playedSession, "date": today() };
+      var toBeArchived = { "title": game.title, "win": game.winSession, "lose": game.loseSession, "played": game.playedSession, "date": today2(), "imgName" : game.imgName };
       arrArchive.push(toBeArchived);
       console.log("JE PASSE lA");
       game.playedSession = 0;
@@ -1099,11 +1256,13 @@ if (gameArchive != "") {
   archive = JSON.stringify(archive);
   localStorage.setItem("archive", archive);
   archive = JSON.parse(localStorage.getItem("archive"));
-  localStorage.setItem("histo", histo);
+  localStorage.setItem("histo", []);
   localStorage.setItem("resultsHisto", resultsHisto);
   updateHisto();
   updateResumeSession();
   resetSession();
+  localStorage.setItem("sessionDebut", null);
+
 }
 
 // Show archived game sessions
@@ -1175,15 +1334,34 @@ function updateResumeSession() {
       }
     }
     
-      
-    sessionDate.innerText = "Résumé session " + archivedGame[0].date;
-    divSubLeft.appendChild(sessionDate);
+    let divNum = document.createElement("div");
+    divNum.classList.add("inline-block","mr-2");
+    
+    let sessionNum = document.createElement("p");
+    sessionNum.classList.add("numSession2","opacity-50");
+    sessionNum.innerText = sessionCount +1;
+    
+
+    let divSubuSubLeft = document.createElement("div");
+    let divSubSubuSubLeft = document.createElement("div");
+    divSubuSubLeft.classList.add("flex");
+    divSubSubuSubLeft.classList.add("centerDiv","mt-2");
+
+    divSubuSubLeft.appendChild(sessionNum);
+    divSubSubuSubLeft.appendChild(sessionDate);
+    divSubSubuSubLeft.appendChild(score);
+    divSubSubuSubLeft.appendChild(buttonShowTirage);
+    divSubSubuSubLeft.appendChild(buttonCancelSession);
+    divSubuSubLeft.appendChild(divSubSubuSubLeft);
+    divSubLeft.appendChild(divSubuSubLeft);
+
+    sessionDate.innerText = "Résumé session " + convertDate(archivedGame[0].date) + " (" + differenceDates((archivedGame[0].date),(archivedGame[(archivedGame.length)-1].date)) + ")";
+  
     score.innerText = "Score : " + win + "W / " + lose + "L " + " | Score Total : " + winTotal + "W / " + loseTotal + "L";
-    divSubLeft.appendChild(score);
+
     //scoreTotal.innerText = "Score Total : " + winTotal +"W / " + loseTotal + "L";
     //divLeft.appendChild(scoreTotal);
-    divSubLeft.appendChild(buttonShowTirage);
-    divSubLeft.appendChild(buttonCancelSession);
+    
     divLeft.appendChild(divSubLeft);
     div.appendChild(divLeft);
     div.appendChild(divRight);
@@ -1533,11 +1711,11 @@ function cancelSession (sessionCount) {
               forCountsHisto(game.title,"manu")
             }
             }
-        if (histo.wonOrLost) {
+        if (histo.wonOrLost && (histo.trueOrCheat == true || histo.trueOrCheat == "manu")) {
           console.log("cetait win");
           game.win--;
           winTotal --;
-        } else{
+        } else if(!histo.wonOrLost && (histo.trueOrCheat == true || histo.trueOrCheat == "manu")){
           console.log("cetait lose");
           game.lose--;
           loseTotal --;
@@ -1646,10 +1824,10 @@ function cancelSession (sessionCount) {
               forCountsHisto(game.title,"manu")
             }
             }
-            if (histo.wonOrLost == true) {
+            if (histo.wonOrLost == true && (histo.trueOrCheat == true || histo.trueOrCheat == "manu")) {
               game.win--;
               winTotal--;
-            } else{
+            } else if(histo.wonOrLost == lose && (histo.trueOrCheat == true || histo.trueOrCheat == "manu")){
               game.lose--;
               loseTotal--;
             }
@@ -1796,6 +1974,8 @@ function delButton(histoCount2,winningSegmentId){
 
 function archiveSeason () {
   archive = localStorage.getItem("archive");
+  archiveCheated = localStorage.getItem("archiveCheated");
+  cheatedArchived = localStorage.getItem("cheatedArchived");
   console.log(archive.length)
   if (archive.length != 2 ) {
     archive = JSON.parse(localStorage.getItem("archive"));
@@ -1813,18 +1993,41 @@ function archiveSeason () {
   } else {
     seasonArchive = [];
   }
+  archiveCheated = localStorage.getItem("archiveCheated");
+  if (archiveCheated != "") {
+    archiveCheated = JSON.parse(localStorage.getItem("archiveCheated"));
+  } else {
+    archiveCheated = [];
+  }
+
+  cheatedArchived = localStorage.getItem("cheatedArchived");
+  if (cheatedArchived != "") {
+    cheatedArchived = JSON.parse(localStorage.getItem("cheatedArchived"));
+  } else {
+    cheatedArchived = [];
+  }
+
 
   let tab = [];
+  archiveCheated.forEach(element => {
+    for (const key in element) {
+      tab.push({"title":key,"num":element[key]})
+    }
+  });
+  cheatedArchived.push(tab);
+  tab = [];
   archive.forEach(element => {
     tab.push(element);
   });
+  //tab.push(archiveCheated)
   seasonArchive.push(tab);
 
   archive = [];
   localStorage.setItem("archive", JSON.stringify(archive));
   localStorage.setItem("seasonArchive", JSON.stringify(seasonArchive));
+  localStorage.setItem("cheatedArchived", JSON.stringify(cheatedArchived));
 
-  localStorage.setItem("archiveCheated", []);
+  
   localStorage.setItem("histoTirage", []);
   
   document.getElementById("textResume").classList.remove("hideContent");
@@ -1832,6 +2035,7 @@ function archiveSeason () {
   seasonCount = localStorage.getItem("seasonCount");
   seasonCount++;
   localStorage.setItem("seasonCount", seasonCount);
+  localStorage.setItem("archiveCheated", []);
   sumUpSeasons();
   updateResumeSession();
   resetStatsGames();
@@ -1840,7 +2044,7 @@ function archiveSeason () {
 
 function sumUpSeasons () {
   seasonArchive = JSON.parse(localStorage.getItem("seasonArchive"));
-  
+  //archiveCheated = JSON.parse(localStorage.getItem("archiveCheated"));
   /* if (seasonGameList == null) {
     seasonGameList = [];
     localStorage.setItem("seasonGameList", JSON.stringify(seasonGameList));
@@ -1858,6 +2062,21 @@ function sumUpSeasons () {
     let played = 0;
     let win = 0;
     let lose = 0;
+    // MARCHE PAS IL FAUT FAIRE AUTREMENT
+    /* let mostIgnored = {"title" : "", "num" : 0};
+    archiveCheated.forEach(cheat => {
+      for (const key in cheat) {
+        if (Object.hasOwnProperty.call(cheat, key)) {
+          if (key == mostIgnored.title) {
+            mostIgnored.num += 1;
+          } else if (key != mostIgnored.title && cheat[key] > mostIgnored.num ) {
+            mostIgnored.title = key;
+            mostIgnored.num = cheat[key];
+          }
+        }
+      }
+    }); */
+    let mostTpsJeu = {title : "",tpsJeu : 0}
     let mostPlayed = {
       played: 0
     };
@@ -1865,7 +2084,9 @@ function sumUpSeasons () {
       played: 1000
     };
     dateFirstGamePlayed = element[0][0].date;
-// FAIRE UNE LISTE DES JEUX JOUES POUR POUVOIR LES TRIER PAR RATIO
+    //dateLastGamePlayed = element[element.length-1][(element[element.length-1]).length-1];
+    console.log("dateLastGamePlayed");console.log(dateLastGamePlayed);
+    // FAIRE UNE LISTE DES JEUX JOUES POUR POUVOIR LES TRIER PAR RATIO
     element.forEach((sessions) => {
       console.log("SESSION");console.log(sessions);
       for (let index = 0; index < sessions.length; index++) {
@@ -1882,6 +2103,10 @@ function sumUpSeasons () {
         if (leastPlayed.played > sessions[index].played) {
           leastPlayed = sessions[index];
         }
+        if (sessions[index].tpsJeu > mostTpsJeu.tpsJeu) {
+          mostTpsJeu.title = sessions[index].title;
+          mostTpsJeu.tpsJeu = sessions[index].tpsJeu;
+        }
         console.log(sessions[index]);
         //seasonGameList.push(sessions[index])
         let keys = Object.keys(sessions[index]);
@@ -1895,6 +2120,7 @@ function sumUpSeasons () {
             win : sessions[index].win,
             lose : sessions[index].lose,
             played : sessions[index].played,
+            imgName : sessions[index].imgName,
           });
         } else {
           let  i = seasonGameScores.findIndex(e => e.title === sessions[index].title);
@@ -1911,11 +2137,13 @@ function sumUpSeasons () {
     seasonGameScores.sort((a, b) => b.played - a.played);
     mostPlayed = seasonGameScores[0];
     leastPlayed = seasonGameScores[seasonGameScores.length-1];
-    resumeSeason.push({"win" : win, 
+    resumeSeason.push({
+        "win" : win, 
         "lose" : lose , 
         "played" : played , 
         "mostPlayed" : mostPlayed , 
         "leastPlayed" : leastPlayed , 
+        "mostTpsJeu" : mostTpsJeu,
         "dateFirstGamePlayed" : dateFirstGamePlayed , 
         "dateLastGamePlayed" : dateLastGamePlayed,
         "seasonGameList" : seasonGameList,
@@ -1929,7 +2157,30 @@ function sumUpSeasons () {
   //localStorage.setItem("dateLastGamePlayed", JSON.stringify(dateLastGamePlayed));
 }
 
+function calcMostIgnored (saison){
+  cheatedArchived = localStorage.getItem("cheatedArchived");
+  let mostIgnore = {"title": "Aucun","num" : 0};
+  try {
+    if (cheatedArchived != "") {
+    cheatedArchived = JSON.parse(localStorage.getItem("cheatedArchived"));
+    cheatedArchived[saison].forEach(element => {
+    if (element.title != mostIgnore.title && element.num > mostIgnore.num) {
+      mostIgnore.title = element.title;
+      mostIgnore.num = element.num;
+    } else if (element.title == mostIgnore.title) {
+      mostIgnore.num += 1;
+    }
 
+    });
+  } 
+  return mostIgnore;
+  } catch (error) {
+    return mostIgnore;
+  }
+  
+  
+  
+}
 function showSeasonsArchive () {
     /* //archivedGame.style.marginTop = "5px";
     archivedSeasons.style.width = "30%";
@@ -1942,6 +2193,12 @@ function showSeasonsArchive () {
     OpenAudio.play()
     resumeSeason = JSON.parse(window.localStorage.getItem("resumeSeason"));
     seasonArchive = JSON.parse(window.localStorage.getItem("seasonArchive"));
+    cheatedArchived = localStorage.getItem("cheatedArchived");
+  if (cheatedArchived != "") {
+    cheatedArchived = JSON.parse(localStorage.getItem("cheatedArchived"));
+  } else {
+    cheatedArchived = [];
+  }
 
     $("#archivedSeasons").empty();
     $("#archivedSeasons").removeClass("hidden rightToLeft2");
@@ -1964,7 +2221,7 @@ function showSeasonsArchive () {
     bigDiv.classList.add("overflow-y-scroll" , "noScrollBar")
     let county = 0;
     resumeSeason.forEach(element => {
-      
+      let mostIgnore = calcMostIgnored(county);
       let div = document.createElement("div");
       //div.classList.add("flex", "grid", "grid-cols-2", "session", "m-2", "rounded", "font-medium");
       //console.log(resumeSeason.length - county);
@@ -1977,6 +2234,8 @@ function showSeasonsArchive () {
       let seasonMostPlayed = document.createElement("p");
       let seasonLeastPlayed = document.createElement("p");
       let seasonBestRatio = document.createElement("p");
+      let seasonMostIgnored = document.createElement("p");
+      let seasonMostTpsJeu = document.createElement("p");
       let seasonScore = document.createElement("p");
       let buttonStats = document.createElement("button");
       buttonStats.classList.add("button" ,"rounded");
@@ -1992,13 +2251,30 @@ function showSeasonsArchive () {
       console.log(bestRatio  );
         }
       });
+
+      (element.seasonGameList).forEach(elem => {
+        try {
+          
+        } catch (error) {
+          
+        }
+      });
       console.log("ICI SCORE "  );
       console.log(bestRatio  );
       seasonNum.innerText = "Saison " + (county + 1);
-      seasonDates.innerText = element.dateFirstGamePlayed + " - " + element.dateLastGamePlayed
+      seasonDates.innerText = convertDate(element.dateFirstGamePlayed) + " - " + convertDate(element.dateLastGamePlayed)
       seasonMostPlayed.innerText = "Jeu le plus joué : " + element.mostPlayed.title + " - " + element.mostPlayed.played + " fois";
       seasonLeastPlayed.innerText = "Jeu le moins joué : " + element.leastPlayed.title +" - " + element.leastPlayed.played + " fois";
       seasonBestRatio.innerText = "Meilleur ratio : " + bestRatio.title +" - " + bestRatio.win + "W/"+bestRatio.lose + "L";
+      if (mostIgnore.num != 0) {
+        seasonMostIgnored.innerText = "Jeu le plus ignoré " + mostIgnore.title + " | " + mostIgnore.num + " fois";
+      }
+      try {
+        seasonMostTpsJeu.innerText = "Plus de temps de jeu : " + element.mostTpsJeu.title + " - " + msToHmin(element.mostTpsJeu.tpsJeu);  
+      } catch (error) {
+        
+      }
+      
       seasonScore.innerText = element.win +"W / " + element.lose + " L - " + element.played + " partie(s) "; 
 
       divLeft.appendChild(seasonNum);
@@ -2007,6 +2283,8 @@ function showSeasonsArchive () {
       divLeft.appendChild(seasonLeastPlayed);
       divLeft.appendChild(seasonBestRatio);
       divLeft.appendChild(seasonScore);
+      divLeft.appendChild(seasonMostTpsJeu);
+      divLeft.appendChild(seasonMostIgnored);
       divLeft.appendChild(buttonStats);
       //divLeft.classList.add("border-r", "border-gray-400");
       
@@ -2014,7 +2292,7 @@ function showSeasonsArchive () {
 
       seasonArchive[county].forEach(session => {
         let dateSession = document.createElement("p");
-        console.log(session);
+        //console.log(session);
         dateSession.innerText = "Session du : " + session[0].date;
         divRight.appendChild(dateSession);
         for (let index = 1; index < session.length; index++) {
@@ -2085,28 +2363,40 @@ function showStatsSeason (numero) {
   p2.classList.add("font-bold");
   divLeft.appendChild(p2)
 
-  
-  /* let tab = [];
-  resumeSeason[numero].seasonGameList.forEach(game => {
-    let check = tab.findIndex(obj => obj.title == game.title);
-    if(check !== -1) {
-      tab[check].win += game.win;
-      tab[check].lose += game.lose;
-      tab[check].played += game.played;
-    // do something…
-
-    } else {
-      tab.push(game);
-    }
-  }); *
-  console.log(tab); */
-
   resumeSeason[numero].seasonGameScores.forEach(element => {
     let divGameStat = document.createElement("div");
+    let divSubGameStat = document.createElement("div");
+    let divImg = document.createElement("div");
+    let divStat = document.createElement("div");
     let pGameStat = document.createElement("p");
-    pGameStat.innerHTML = element.title + " " + element.win + "W / " + element.lose + " L " + element.played + " joué(s)"
-    divGameStat.appendChild(pGameStat);
-    divLeft.appendChild(pGameStat);
+    let pGameTitle = document.createElement("p");
+    let imgGameStat = document.createElement("img");
+
+
+    divStat.classList.add("inline-block");
+    divImg.classList.add("flex");
+    divGameStat.classList.add("flex","justify-center", "mt-2");
+    divSubGameStat.classList.add("flex","justify-center","buttonFullRoundedGameStat");
+    if (element.imgName != undefined) {
+    imgGameStat.id = "imgGameStat";
+    imgGameStat.src = ImgPath + element.imgName;
+    imgGameStat.style.height = "50px";
+    imgGameStat.style.width = "50px";
+    imgGameStat.classList.add("mr-2","ml-1");
+
+    }
+    
+    divImg.appendChild(imgGameStat);
+    divSubGameStat.appendChild(divImg);
+
+    pGameTitle.innerHTML = element.title;
+    pGameStat.innerHTML = element.win + "W / " + element.lose + " L " + element.played + " joué(s)"
+    divStat.appendChild(pGameTitle);
+    divStat.appendChild(pGameStat);
+
+    divSubGameStat.appendChild(divStat);
+    divGameStat.appendChild(divSubGameStat);
+    divLeft.appendChild(divGameStat);
   });
 
 
@@ -2120,18 +2410,31 @@ function showStatsSeason (numero) {
 
   let array = sumUpSession(numero);
   let county = 0;
+
   array.forEach(element => {
+    let divSessionNum = document.createElement("div");
+    divSessionNum.classList.add("inline-block","mr-2");
+    let sessionNum = document.createElement("p");
+    sessionNum.classList.add("numSession","opacity-50");
+    sessionNum.innerText = county + 1;
+    divSessionNum.appendChild(sessionNum);
     //element.classList.add("flex");
     let divSession = document.createElement("div");
-    divSession.classList.add("block", "justify-center","mt-2");
+    let divSousSession = document.createElement("div");
+    divSousSession.classList.add("w-fit","buttonFullRounded","pt-2", "pl-4" ,"pr-8");
+    divSession.id = "devSession_" + county;
+    divSession.classList.add("flex", "justify-center","mt-2");
     //divSession.appendChild(element);
     //let buttonStats = document.createElement("button");
     //buttonStats.innerHTML=">";
     //buttonStats.setAttribute("onclick", "showStatSession(" + numero + "); clickSound()");
-    element.setAttribute("onclick", "showStatSession(" + numero + "," + county + "); clickSound()");
-    element.classList.add("inline-block","buttonFullRounded")
+    divSousSession.setAttribute("onclick", "showStatSession(" + numero + "," + county + "," + divSession.id +"); clickSound()");
+    divSousSession.setAttribute("state",false);
+    element.classList.add("inline-block")
     //buttonStats.style.height = "10px"
-    divSession.appendChild(element);
+    divSousSession.appendChild(divSessionNum);
+    divSousSession.appendChild(element);
+    divSession.appendChild(divSousSession);
     //divSession.appendChild(buttonStats);
     divRight.appendChild(divSession);
     county++;
@@ -2154,35 +2457,77 @@ function sumUpSession (sessionBig) {
   let array = [];
   console.log(sessionBig);
   seasonArchive[sessionBig].forEach(session => {
-    let game = document.createElement("button");
-    game.classList.add("inline-block","align-middle")
+    
+  
+    let divGame = document.createElement("div");
+    let dateSession = document.createElement("p");
+    let game = document.createElement("p");
+    divGame.classList.add("statsSessionAlign")
+    
+    //game.classList.add("align-top")
     let played = 0;
     let win = 0;
     let lose = 0;
-    let dateSession = document.createElement("p");
+    //let dateSession = document.createElement("p");
     console.log(session);
-    dateSession.innerText = session[0].date;
+    //dateSession.innerText = session[0].date;
     //divRight.appendChild(dateSession);
     
     for (let index = 1; index < session.length; index++) {
+      
       played += session[index].played;
       win += session[index].win;
       lose += session[index].lose;
     }   
-      game.innerText = session[0].date + " - " + played +" joués - " + win + "W/" + lose + "L";
-      array.push(game);
+      dateSession.innerText = convertDate(session[0].date);
+      game.innerText = played +" joués - " + win + "W/" + lose + "L";
+      divGame.appendChild(dateSession);
+      divGame.appendChild(game);
+      array.push(divGame);
+      
+      
   });
+  
   return array;
 }
 
-function showStatSession (numSeason, numSession ) {
+function showStatSession (numSeason, numSession, divId ) {
   $("#divDetailSeason").empty();
+  console.log(divId);
+  divSession = divId.firstChild;
+  console.log(divSession);
+  
+  if (divSession.getAttribute("state")== "false") {
+    console.log("oui")
+    divSession.classList.add("buttonFullRoundedActive");
+    divSession.classList.remove("buttonFullRounded");
+    divSession.setAttribute("state",true);
+    console.log("lastClickedSession");
+    console.log(lastClickedSession);
+    if (lastClickedSession.hasAttribute("state") && divSession.state == lastClickedSession.state) {
+      console.log("not same")
+      console.log(lastClickedSession);
+      lastClickedSession.setAttribute("state",false);
+      lastClickedSession.classList.remove("buttonFullRoundedActive");
+      lastClickedSession.classList.add("buttonFullRounded");
+    }
+    lastClickedSession = divSession;
+  } else {
+    console.log("non")
+    divSession.classList.remove("buttonFullRoundedActive");
+    divSession.classList.add("buttonFullRounded");
+    $("#divDetailSeason").empty();
+    divSession.setAttribute("state",false);
+    lastClickedSession = divSession;
+    return;
+  }
+  
   seasonArchive = JSON.parse(window.localStorage.getItem("seasonArchive"));
   console.log(seasonArchive[numSeason][numSession]);
   session = seasonArchive[numSeason][numSession];
   dateSession = session[0].date;
   let div= document.createElement("div");
-  div.classList.add("session", "mt-2", "w-fit", "p-2", "rounded");
+  div.classList.add("session", "mt-2","mb-2", "w-fit", "p-2", "rounded");
   let pTitle= document.createElement("p");
   div.appendChild(pTitle);
   pTitle.innerHTML = "Détails de la session du " + dateSession;

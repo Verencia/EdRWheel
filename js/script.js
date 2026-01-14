@@ -12,9 +12,12 @@ const CountAudio = new Audio("../sounds/count.mp3");
 const DontCountAudio = new Audio("../sounds/dontcount.mp3");
 const StopAudio = new Audio("../sounds/stop.mp3");
 const Stop2Audio = new Audio("../sounds/stop2.mp3");
+const ChristmasAudio = new Audio("../sounds/christmas.mp3");
 const ImgPath = "../image/";
+const archiveSessionAudio = new Audio("../sounds/archiveSession.mp3");
 var canvas = document.getElementById("myCanvas");
 var wheelPower = 0;
+var spinNumber = 0;
 var wheelSpinning = false;
 var gameAdded = true;
 var gamesArr = [];
@@ -33,6 +36,7 @@ var playedCountChanged = false;
 var ongletHistoActive = false;
 var ongletResumeActive = false;
 var ongletGameActive = true;
+var actualRunId;
 var param = 13;
 var winTotal = localStorage.getItem("winTotal");
 var loseTotal = localStorage.getItem("loseTotal");
@@ -49,6 +53,9 @@ var histoTirage = window.localStorage.getItem("histoTirage");
 var archive = window.localStorage.getItem("archive");
 var gameArchive = window.localStorage.getItem("gameArchive");
 var seasonArchive = window.localStorage.getItem("seasonArchive");
+var cheatedArchived = localStorage.getItem("cheatedArchived");
+var sessionDebut = localStorage.getItem("sessionDebut");;
+
 var alertDiv = document.getElementById("alert");
 var archivedGame = document.getElementById("archivedGames");
 var archivedSeasons = document.getElementById("archivedSeasons");
@@ -56,6 +63,8 @@ var seasonStats = document.getElementById("seasonStats");
 var animationsDiv = document.getElementById("animations");
 var div_canvas = document.getElementById("div_canvas");
 var power_ctrl = document.getElementById("power_ctrl");
+var lastClickedSession = document.createElement("div");
+var actualRun = document.getElementById("actualRun");
 
 
 // Catch user leaving if draws are not archived
@@ -64,7 +73,9 @@ window.onbeforeunload = function (){
 	if(histo.length > 0){
 		return confirm("Vous n\'avez pas sauvegardé vos changements !, Voulez vous quitter ?");
 	}
-}
+} 
+
+
 
 if (seasonCount == null) {
   seasonCount = 1;
@@ -113,6 +124,12 @@ if (archiveCheated == null) {
   window.localStorage.setItem("archiveCheated", archiveCheated);
 }
 
+if (cheatedArchived == null) {
+  console.log("cheatedArchived est null !")
+  cheatedArchived = [];
+  window.localStorage.setItem("cheatedArchived", cheatedArchived);
+}
+
 if (seasonArchive == null) {
   console.log("seasonArchive est null !")
   seasonArchive = [];
@@ -135,16 +152,16 @@ var theWheel = new Winwheel({
   //'responsive'   : true,
 
   'animation':                   // Note animation properties passed in constructor parameters.
-  {
-    'type': 'spinToStop',  // Type of animation.
-    'duration': 5,    // Duration in seconds.
-    'spins': 10,               // The number of complete 360 degree rotations the wheel is to do.
-    // Remember to do something after the animation has finished specify callback function.
-    'callbackSound' : 'playTickSound()',
-    'callbackAfter': 'drawTriangle()',
-    'callbackFinished': 'alertPrize()'
-  },
-});
+    {
+      'type': 'spinOngoing',  // Type of animation.
+      'duration': 300,             // How long the animation is to take in seconds.
+      'spins': 2.5,              // The number of complete 360 degree rotations the wheel is to do.
+      // Remember to do something after the animation has finished specify callback function.
+      'callbackAfter': 'drawTriangle()',
+      
+    },
+  });
+  theWheel.startAnimation();
 
 // When a color changes, reload segments color
 function changeColor(games) {
@@ -236,7 +253,7 @@ function save() {
     Tweight = 0;
     let counter = 1;
     $('#games').children('.box').each(function () {
-      console.log(this.querySelector('.title').value);
+      //console.log(this.querySelector('.title').value);
       let game = ({
         'title':this.querySelector('.title').value, 
         "weight":this.querySelector('.weight').value, 
@@ -302,11 +319,61 @@ function easter(){
   PirateAudio.play();
 }
 
+function easter2(){
+  let easterCheckbox = document.getElementById("easterCheckbox");
+  let spinButton = document.getElementById("spinButton");
+  let sizeSegments = 0;
+  let test = false;
+  (theWheel.segments).forEach(element => {
+    if (element != null && element.text == 'Darkest Dungeon 2') {
+      test = true;
+    }
+  });
+  if (easterCheckbox.checked && test == true) {
+    (theWheel.segments).forEach(element => {
+      if (element != null && element.text == 'Darkest Dungeon 2') {
+        spinButton.setAttribute("onclick", "calculatePrize("+element.size+","+sizeSegments+");")
+      }
+      else if (element != null) {
+        sizeSegments += element.size;
+      }
+    });
+  }
+  else {
+    theWheel.animation.stopAngle = null;
+    spinButton.setAttribute("onclick", "startSpin();");
+  }
+}
+
+function easter3 () {
+  let text = document.createElement("p");
+  text.innerHTML = "Joyeux Noël les enfants ! (Merci Xanix pour l'image !)"
+  text.classList.add("fixed","text-white");
+  text.style.top = "15%";
+  text.style.left = "40%";
+
+  let bobs = document.createElement("img");
+  bobs.src = ImgPath + "bobsDeNoel.png"
+  bobs.classList.add("fixed");
+  bobs.style.width = "530px";
+  bobs.style.height = "530px";
+  bobs.style.top = "15%";
+  bobs.style.left = "35%";
+
+  let neige = document.createElement("img");
+  neige.src = ImgPath + "neige.gif"
+  neige.classList.add("absolute","h-screen","w-screen");
+  neige.style.top = "5%";
+
+  document.body.appendChild(bobs);
+  document.body.appendChild(neige);
+  document.body.appendChild(text);
+  ChristmasAudio.play();
+}
 
 function copyWheel() {
   var destinationCtx;
   var canvas2 = document.getElementById("div_canvas2");
-  
   
   canvas2.classList.add("showContent");
   canvas2.classList.remove("hideContent");
@@ -368,5 +435,6 @@ function load() {
   theWheel.draw();
   drawTriangle();
   updateWinLoseTotal();
+  showActualRun();
 }
 

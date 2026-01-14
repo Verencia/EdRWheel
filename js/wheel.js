@@ -1,4 +1,21 @@
 function initWheel(idCanvas) {
+  if (idCanvas == "myCanvas2") {
+    theWheel = new Winwheel({
+    'canvasId': idCanvas,
+
+
+    'animation':                   // Note animation properties passed in constructor parameters.
+    {
+      'type': 'spinOngoing',  // Type of animation.
+      'duration': 90,             // How long the animation is to take in seconds.
+      'spins': 1.5,              // The number of complete 360 degree rotations the wheel is to do.
+      // Remember to do something after the animation has finished specify callback function.
+      'callbackAfter': 'drawTriangle()',
+      
+    },
+  });
+  theWheel.startAnimation();
+  } else {
   theWheel = new Winwheel({
     'canvasId': idCanvas,
 
@@ -14,7 +31,26 @@ function initWheel(idCanvas) {
       'callbackFinished': 'alertPrize()'
     },
   });
+  
+  }
+  
 }
+
+function calculatePrize(dd2Size,sizeSegments) {
+    // This formula always makes the wheel stop somewhere inside prize 3 at least
+    // 1 degree away from the start and end edges of the segment.
+    resetWheel();
+    let stopAt = (sizeSegments + Math.floor((Math.random() * dd2Size)))
+ 
+    // Important thing is to set the stopAngle of the animation before stating the spin.
+    theWheel.animation.stopAngle = stopAt;
+ 
+    // May as well start the spin from here.
+    drawTriangle();
+    theWheel.startAnimation();
+    
+}
+
 // Updates segments of the wheel
 function updateWheel(games) {
   /* if (theWheel.segments[1].text == '') {
@@ -63,10 +99,15 @@ function updateWheel(games) {
 
 // function called when spin button is pressed
 function startSpin() {
+  let easterCheckbox = document.getElementById("easterCheckbox");
   //fadeDontCountSound();
-  // Ensure that spinning can't be clicked again while already running.
   
-  resetWheel();
+  // Ensure that spinning can't be clicked again while already running.
+  if (spinNumber == 2) {
+    easterCheckbox.checked = true;
+    easter2()
+  }else {
+    resetWheel();
   if (wheelSpinning == false) {
     // Based on the power level selected adjust the number of spins for the wheel, the more times is has
     // to rotate with the duration of the animation the quicker the wheel spins.
@@ -90,6 +131,10 @@ function startSpin() {
     // the current animation. The user will have to reset before spinning again.
     wheelSpinning = true;
   }
+  }
+  spinNumber++;
+  
+  
 }
 // reset wheel and audio
 function resetWheel() {

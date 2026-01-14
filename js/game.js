@@ -909,6 +909,11 @@ function addGames(games) {
 // Add a 100% draw to histo
 function addPlayed(count) {
   //console.log("hello");
+  sessionDebut = localStorage.getItem("sessionDebut");
+  if (sessionDebut == null || sessionDebut == "null") {
+    sessionDebut = today2();
+    localStorage.setItem("sessionDebut",sessionDebut);
+  }
   document.getElementById("textHisto").classList.add("hideContent");
   document.getElementById("textHisto").classList.remove("showContent");
   let title = document.getElementById("title" + count).value;

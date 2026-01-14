@@ -2,6 +2,10 @@
 function countSound(){
   CountAudio.play();
 }
+function playSound(sound){
+  sound.play();
+}
+
 function fadeDontCountSound(){
   var fadeAudio = setInterval(function () {
 
