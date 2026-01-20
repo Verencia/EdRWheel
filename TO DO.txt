@@ -1,4 +1,17 @@
-
+14/07 1h
+15/07 2h33
+16/07 2h
+17/07 2h20
+18/07 2h00
+21/07 1h20
+22/07 1h
+23/07 1h45
+04/08 1h
+06/08 1h45
+22/08 1h30
+25/08 1h45
+01/09 1h40
+11/09 1h15
 TO DO
 delete une run win/lose et si il y une cheaté fait pop un undefined 
 

@@ -1,0 +1,4 @@
+bouton cote à cote 
+archiver saison confirm avant
+menu archive qui déroule de la gauche
+bouton stats avec dedans la partie droite+ numéraire style jeux xxxx joué xx gagné xxx....

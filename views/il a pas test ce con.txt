@@ -1,0 +1,10 @@
+
+-------------------------------------------
+afficher plutot l'heure début de la session sur les résumés, et la durée ( Résumé session 05/01/2026 21:00 (2h18) ) 
+ajouter une stat jeu le plus ignoré
+le numéro de session s'affiche dans les archives de saison ET dans les résumé de session? Les 2 ce serait bien
+jeu passé le plus de temps, temps de compter à gagné/perdu
+faire tourner la petite roue à droite pendant les menus
+son quand on archive la session 
+bug quand annulation session avec partie cheat
+fix easter pour quand ya pas le jeu
