@@ -1,4 +1,5 @@
-
+voir discord
+mettre une croix sur l'easter egg (#pas drôle)
 -------------------------------------------
 afficher plutot l'heure début de la session sur les résumés, et la durée ( Résumé session 05/01/2026 21:00 (2h18) ) 
 ajouter une stat jeu le plus ignoré

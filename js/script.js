@@ -346,29 +346,49 @@ function easter2(){
 }
 
 function easter3 () {
+  let div = document.createElement("div");
+  div.style.top = "15%";
+  div.style.left = "35%";
+  div.setAttribute("onclick","stopEaster3()")
+  div.id = "divEaster3";
+
   let text = document.createElement("p");
   text.innerHTML = "Joyeux Noël les enfants ! (Merci Xanix pour l'image !)"
   text.classList.add("fixed","text-white");
   text.style.top = "15%";
   text.style.left = "40%";
+  text.id ="texteEaster3";
 
   let bobs = document.createElement("img");
+  bobs.id = "bobs";
   bobs.src = ImgPath + "bobsDeNoel.png"
   bobs.classList.add("fixed");
   bobs.style.width = "530px";
   bobs.style.height = "530px";
   bobs.style.top = "15%";
   bobs.style.left = "35%";
+  bobs.setAttribute("onclick","stopEaster3()")
 
   let neige = document.createElement("img");
+  neige.id = "neige";
   neige.src = ImgPath + "neige.gif"
   neige.classList.add("absolute","h-screen","w-screen");
   neige.style.top = "5%";
+  neige.setAttribute("onclick","stopEaster3()")
 
-  document.body.appendChild(bobs);
-  document.body.appendChild(neige);
-  document.body.appendChild(text);
+  div.appendChild(bobs);
+  div.appendChild(neige);
+  div.appendChild(text);
+  document.body.appendChild(div)
   ChristmasAudio.play();
+}
+
+function stopEaster3 (){
+  ChristmasAudio.pause();
+  let divEaster3 = document.getElementById("divEaster3");
+  
+  divEaster3.remove();
+
 }
 
 function copyWheel() {

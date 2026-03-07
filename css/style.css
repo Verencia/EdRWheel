@@ -3199,6 +3199,12 @@ body{
   opacity: 0.1;
   margin-left: 20px;
 }
+
+.titrePrize{
+  font-size: 40px;
+}
+
+
 .centerDiv {
   margin-left: auto;
   margin-right: auto;

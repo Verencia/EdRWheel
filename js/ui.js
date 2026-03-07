@@ -5,15 +5,16 @@ function alertPrize() {
   while (alertDiv.firstChild) { // while there is still a child inside the parent
     alertDiv.removeChild(alertDiv.firstChild); // remove the first child
   }
-  alertDiv.style.width = "300px";
+  alertDiv.style.width = "400px";
   alertDiv.style.height = "fit-content";
-  alertDiv.style.left= "42%";
+  alertDiv.style.left= "39.55%";
+  alertDiv.style.top= "28%";
   alertDiv.classList.add("appear");
   let textGame = document.getElementById("title"+winningSegment.id).value;
   // Basic alert of the segment text which is the prize name.
   PrizeAudio.play();
   let text = document.createElement("label");
-  text.innerHTML = "Tu vas runner sur <b>" + winningSegment.text + "</b> ! (" + winwheelDegreesToPercent(winningSegment.size) + "%)";
+  text.innerHTML = "Tu vas run sur : <b></br><span class='titrePrize'>" + winningSegment.text + "</span></b> </br>(" + winwheelDegreesToPercent(winningSegment.size) + "%)";
 
   let img = document.createElement("img");
   img.src = ImgPath + winningSegment.image;
@@ -25,6 +26,9 @@ function alertPrize() {
   let div = document.createElement("div");
   div.classList.add("flex", "justify-center");
   
+  let divButton = document.createElement("div");
+  divButton.classList.add("flex", "justify-center");
+
   let buttonCount = document.createElement("button");
   buttonCount.innerText = "Compter";
   buttonCount.setAttribute("onclick", "countTrue(" + winningSegment.id + ",'" + winningSegment.text + "'," + winningSegment.size + "); countSound()");
@@ -44,8 +48,9 @@ function alertPrize() {
   alertDiv.appendChild(text);
   div.appendChild(img);
   alertDiv.appendChild(div);
-  alertDiv.appendChild(buttonCount);
-  alertDiv.appendChild(buttonHide);
+  divButton.appendChild(buttonCount);
+  divButton.appendChild(buttonHide);
+  alertDiv.appendChild(divButton);
   alertDiv.appendChild(buttonClose);
 
   alertDiv.style.display = "block";
